@@ -688,11 +688,12 @@ export function OnlinePage() {
       extraInputRef.current = { ...extraInputRef.current, [key]: pressed };
     }
 
-    if (isFreeWorldRule(activeOnlineRule) && pressed && isMoveKey(key)) {
+    const canNudgeExtraInOfficial = isOfficialRoom && role === 'guest' && guestSlot === 'extra';
+    if ((isFreeWorldRule(activeOnlineRule) || canNudgeExtraInOfficial) && pressed && isMoveKey(key)) {
       nudgeFreeWorldPlayer();
     }
 
-    if (isFreeWorldRule(activeOnlineRule) && pressed && key === 'shoot') {
+    if ((isFreeWorldRule(activeOnlineRule) || canNudgeExtraInOfficial) && pressed && key === 'shoot') {
       fireOnlineShot();
     }
   }
@@ -1382,7 +1383,7 @@ export function OnlinePage() {
             ))}
           </section>
           <GameHud game={game} language={language} />
-          <div className="online-arena-shell">
+          <div className="online-arena-shell" onPointerDown={blurTypingTarget}>
             {isFreeWorldRule(activeOnlineRule) ? (
               <div
                 className={`online-sandbox-arena ${isBuildWorldRule(activeOnlineRule) ? '' : 'online-free-arena'}`}
