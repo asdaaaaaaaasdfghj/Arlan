@@ -15,7 +15,9 @@ import {
   ARENA_HEIGHT,
   ARENA_WIDTH,
   type GameInput,
+  type GameMode,
   type GameState,
+  type MapId,
   type PlayerId,
   type PlayerInput,
   type WeaponId,
@@ -68,6 +70,17 @@ type OnlineParticipant = {
   color: string;
   skin: PlayerSkinId;
   slot: 'host' | GuestSlot;
+};
+type OnlineServerListing = {
+  code: string;
+  name: string;
+  mode: GameMode;
+  mapId: MapId;
+  onlineRule: OnlineRule;
+  players: number;
+  maxPlayers: number;
+  official: boolean;
+  seenAt: number;
 };
 type OnlineProfilePayload = {
   clientId: string;
@@ -141,9 +154,9 @@ const officialDuelArena = {
   code: 'DUEL32',
   name: 'Duel Arena Official',
   maxPlayers: 32,
-  mode: 'duel',
+  mode: 'endlessDuel',
   mapId: 'crossfire',
-  rule: 'classic',
+  rule: 'ffa',
 } as const;
 const officialSecretPortal = { x: 92, y: 12, radius: 4 };
 const officialSecretRoom = { x: 10, y: 82, width: 28, height: 14, exitX: 35, exitY: 89 };
@@ -177,6 +190,7 @@ export function OnlinePage() {
   const [onlineBullets, setOnlineBullets] = useState<OnlineBullet[]>([]);
   const [modeState, setModeState] = useState<OnlineModeState>(() => createModeState('classic'));
   const [officialPlayerCount, setOfficialPlayerCount] = useState(0);
+  const [serverListings, setServerListings] = useState<OnlineServerListing[]>([]);
   const [playerProfiles, setPlayerProfiles] = useState<Partial<Record<PlayerId, PlayerProfile>>>({});
   const [game, setGame] = useState(() => createInitialGame(settings.defaultMode, settings.defaultMap));
   const gameRef = useRef(game);
@@ -184,6 +198,7 @@ export function OnlinePage() {
   const extraPlayersRef = useRef<Record<string, ExtraPlayer>>({});
   const channelRef = useRef<RealtimeChannel | null>(null);
   const officialLobbyRef = useRef<RealtimeChannel | null>(null);
+  const lobbyRef = useRef<RealtimeChannel | null>(null);
   const clientIdRef = useRef(makeClientId());
   const inputRef = useRef<GameInput>(cloneInput(emptyInput));
   const extraInputRef = useRef<PlayerInput>({ ...emptyInput.red });
@@ -234,6 +249,39 @@ export function OnlinePage() {
       supabase.removeChannel(channel);
       if (officialLobbyRef.current === channel) {
         officialLobbyRef.current = null;
+      }
+    };
+  }, [role]);
+
+  useEffect(() => {
+    if (role || !isSupabaseConfigured) {
+      return;
+    }
+
+    const channel = supabase.channel('arena-lobby', { config: { broadcast: { self: false } } });
+    lobbyRef.current = channel;
+    channel.on('broadcast', { event: 'server-listing' }, ({ payload }) => {
+      const listing = normalizeServerListing(payload);
+      if (!listing) return;
+      setServerListings((current) => {
+        const next = current.filter((server) => server.code !== listing.code);
+        return [...next, listing].sort((a, b) => Number(b.official) - Number(a.official) || b.players - a.players);
+      });
+      if (listing.code === officialDuelArena.code) {
+        setOfficialPlayerCount(listing.players);
+      }
+    });
+    channel.subscribe();
+    const pruneId = window.setInterval(() => {
+      const now = Date.now();
+      setServerListings((current) => current.filter((server) => now - server.seenAt < 7000));
+    }, 2500);
+
+    return () => {
+      window.clearInterval(pruneId);
+      supabase.removeChannel(channel);
+      if (lobbyRef.current === channel) {
+        lobbyRef.current = null;
       }
     };
   }, [role]);
@@ -310,6 +358,27 @@ export function OnlinePage() {
   }, [isOfficialRoom, role, roomPlayers, status]);
 
   useEffect(() => {
+    if (role !== 'host' || status !== 'online' || !isSupabaseConfigured) {
+      return;
+    }
+
+    const channel = supabase.channel('arena-lobby-host', { config: { broadcast: { self: false } } });
+    channel.subscribe((nextStatus) => {
+      if (nextStatus === 'SUBSCRIBED') {
+        void sendLobbyListing(channel);
+      }
+    });
+    const timerId = window.setInterval(() => {
+      void sendLobbyListing(channel);
+    }, 2000);
+
+    return () => {
+      window.clearInterval(timerId);
+      supabase.removeChannel(channel);
+    };
+  }, [activeOnlineRule, isOfficialRoom, role, roomCode, roomPlayers, serverMap, serverMaxPlayers, serverMode, serverName, status]);
+
+  useEffect(() => {
     if (role !== 'guest' || guestSlot !== 'extra' || status !== 'online') {
       return;
     }
@@ -359,6 +428,15 @@ export function OnlinePage() {
     setSandboxBlocks([]);
     setGame(createOnlineInitialGame(serverMode, serverMap, onlineRule));
     connectChannel(code, 'host', { maxPlayers: serverMaxPlayers, onlineRule });
+  }
+
+  function enterOfficialDuelArena() {
+    if (officialPlayerCount > 0 || serverListings.some((server) => server.code === officialDuelArena.code)) {
+      joinRoomByCode(officialDuelArena.code);
+      return;
+    }
+
+    createOfficialDuelArena();
   }
 
   function createOfficialDuelArena() {
@@ -1076,6 +1154,26 @@ export function OnlinePage() {
     await channelRef.current?.send({ type: 'broadcast', event, payload });
   }
 
+  async function sendLobbyListing(channel: RealtimeChannel) {
+    if (!roomCode) return;
+    const maxPlayers = isOfficialRoom ? officialDuelArena.maxPlayers : serverMaxPlayers;
+    await channel.send({
+      type: 'broadcast',
+      event: 'server-listing',
+      payload: {
+        code: roomCode,
+        name: isOfficialRoom ? officialDuelArena.name : serverName,
+        mode: isOfficialRoom ? officialDuelArena.mode : serverMode,
+        mapId: isOfficialRoom ? officialDuelArena.mapId : serverMap,
+        onlineRule: activeOnlineRule,
+        players: roomPlayers.length,
+        maxPlayers,
+        official: isOfficialRoom,
+        seenAt: Date.now(),
+      } satisfies OnlineServerListing,
+    });
+  }
+
   function loadOnlineProfile(): PlayerProfile {
     return isGuestAccount ? loadGuestProfile() : loadPlayerProfile();
   }
@@ -1101,10 +1199,26 @@ export function OnlinePage() {
           <div>
             <small>{language === 'ru' ? 'Официальный сервер' : 'Official server'}</small>
             <strong>{officialDuelArena.name}</strong>
-            <span>{language === 'ru' ? 'Duel Arena · Crossfire · обычная дуэль · 32 игрока' : 'Duel Arena · Crossfire · classic duel · 32 players'}</span>
+            <span>{language === 'ru' ? 'Duel Arena · Crossfire · free arena · 32 игрока' : 'Duel Arena · Crossfire · free arena · 32 players'}</span>
           </div>
           <b className="online-official-count">{officialPlayerCount}/{officialDuelArena.maxPlayers}</b>
-          <button type="button" disabled={isGuestAccount} onClick={createOfficialDuelArena}>{language === 'ru' ? 'Зайти на DUEL32' : 'Join DUEL32'}</button>
+          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DUEL32' : 'Join DUEL32'}</button>
+        </section>
+        <section className="online-panel online-server-list">
+          <strong>{language === 'ru' ? 'Живые серверы' : 'Live servers'}</strong>
+          {serverListings.length === 0 ? (
+            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DUEL32.' : 'No live rooms yet. Create one or open DUEL32.'}</span>
+          ) : (
+            <div>
+              {serverListings.map((server) => (
+                <button type="button" className="online-server-card" disabled={isGuestAccount && server.official} onClick={() => joinRoomByCode(server.code)} key={server.code}>
+                  <b>{server.name}</b>
+                  <span>{server.code} · {getOnlineRuleLabel(server.onlineRule, language)} · {modeName(server.mode, language)}</span>
+                  <small>{server.players}/{server.maxPlayers}</small>
+                </button>
+              ))}
+            </div>
+          )}
         </section>
         <section className="online-panel">
           <label>
@@ -1775,9 +1889,30 @@ function normalizeRoster(value: unknown): Pick<RoleAssignment, 'players' | 'maxP
   };
 }
 
+function normalizeServerListing(value: unknown): OnlineServerListing | null {
+  const payload = value as Partial<OnlineServerListing>;
+  if (typeof payload.code !== 'string' || typeof payload.name !== 'string') {
+    return null;
+  }
+
+  const mode: GameMode = modeOrder.includes(payload.mode as (typeof modeOrder)[number]) ? payload.mode as GameMode : 'duel';
+  const mapId: MapId = mapOrder.includes(payload.mapId as (typeof mapOrder)[number]) ? payload.mapId as MapId : 'crossfire';
+  return {
+    code: payload.code.trim().toUpperCase().slice(0, 8),
+    name: payload.name.trim().slice(0, 28) || 'Arena server',
+    mode,
+    mapId,
+    onlineRule: normalizeOnlineRule(payload.onlineRule),
+    players: clampInt(Number(payload.players), 0, 32),
+    maxPlayers: clampInt(Number(payload.maxPlayers), 2, 32),
+    official: payload.official === true,
+    seenAt: Date.now(),
+  };
+}
+
 function normalizeParticipants(value: unknown): OnlineParticipant[] {
   return Array.isArray(value)
-    ? value.slice(0, 16).flatMap((item): OnlineParticipant[] => {
+    ? value.slice(0, 32).flatMap((item): OnlineParticipant[] => {
       const participant = item as Partial<OnlineParticipant>;
       if (typeof participant.clientId !== 'string' || typeof participant.nickname !== 'string') {
         return [];

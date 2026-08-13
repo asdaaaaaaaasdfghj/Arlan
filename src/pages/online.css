@@ -76,6 +76,41 @@
   font-weight: 1000;
 }
 
+.online-server-list {
+  max-width: 620px;
+}
+
+.online-server-list > div {
+  display: grid;
+  gap: 6px;
+}
+
+.online-server-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 8px;
+  width: 100%;
+  align-items: center;
+  text-align: left;
+}
+
+.online-server-card b,
+.online-server-card span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.online-server-card small {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  border-radius: 7px;
+  background: rgba(21, 23, 25, 0.12);
+  padding: 4px 7px;
+  font-weight: 1000;
+}
+
 .online-panel label {
   display: grid;
   gap: 3px;
