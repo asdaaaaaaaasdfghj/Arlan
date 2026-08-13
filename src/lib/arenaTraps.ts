@@ -1,4 +1,4 @@
-import type { GameMode, MapId, Player, PlayerId, TrapBlock, TrapKind, Zombie } from './arenaTypes';
+import type { GameMode, HitEffect, MapId, Player, PlayerId, TrapBlock, TrapKind, Zombie } from './arenaTypes';
 import { isCoopSurvivalMode } from './arenaModes';
 import { respawnPlayer } from './arenaPlayers';
 
@@ -9,15 +9,18 @@ const trapDamage: Record<TrapKind, number> = {
   zap: 12,
   poison: 0,
   saw: 34,
-  mine: 58,
-  bear: 28,
+  mine: 0,
+  bear: 8,
   web: 0,
 };
 const burnSeconds = 2.8;
 const shockSeconds = 1.1;
+const snareSeconds = 1.9;
 const acidSeconds = 3.4;
 const burnDamage = 14;
 const acidDamage = 8;
+const mineDamage = 88;
+const mineRadius = 12;
 export const poisonSeconds = 4.2;
 
 export function tickTraps(
@@ -28,12 +31,22 @@ export function tickTraps(
   mapId: MapId,
   elapsed: number,
   delta: number,
-): { players: Record<PlayerId, Player>; zombies: Zombie[] } {
-  if (traps.length === 0) return { players, zombies };
+  nextEffectId: number,
+): { players: Record<PlayerId, Player>; zombies: Zombie[]; traps: TrapBlock[]; effects: HitEffect[]; nextEffectId: number } {
+  if (traps.length === 0) return { players, zombies, traps, effects: [], nextEffectId };
+
+  const mines = getTriggeredMines(players, zombies, traps);
+  const liveTraps = traps.filter((trap) => !mines.some((mine) => mine.id === trap.id));
+  const damagedPlayers = damagePlayers(players, liveTraps, mode, mapId, elapsed, delta);
+  const damagedZombies = damageZombies(zombies, liveTraps, elapsed, delta);
+  const blastState = explodeMines(damagedPlayers, damagedZombies, mines, mode, mapId);
 
   return {
-    players: damagePlayers(players, traps, mode, mapId, elapsed, delta),
-    zombies: damageZombies(zombies, traps, elapsed, delta),
+    players: blastState.players,
+    zombies: blastState.zombies,
+    traps: liveTraps,
+    effects: mines.map((mine, index) => ({ id: nextEffectId + index, x: mine.x + mine.width / 2, y: mine.y + mine.height / 2, kind: 'explosion', age: 0.35 })),
+    nextEffectId: nextEffectId + mines.length,
   };
 }
 
@@ -84,7 +97,8 @@ function getTrapTouch(x: number, y: number, traps: TrapBlock[], zapActive: boole
     return {
       damage: touch.damage + trapDamage[trap.kind],
       burn: touch.burn || trap.kind === 'lava',
-      shock: touch.shock || trap.kind === 'zap' || trap.kind === 'bear' || trap.kind === 'web',
+      shock: touch.shock || trap.kind === 'zap' || trap.kind === 'web',
+      snare: touch.snare || trap.kind === 'bear',
       acid: touch.acid || trap.kind === 'acid',
       poison: touch.poison || trap.kind === 'poison',
     };
@@ -97,6 +111,7 @@ function applyTrapStatuses(player: Player, touch: TrapTouch): Player {
     burnTimer: touch.burn ? burnSeconds : player.burnTimer,
     shockTimer: touch.shock ? shockSeconds : player.shockTimer,
     acidTimer: touch.acid ? acidSeconds : player.acidTimer,
+    snareTimer: touch.snare ? snareSeconds : player.snareTimer,
   };
 }
 
@@ -112,10 +127,55 @@ function isZapActive(elapsed: number): boolean {
   return Math.floor(elapsed * 4) % 2 === 0;
 }
 
+function getTriggeredMines(players: Record<PlayerId, Player>, zombies: Zombie[], traps: TrapBlock[]): TrapBlock[] {
+  return traps.filter((trap) => {
+    if (trap.kind !== 'mine') return false;
+    const playerTouched = (Object.keys(players) as PlayerId[]).some((id) => players[id].hp > 0 && pointInTrap(players[id].x, players[id].y, trap));
+    const zombieTouched = zombies.some((zombie) => pointInTrap(zombie.x, zombie.y, trap));
+    return playerTouched || zombieTouched;
+  });
+}
+
+function explodeMines(
+  players: Record<PlayerId, Player>,
+  zombies: Zombie[],
+  mines: TrapBlock[],
+  mode: GameMode,
+  mapId: MapId,
+): { players: Record<PlayerId, Player>; zombies: Zombie[] } {
+  if (mines.length === 0) return { players, zombies };
+  const nextPlayers = { ...players };
+  (Object.keys(nextPlayers) as PlayerId[]).forEach((id) => {
+    const player = nextPlayers[id];
+    const damage = mines.reduce((total, mine) => total + radialDamage(player.x, player.y, mine), 0);
+    if (damage <= 0 || player.hp <= 0) return;
+    const hp = player.hp - damage;
+    nextPlayers[id] = hp <= 0 && !isCoopSurvivalMode(mode)
+      ? respawnPlayer(player, mapId)
+      : { ...player, hp: Math.max(0, hp) };
+  });
+
+  return {
+    players: nextPlayers,
+    zombies: zombies
+      .map((zombie) => ({ ...zombie, hp: zombie.hp - mines.reduce((total, mine) => total + radialDamage(zombie.x, zombie.y, mine), 0) }))
+      .filter((zombie) => zombie.hp > 0),
+  };
+}
+
+function radialDamage(x: number, y: number, mine: TrapBlock): number {
+  const centerX = mine.x + mine.width / 2;
+  const centerY = mine.y + mine.height / 2;
+  const distance = Math.hypot(x - centerX, y - centerY);
+  if (distance > mineRadius) return 0;
+  return mineDamage * (1 - distance / mineRadius);
+}
+
 type TrapTouch = {
   damage: number;
   burn: boolean;
   shock: boolean;
+  snare: boolean;
   acid: boolean;
   poison: boolean;
 };
@@ -124,6 +184,7 @@ const emptyTrapTouch: TrapTouch = {
   damage: 0,
   burn: false,
   shock: false,
+  snare: false,
   acid: false,
   poison: false,
 };

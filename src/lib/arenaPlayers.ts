@@ -58,6 +58,7 @@ export function createPlayer(
     burnTimer: 0,
     shockTimer: 0,
     acidTimer: 0,
+    snareTimer: 0,
     portalCooldown: 0,
     vehicleKind: null,
   };
@@ -89,6 +90,7 @@ export function respawnPlayer(player: Player, mapId: MapId): Player {
     burnTimer: 0,
     shockTimer: 0,
     acidTimer: 0,
+    snareTimer: 0,
     portalCooldown: 0,
     vehicleKind: null,
     x: spawn.x,
@@ -157,6 +159,7 @@ function updatePlayer(
     burnTimer: Math.max(0, player.burnTimer - delta),
     shockTimer: Math.max(0, player.shockTimer - delta),
     acidTimer: Math.max(0, player.acidTimer - delta),
+    snareTimer: Math.max(0, player.snareTimer - delta),
     portalCooldown: Math.max(0, player.portalCooldown - delta),
   };
 }
@@ -176,11 +179,13 @@ function ageCooldowns(player: Player, delta: number): Player {
     burnTimer: Math.max(0, player.burnTimer - delta),
     shockTimer: Math.max(0, player.shockTimer - delta),
     acidTimer: Math.max(0, player.acidTimer - delta),
+    snareTimer: Math.max(0, player.snareTimer - delta),
     portalCooldown: Math.max(0, player.portalCooldown - delta),
   };
 }
 
 function statusSlow(player: Player): number {
+  if (player.snareTimer > 0) return 0;
   if (player.shockTimer > 0) return 0.42;
   if (player.acidTimer > 0) return 0.72;
   return 1;

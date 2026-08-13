@@ -29,6 +29,7 @@ export type Player = {
   burnTimer: number;
   shockTimer: number;
   acidTimer: number;
+  snareTimer: number;
   portalCooldown: number;
   vehicleKind: VehicleKind | null;
 };

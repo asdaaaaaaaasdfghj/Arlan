@@ -93,7 +93,7 @@ function applyPowerUp(player: Player, barricades: Barricade[], kind: PowerUpKind
   }
 
   if (kind === 'superHeal') {
-    return { player: { ...player, hp: 100, burnTimer: 0, shockTimer: 0, acidTimer: 0, poisonTimer: 0 }, barricades };
+    return { player: { ...player, hp: 100, burnTimer: 0, shockTimer: 0, acidTimer: 0, poisonTimer: 0, snareTimer: 0 }, barricades };
   }
 
   if (kind === 'speed') {

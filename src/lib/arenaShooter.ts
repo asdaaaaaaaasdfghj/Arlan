@@ -154,7 +154,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     nextBarricadeId: Math.max(building.nextBarricadeId, luckyBlocks.nextId),
     nextEffectId: fuseEffectId + fuseState.effects.length,
   }, delta);
-  const trapState = tickTraps(codeState.players, codeState.zombies, state.traps, state.mode, state.mapId, elapsedTime, delta);
+  const trapState = tickTraps(codeState.players, codeState.zombies, state.traps, state.mode, state.mapId, elapsedTime, delta, codeState.nextEffectId);
   const disasterState = tickDisasters({ ...state, players: trapState.players }, delta);
   const config = modeConfigs[state.mode];
   const timeLeft = config.noTimer ? state.timeLeft : Math.max(0, state.timeLeft - delta);
@@ -171,7 +171,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     state.powerUpTimer,
     delta,
   );
-  const hitEffects = [...oldEffects, ...swordState.effects, ...tntState.effects, ...afterDuelHits.effects, ...zombieState.effects, ...grenadeState.effects, ...fuseState.effects, ...codeState.hitEffects];
+  const hitEffects = [...oldEffects, ...swordState.effects, ...tntState.effects, ...afterDuelHits.effects, ...zombieState.effects, ...grenadeState.effects, ...fuseState.effects, ...codeState.hitEffects, ...trapState.effects];
   return {
     ...state,
     players: powerUps.players,
@@ -187,7 +187,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     tnts: fuseState.tnts,
     ricochetBlocks: state.ricochetBlocks,
     portals: state.portals,
-    traps: state.traps,
+    traps: trapState.traps,
     bullets: fuseState.bullets,
     grenades: grenadeState.grenades,
     powerUps: powerUps.powerUps,
@@ -200,7 +200,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     nextBarricadeId: Math.max(codeState.nextBarricadeId, building.nextBarricadeId, luckyBlocks.nextId),
     nextPowerUpId: powerUps.nextId,
     nextDisasterId: disasterState.nextId,
-    nextEffectId: codeState.nextEffectId,
+    nextEffectId: trapState.nextEffectId,
     powerUpTimer: powerUps.timer,
     zombieTimer: zombieState.zombieTimer,
     disasterTimer: disasterState.timer,
