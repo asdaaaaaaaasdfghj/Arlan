@@ -7,6 +7,7 @@ import { loadGameSettings } from '../lib/gameSettings';
 import { mapName, modeDescription, modeName, t } from '../lib/i18n';
 import { pickSplashText } from '../lib/splashTexts';
 import type { GameMode, MapId } from '../lib/arenaShooter';
+import { useVersionStatus } from '../lib/appVersion';
 import './home.css';
 
 export function HomePage() {
@@ -15,10 +16,12 @@ export function HomePage() {
   const [mode, setMode] = useState<GameMode>(settings.defaultMode);
   const [mapId, setMapId] = useState<MapId>(settings.defaultMap);
   const [splash] = useState(pickSplashText);
+  const versionStatus = useVersionStatus();
   const playHref = `/game?mode=${mode}&map=${mapId}`;
 
   return (
     <main className="home-page">
+      {versionStatus.outdated && <UpdateNotice language={language} />}
       <section className="home-hero-grid">
         <div className="home-hero">
           <p className="eyebrow">{t(language, 'localShooter')}</p>
@@ -65,6 +68,22 @@ export function HomePage() {
         <MenuShowcase language={language} />
       </section>
     </main>
+  );
+}
+
+function UpdateNotice({ language }: { language: 'ru' | 'en' }) {
+  return (
+    <section className="update-notice">
+      <strong>{language === 'ru' ? 'Обновите игру' : 'Update the game'}</strong>
+      <span>
+        {language === 'ru'
+          ? 'Открыта старая версия. Нажми кнопку обновления браузера. Если не помогло: Ctrl + F5 или закрой вкладку и открой сайт заново.'
+          : 'You are using an old version. Press browser reload. If that does not help: Ctrl + F5 or close this tab and open the site again.'}
+      </span>
+      <button type="button" onClick={() => window.location.reload()}>
+        {language === 'ru' ? 'Обновить' : 'Reload'}
+      </button>
+    </section>
   );
 }
 

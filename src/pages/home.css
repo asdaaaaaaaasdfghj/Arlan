@@ -21,6 +21,41 @@
   max-width: 680px;
 }
 
+.update-notice {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+  border: 2px solid #f08c00;
+  border-radius: 8px;
+  background: #fff3bf;
+  padding: 10px 12px;
+  color: #151719;
+  box-shadow: 0 10px 22px rgba(21, 23, 25, 0.08);
+}
+
+.update-notice strong {
+  font-size: 14px;
+  font-weight: 1000;
+  text-transform: uppercase;
+}
+
+.update-notice span {
+  color: #4d565d;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.update-notice button {
+  min-height: 32px;
+  border-radius: 8px;
+  background: #151719;
+  padding: 0 12px;
+  font-weight: 900;
+}
+
 .eyebrow {
   color: #2e6f95;
   font-size: 12px;
@@ -198,6 +233,10 @@
   }
 
   .home-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .update-notice {
     grid-template-columns: 1fr;
   }
 
