@@ -20,6 +20,8 @@ export function createMover(cell: EditorCell, obstacle: Obstacle, index: number)
       originY: obstacle.y + obstacle.height / 2 - size / 2,
       x: obstacle.x,
       y: obstacle.y,
+      lastX: obstacle.x,
+      lastY: obstacle.y,
       width: size,
       height: size,
       axis: 'orbit',
@@ -29,12 +31,33 @@ export function createMover(cell: EditorCell, obstacle: Obstacle, index: number)
     };
   }
 
+  if (cell.kind === 'piston' || cell.kind === 'stickyPiston') {
+    return {
+      id: index + 1,
+      originX: obstacle.x,
+      originY: obstacle.y,
+      x: obstacle.x,
+      y: obstacle.y,
+      lastX: obstacle.x,
+      lastY: obstacle.y,
+      width: obstacle.width,
+      height: obstacle.height,
+      axis: 'pistonX',
+      range: clamp(cell.pistonLength ?? 8, 1, 80) * editorCellWidth,
+      speed: clamp(cell.pistonSpeed ?? 3, 1, 10),
+      phase: index * 0.7,
+      sticky: cell.kind === 'stickyPiston',
+    };
+  }
+
   return {
     id: index + 1,
     originX: obstacle.x,
     originY: obstacle.y,
     x: obstacle.x,
     y: obstacle.y,
+    lastX: obstacle.x,
+    lastY: obstacle.y,
     width: obstacle.width,
     height: obstacle.height,
     axis: cell.kind === 'moverUp' ? 'y' : 'x',

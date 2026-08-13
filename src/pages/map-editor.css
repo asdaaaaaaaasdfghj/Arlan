@@ -565,6 +565,26 @@
   box-shadow: inset 0 0 0 3px #151719;
 }
 
+.editor-board .piston-cell,
+.tool-icon.piston-cell,
+.editor-board .stickyPiston-cell,
+.tool-icon.stickyPiston-cell {
+  background:
+    linear-gradient(90deg, #151719 0 18%, transparent 18% 100%),
+    linear-gradient(0deg, transparent 0 38%, rgba(255, 255, 255, 0.92) 38% 62%, transparent 62% 100%),
+    linear-gradient(135deg, #868e96, #d9dee3);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .stickyPiston-cell,
+.tool-icon.stickyPiston-cell {
+  background:
+    radial-gradient(circle at 74% 50%, #8ce99a 0 13%, transparent 14% 100%),
+    linear-gradient(90deg, #151719 0 18%, transparent 18% 100%),
+    linear-gradient(0deg, transparent 0 38%, rgba(255, 255, 255, 0.92) 38% 62%, transparent 62% 100%),
+    linear-gradient(135deg, #2f9e44, #d9dee3);
+}
+
 .editor-board .swapRift-cell,
 .tool-icon.swapRift-cell {
   background:

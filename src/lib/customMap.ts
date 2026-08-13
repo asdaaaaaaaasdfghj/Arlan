@@ -208,7 +208,7 @@ export function isSpawnCell(cell: Pick<EditorCell, 'col' | 'row'>, size: CustomM
 }
 
 function isMoverCell(cell: EditorCell): boolean {
-  return cell.kind === 'mover' || cell.kind === 'moverUp' || cell.kind === 'carousel';
+  return cell.kind === 'mover' || cell.kind === 'moverUp' || cell.kind === 'carousel' || cell.kind === 'piston' || cell.kind === 'stickyPiston';
 }
 
 function isWallCell(cell: EditorCell): boolean {

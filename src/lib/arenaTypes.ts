@@ -71,8 +71,10 @@ export type AllyCheckpoint = Barricade & { owner: PlayerId; role?: 'ally' | 'cor
 export type MovingBlock = {
   id: number;
   originX: number; originY: number; x: number; y: number; width: number; height: number;
-  axis: 'x' | 'y' | 'orbit';
+  lastX: number; lastY: number;
+  axis: 'x' | 'y' | 'orbit' | 'pistonX';
   range: number; speed: number; phase: number;
+  sticky?: boolean;
 };
 
 export type TntBlock = {

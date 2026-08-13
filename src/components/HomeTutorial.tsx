@@ -9,7 +9,7 @@ const enItems: TutorialItem[] = [
   { title: 'Movement', text: 'Move, aim with facing direction, shoot, throw grenades, and press R twice to restart a round.' },
   { title: 'Basic blocks', text: 'Walls stop movement. Boards break after shots. Glass breaks from one bullet. Ice makes players slide.' },
   { title: 'Terrain', text: 'Grass hides players from bots and zombies. Water slows movement. Map backgrounds are saved per custom slot.' },
-  { title: 'Mechanisms', text: 'Movers push players, carousels act as big rotating cover, conveyors pull in your movement direction, magnets pull or push players and projectiles. Swap rifts trade both players places when touched.' },
+  { title: 'Mechanisms', text: 'Movers and pistons push players, sticky pistons can pull on retract, carousels act as big cover, conveyors pull in your movement direction, magnets affect players and projectiles. Swap rifts trade both players places when touched.' },
   { title: 'TNT and portals', text: 'Blue TNT explodes once. Red TNT respawns. Gray TNT chains like a fuse. Blue and orange portals teleport players and shots.' },
   { title: 'Traps', text: 'Spikes hurt. Lava burns. Acid corrodes. Zap shocks and blocks shooting. Poison blinds vision for players and bots.' },
   { title: 'Lucky blocks', text: 'Lucky blocks break like Minecraft-style question cubes. They can drop strong buffs or bad curses that only appear from lucky blocks.' },

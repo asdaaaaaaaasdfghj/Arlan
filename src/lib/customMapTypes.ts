@@ -31,7 +31,7 @@ export const defaultCustomWeapons: CustomWeaponSettings = {
   custom5: { name: 'Custom 5', cooldown: 0.95, damage: 12, speed: 62, bullets: 5, spread: 0.22, size: 9 },
 };
 
-export type CustomBlockKind = 'wall' | 'stoneWall' | 'metalWall' | 'glassWall' | 'sandWall' | 'board' | 'luckyBlock' | 'grass' | 'water' | 'ice' | 'flag' | 'blueFlag' | 'redFlag' | 'hillZone' | 'zombieSpawn' | 'healSpawn' | 'speedSpawn' | 'repairSpawn' | 'mover' | 'moverUp' | 'carousel' | 'swapRift' | 'laser' | 'codeBlock'
+export type CustomBlockKind = 'wall' | 'stoneWall' | 'metalWall' | 'glassWall' | 'sandWall' | 'board' | 'luckyBlock' | 'grass' | 'water' | 'ice' | 'flag' | 'blueFlag' | 'redFlag' | 'hillZone' | 'zombieSpawn' | 'healSpawn' | 'speedSpawn' | 'repairSpawn' | 'mover' | 'moverUp' | 'carousel' | 'piston' | 'stickyPiston' | 'swapRift' | 'laser' | 'codeBlock'
   | 'tntBlue' | 'tntRed' | 'tntGray' | 'ricochet' | 'portalBlue' | 'portalOrange'
   | 'spikes' | 'lava' | 'acid' | 'zap' | 'poison'
   | 'blueAlly' | 'redAlly' | 'blueCheckpoint' | 'redCheckpoint' | 'conveyorX' | 'conveyorY'
@@ -54,6 +54,8 @@ export type EditorCell = {
   codeTeam?: CodeTeam;
   codePower?: number;
   decorColor?: DecorationColor;
+  pistonLength?: number;
+  pistonSpeed?: number;
 };
 
 export type CustomMapSize = {
@@ -95,6 +97,8 @@ export const blockTools: BlockTool[] = [
   { kind: 'mover', label: 'Mover', category: 'mechanisms' },
   { kind: 'moverUp', label: 'Mover up', category: 'mechanisms' },
   { kind: 'carousel', label: 'Carousel', category: 'mechanisms' },
+  { kind: 'piston', label: 'Piston', category: 'mechanisms' },
+  { kind: 'stickyPiston', label: 'Sticky piston', category: 'mechanisms' },
   { kind: 'swapRift', label: 'Swap rift', category: 'mechanisms' },
   { kind: 'laser', label: 'Laser', category: 'mechanisms' },
   { kind: 'codeBlock', label: 'Code block', category: 'mechanisms' },

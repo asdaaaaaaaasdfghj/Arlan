@@ -208,6 +208,8 @@ function toCell(value: Partial<EditorCell> & Partial<Obstacle>): EditorCell | nu
       codeTeam: normalizeCodeTeam(value.codeTeam),
       codePower: finiteOrUndefined(value.codePower),
       decorColor: normalizeDecorationColor(value.decorColor),
+      pistonLength: finiteOrUndefined(value.pistonLength),
+      pistonSpeed: finiteOrUndefined(value.pistonSpeed),
     };
   }
 

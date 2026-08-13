@@ -45,6 +45,8 @@ export function MapEditorPage() {
   const [codeTeam, setCodeTeam] = useState<NonNullable<EditorCell['codeTeam']>>('all');
   const [codePower, setCodePower] = useState(24);
   const [decorColor, setDecorColor] = useState<NonNullable<EditorCell['decorColor']>>('green');
+  const [pistonLength, setPistonLength] = useState(8);
+  const [pistonSpeed, setPistonSpeed] = useState(3);
   const [brushSize, setBrushSize] = useState(1);
   const [size, setSize] = useState(loadCustomSize);
   const [cells, setCells] = useState(loadCustomCells);
@@ -59,6 +61,7 @@ export function MapEditorPage() {
   const laserTool = tool === 'laser';
   const codeTool = tool === 'codeBlock';
   const decorTool = tool.startsWith('decor');
+  const pistonTool = tool === 'piston' || tool === 'stickyPiston';
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -104,6 +107,8 @@ export function MapEditorPage() {
           codeTeam,
           codePower,
           decorColor,
+          pistonLength,
+          pistonSpeed,
         }));
 
     setCells((current) => {
@@ -376,6 +381,18 @@ export function MapEditorPage() {
               </label>
             </section>
           )}
+          {pistonTool && (
+            <section className="magnet-settings">
+              <label>
+                <span>{language === 'ru' ? 'Длина' : 'Length'}: {pistonLength}</span>
+                <input type="range" min="1" max="80" value={pistonLength} onChange={(event) => setPistonLength(Number(event.target.value))} />
+              </label>
+              <label>
+                <span>{language === 'ru' ? 'Скорость' : 'Speed'}: {pistonSpeed}</span>
+                <input type="range" min="1" max="10" value={pistonSpeed} onChange={(event) => setPistonSpeed(Number(event.target.value))} />
+              </label>
+            </section>
+          )}
           <div className="editor-actions">
             <button type="button" onClick={saveMap}>{t(language, 'save')}</button>
             <button type="button" className="ghost-button" disabled={!isSupabaseConfigured} onClick={publishMap}>{language === 'ru' ? 'Выложить карту' : 'Publish map'}</button>
@@ -465,7 +482,7 @@ function NumberControl({ label, value, min, max, step = 1, onChange }: {
 function createEditorCell(
   cell: Pick<EditorCell, 'col' | 'row'>,
   kind: CustomBlockKind,
-  settings: Pick<EditorCell, 'magnetForce' | 'magnetRadius' | 'magnetBullets' | 'magnetGrenades' | 'laserSides' | 'laserColor' | 'laserPerSide' | 'codeAction' | 'codeTeam' | 'codePower' | 'decorColor'>,
+  settings: Pick<EditorCell, 'magnetForce' | 'magnetRadius' | 'magnetBullets' | 'magnetGrenades' | 'laserSides' | 'laserColor' | 'laserPerSide' | 'codeAction' | 'codeTeam' | 'codePower' | 'decorColor' | 'pistonLength' | 'pistonSpeed'>,
 ): EditorCell {
   if (kind === 'magnetPull' || kind === 'magnetPush') {
     const { magnetForce, magnetRadius, magnetBullets, magnetGrenades } = settings;
@@ -484,6 +501,10 @@ function createEditorCell(
 
   if (kind.startsWith('decor')) {
     return { ...cell, kind, decorColor: settings.decorColor };
+  }
+
+  if (kind === 'piston' || kind === 'stickyPiston') {
+    return { ...cell, kind, pistonLength: settings.pistonLength, pistonSpeed: settings.pistonSpeed };
   }
 
   return { ...cell, kind };
@@ -515,6 +536,10 @@ function haveSameToolSettings(first: EditorCell | undefined, second: EditorCell 
 
   if (first.kind.startsWith('decor')) {
     return first.decorColor === second.decorColor;
+  }
+
+  if (first.kind === 'piston' || first.kind === 'stickyPiston') {
+    return first.pistonLength === second.pistonLength && first.pistonSpeed === second.pistonSpeed;
   }
 
   return true;
