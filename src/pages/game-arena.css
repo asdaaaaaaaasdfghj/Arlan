@@ -35,11 +35,40 @@
 
 @media (max-width: 720px) {
   .arena {
-    max-height: calc(100vh - 265px);
+    width: 100%;
+    max-height: min(58vh, calc(100vh - 245px));
+    border-width: 2px;
   }
 
   .arena-camera-split {
     grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .arena-camera-split .arena {
+    max-height: 35vh;
+  }
+
+  .arena-grid {
+    background-size: 32px 32px;
+  }
+}
+
+@media (max-width: 430px) {
+  .arena {
+    max-height: 52vh;
+    border-radius: 7px;
+  }
+
+  .arena-camera-split .arena {
+    max-height: 31vh;
+  }
+
+  .camera-arrow {
+    right: 7px;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
   }
 }
 

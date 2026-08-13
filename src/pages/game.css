@@ -138,21 +138,63 @@
 }
 
 @media (max-width: 720px) {
+  .game-page {
+    width: 100%;
+    padding: 7px 6px 12px;
+    overflow-x: hidden;
+  }
+
+  .game-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 10px;
+    font-size: 13px;
+    text-align: center;
+  }
+
   .game-hud {
     grid-template-columns: 1fr auto;
     align-items: start;
+    gap: 6px;
+    margin-bottom: 6px;
   }
 
   .game-hud h1 {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .mode-description {
     display: none;
   }
 
+  .round-clock {
+    min-width: 48px;
+    padding: 6px;
+    font-size: 15px;
+  }
+
   .score-row {
     grid-column: 1 / -1;
     grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+
+  .player-stat {
+    padding: 6px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 430px) {
+  .game-hud {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .round-clock {
+    width: 100%;
+  }
+
+  .score-row {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

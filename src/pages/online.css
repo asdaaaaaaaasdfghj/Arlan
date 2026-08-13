@@ -882,6 +882,23 @@
 }
 
 @media (max-width: 900px) {
+  .online-page {
+    padding-inline: 6px;
+  }
+
+  .online-panel,
+  .online-status,
+  .online-official-panel,
+  .online-server-list {
+    max-width: none;
+    width: 100%;
+  }
+
+  .online-status {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
   .online-server-panel {
     grid-template-columns: 1fr;
   }
@@ -909,5 +926,58 @@
 
   .online-chat-form {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .online-official-count {
+    width: 100%;
+  }
+
+  .online-server-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .online-server-card small {
+    grid-row: auto;
+    grid-column: auto;
+    justify-self: start;
+  }
+
+  .online-roster-panel div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .online-player-chip {
+    min-width: 0;
+  }
+
+  .online-sandbox-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .online-arena-shell {
+    overflow: hidden;
+  }
+
+  .online-sandbox-arena {
+    min-height: min(62vh, 430px);
+    aspect-ratio: 10 / 13;
+  }
+
+  .online-free-arena {
+    min-height: min(58vh, 390px);
+  }
+
+  .online-chat-panel {
+    left: 6px;
+    right: 6px;
+    bottom: 52px;
+    width: auto;
+  }
+
+  .online-emote-panel {
+    flex-wrap: wrap;
   }
 }

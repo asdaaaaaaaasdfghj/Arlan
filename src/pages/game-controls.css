@@ -57,6 +57,11 @@
   .game-controls {
     grid-template-columns: 1fr;
     gap: 6px;
+    margin-top: 6px;
+  }
+
+  .control-panel {
+    gap: 4px;
   }
 
   .touch-pad button,
@@ -64,5 +69,22 @@
   .weapon-picker button {
     min-height: 30px;
     font-size: 11px;
+    padding: 5px 6px;
+  }
+}
+
+@media (max-width: 430px) {
+  .touch-pad,
+  .weapon-picker {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .touch-pad button,
+  .round-action,
+  .weapon-picker button {
+    min-height: 28px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
