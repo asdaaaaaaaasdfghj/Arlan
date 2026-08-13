@@ -1,7 +1,8 @@
-import { PLAYER_SIZE, type MovingBlock, type Player, type PlayerId } from './arenaTypes';
+import { PLAYER_SIZE, type Barricade, type MapId, type MovingBlock, type Player, type PlayerId } from './arenaTypes';
 import { getArenaBounds } from './arenaBounds';
 
 const playerRadius = PLAYER_SIZE / 2;
+const stickyGap = 2.4;
 
 export function tickMovingBlocks(blocks: MovingBlock[], elapsed: number): MovingBlock[] {
   return blocks.map((block) => {
@@ -44,6 +45,25 @@ export function pushPlayersFromMovingBlocks(
     blue: pushPlayer(players.blue, blocks),
     red: pushPlayer(players.red, blocks),
   };
+}
+
+export function moveBarricadesFromMovingBlocks(
+  barricades: Barricade[],
+  blocks: MovingBlock[],
+  mapId: MapId,
+): Barricade[] {
+  return blocks.reduce((next, block) => {
+    if (block.axis !== 'piston') return next;
+    const movedX = getPistonHeadX(block) - block.lastX;
+    const movedY = getPistonHeadY(block) - block.lastY;
+    if (Math.hypot(movedX, movedY) < 0.01) return next;
+
+    return next.map((barricade) => (
+      shouldMoveBarricade(barricade, block, movedX, movedY)
+        ? moveBarricade(barricade, movedX, movedY, mapId)
+        : barricade
+    ));
+  }, barricades);
 }
 
 function pushPlayer(player: Player, blocks: MovingBlock[]): Player {
@@ -90,6 +110,64 @@ function pullStickyPlayer(player: Player, block: MovingBlock): Player {
 
   const nearHead = isNearPistonHead(player, block, headX, headY);
   return nearHead ? { ...player, x: player.x + movedX, y: player.y + movedY } : player;
+}
+
+function shouldMoveBarricade(
+  barricade: Barricade,
+  block: MovingBlock,
+  movedX: number,
+  movedY: number,
+): boolean {
+  const extending = isExtending(block, movedX, movedY);
+  if (!extending && !block.sticky) return false;
+  if (rectanglesOverlap(barricade, block)) return true;
+  return extending
+    ? isInFrontOfPiston(barricade, block, Math.abs(movedX), Math.abs(movedY))
+    : isStuckToPistonHead(barricade, block);
+}
+
+function moveBarricade(barricade: Barricade, movedX: number, movedY: number, mapId: MapId): Barricade {
+  const bounds = getArenaBounds(mapId);
+  return {
+    ...barricade,
+    x: clamp(barricade.x + movedX, 0, bounds.width - barricade.width),
+    y: clamp(barricade.y + movedY, 0, bounds.height - barricade.height),
+  };
+}
+
+function isInFrontOfPiston(barricade: Barricade, block: MovingBlock, stepX: number, stepY: number): boolean {
+  const headX = getPistonHeadX(block);
+  const headY = getPistonHeadY(block);
+  if (!overlapsCrossAxis(barricade, block)) return false;
+  if (block.direction === 'left') return nearEdge(barricade.x + barricade.width, headX, stepX);
+  if (block.direction === 'up') return nearEdge(barricade.y + barricade.height, headY, stepY);
+  if (block.direction === 'down') return nearEdge(barricade.y, headY, stepY);
+  return nearEdge(barricade.x, headX, stepX);
+}
+
+function isStuckToPistonHead(barricade: Barricade, block: MovingBlock): boolean {
+  const headX = getPistonHeadX(block);
+  const headY = getPistonHeadY(block);
+  if (!overlapsCrossAxis(barricade, block)) return false;
+  if (block.direction === 'left') return Math.abs(barricade.x + barricade.width - headX) <= stickyGap;
+  if (block.direction === 'up') return Math.abs(barricade.y + barricade.height - headY) <= stickyGap;
+  if (block.direction === 'down') return Math.abs(barricade.y - headY) <= stickyGap;
+  return Math.abs(barricade.x - headX) <= stickyGap;
+}
+
+function overlapsCrossAxis(barricade: Barricade, block: MovingBlock): boolean {
+  if (block.direction === 'left' || block.direction === 'right' || !block.direction) {
+    return barricade.y < block.y + block.height && barricade.y + barricade.height > block.y;
+  }
+  return barricade.x < block.x + block.width && barricade.x + barricade.width > block.x;
+}
+
+function nearEdge(edge: number, head: number, step: number): boolean {
+  return Math.abs(edge - head) <= Math.max(stickyGap, step + stickyGap);
+}
+
+function rectanglesOverlap(a: Barricade, b: MovingBlock): boolean {
+  return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 }
 
 function getPistonHeadX(block: MovingBlock): number {

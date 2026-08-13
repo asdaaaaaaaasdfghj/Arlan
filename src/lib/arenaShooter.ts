@@ -10,7 +10,7 @@ import { tickKingHill } from './arenaKingHill';
 import { tickLasers } from './arenaLasers';
 import { tickLuckyBlocks } from './arenaLuckyBlocks';
 import { applySwordAttacks } from './arenaMelee';
-import { pushPlayersFromMovingBlocks, tickMovingBlocks } from './arenaMovingBlocks';
+import { moveBarricadesFromMovingBlocks, pushPlayersFromMovingBlocks, tickMovingBlocks } from './arenaMovingBlocks';
 import { isSwordMode, modeConfigs } from './arenaModes';
 import { teleportPlayers } from './arenaPortals';
 import { tickPowerUps } from './arenaPowerUps';
@@ -35,6 +35,8 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const elapsedTime = state.elapsedTime + delta;
   const luckyBlocks = tickLuckyBlocks(state.mode, state.mapBoards, state.elapsedTime, elapsedTime, state.nextBarricadeId);
   const movingBlocks = tickMovingBlocks(state.movingBlocks, elapsedTime);
+  const pushedBarricades = moveBarricadesFromMovingBlocks(state.barricades, movingBlocks, state.mapId);
+  const pushedMapBoards = moveBarricadesFromMovingBlocks(luckyBlocks.mapBoards, movingBlocks, state.mapId);
   const tnts = tickTnts(state.tnts, delta);
   const mechanics = state.mapId === 'custom'
     ? {
@@ -47,10 +49,11 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     }
     : { water: [], ice: [], conveyors: [], magnets: [], swapRifts: [], vehicles: [] };
   const activeTnts = tnts.filter((tnt) => tnt.active);
-  const blockers = [...state.barricades, ...luckyBlocks.mapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
+  const blockers = [...pushedBarricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
   const movedPlayers = updatePlayers(state.players, input, delta, state.mapId, blockers, mechanics);
   const players = tickSwapRifts(teleportPlayers(pushPlayersFromMovingBlocks(movedPlayers, movingBlocks), state.portals), state.mapId, mechanics.swapRifts);
-  const building = buildZombieModeBarricades(state, players, input);
+  const movedState = { ...state, barricades: pushedBarricades, mapBoards: pushedMapBoards, movingBlocks };
+  const building = buildZombieModeBarricades(movedState, players, input);
   const swordState = isSwordMode(state.mode)
     ? applySwordAttacks(building.players, input, state.mapId, state.nextEffectId)
     : { players: building.players, effects: [] };
@@ -60,7 +63,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const shooting = isSwordMode(state.mode)
     ? { players: throwing.players, bullets: [] }
     : spawnBullets(throwing.players, input, state.nextBulletId, state.mapId);
-  const allyBlockers = [...building.barricades, ...luckyBlocks.mapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
+  const allyBlockers = [...building.barricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
   const allyState = tickAllies(
     state.allies,
     state.allyCheckpoints,
@@ -76,7 +79,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     delta,
     state.mapId,
     [...building.barricades, ...movingBlocks, ...(state.lasers ?? [])],
-    luckyBlocks.mapBoards,
+    pushedMapBoards,
     state.allyCheckpoints,
     state.ricochetBlocks,
     state.portals,
@@ -101,7 +104,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     state.nextEffectId + swordState.effects.length + tntState.effects.length,
   );
   const zombieState = updateZombieMode(
-    { ...state, zombies: tntState.zombies, mapBoards: tntState.mapBoards, movingBlocks, tnts: tntState.tnts },
+    { ...movedState, zombies: tntState.zombies, mapBoards: tntState.mapBoards, tnts: tntState.tnts },
     afterDuelHits.players,
     afterDuelHits.bullets,
     tntState.barricades,
