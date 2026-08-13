@@ -151,7 +151,7 @@ const defaultModeState: OnlineModeState = {
   builderVotes: {},
 };
 const officialDuelArena = {
-  code: 'DUEL32',
+  code: 'DA32V2',
   name: 'Duel Arena Official',
   maxPlayers: 32,
   mode: 'endlessDuel',
@@ -1202,12 +1202,12 @@ export function OnlinePage() {
             <span>{language === 'ru' ? 'Duel Arena · Crossfire · free arena · 32 игрока' : 'Duel Arena · Crossfire · free arena · 32 players'}</span>
           </div>
           <b className="online-official-count">{officialPlayerCount}/{officialDuelArena.maxPlayers}</b>
-          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DUEL32' : 'Join DUEL32'}</button>
+          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V2' : 'Join DA32V2'}</button>
         </section>
         <section className="online-panel online-server-list">
           <strong>{language === 'ru' ? 'Живые серверы' : 'Live servers'}</strong>
           {serverListings.length === 0 ? (
-            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DUEL32.' : 'No live rooms yet. Create one or open DUEL32.'}</span>
+            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DA32V2.' : 'No live rooms yet. Create one or open DA32V2.'}</span>
           ) : (
             <div>
               {serverListings.map((server) => (
@@ -2469,3 +2469,4 @@ function normalizeInput(value: unknown): PlayerInput {
 function normalizeWeapon(value: unknown): WeaponId | null {
   return typeof value === 'string' && ['blaster', 'railgun', 'shotgun', 'custom4', 'custom5', 'termos'].includes(value) ? value as WeaponId : null;
 }
+
