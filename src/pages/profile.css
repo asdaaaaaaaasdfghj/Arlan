@@ -1,0 +1,357 @@
+.profile-page {
+  min-height: 100vh;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 18px 44px;
+  color: #151719;
+}
+
+.profile-panel {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(18, 25, 34, 0.08);
+}
+
+.profile-panel h1 {
+  margin: 0;
+  font-size: clamp(34px, 6vw, 54px);
+  line-height: 0.95;
+}
+
+.profile-panel p {
+  margin: 0;
+}
+
+.profile-actions,
+.profile-look,
+.profile-panel .form {
+  display: grid;
+  gap: 10px;
+}
+
+.profile-guest-card {
+  display: grid;
+  gap: 9px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: #eef1f4;
+  padding: 12px;
+}
+
+.profile-guest-card strong {
+  font-size: 18px;
+}
+
+.profile-guest-card p {
+  color: #5d6873;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.profile-guest-card .card {
+  display: grid;
+  gap: 10px;
+  border: 0;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.profile-guest-card .card h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.profile-look {
+  grid-template-columns: minmax(0, 1fr) 92px;
+  align-items: end;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  padding: 12px;
+  background: #f7f9fb;
+}
+
+.profile-look label {
+  display: grid;
+  gap: 6px;
+  color: #46515c;
+  font-weight: 900;
+}
+
+.profile-look p {
+  grid-column: 1 / -1;
+  color: #5d6873;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.profile-look button {
+  grid-column: 1 / -1;
+}
+
+.profile-skins {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.profile-skin-button {
+  display: grid;
+  grid-column: auto;
+  place-items: center;
+  gap: 5px;
+  min-height: 72px;
+  border: 2px solid #d7dee5;
+  background: #ffffff;
+  color: #151719;
+}
+
+.profile-skin-button.active {
+  border-color: #3a86ff;
+  box-shadow: inset 0 0 0 2px rgba(58, 134, 255, 0.18);
+}
+
+.profile-skin-button b {
+  font-size: 11px;
+}
+
+.profile-skin-icon,
+.profile-preview-icon {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  border: 3px solid #151719;
+  background: var(--profile-color);
+  background-position: center;
+  background-size: 100% 100%;
+  vertical-align: middle;
+}
+
+.profile-preview-icon {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.skin-none {
+  border-radius: 50%;
+}
+
+.skin-cube {
+  border-radius: 50%;
+  background-image:
+    radial-gradient(circle, rgba(21, 23, 25, 0.75) 0 45%, transparent 48%),
+    radial-gradient(circle, rgba(21, 23, 25, 0.75) 0 45%, transparent 48%),
+    radial-gradient(circle, rgba(21, 23, 25, 0.75) 0 45%, transparent 48%),
+    radial-gradient(circle, rgba(21, 23, 25, 0.75) 0 45%, transparent 48%);
+  background-position: 30% 30%, 70% 30%, 30% 70%, 70% 70%;
+  background-size: 18% 18%;
+  background-repeat: no-repeat;
+}
+
+.skin-ship {
+  border-radius: 50%;
+  background-image:
+    linear-gradient(135deg, transparent 0 34%, rgba(21, 23, 25, 0.78) 35% 50%, transparent 51% 100%),
+    linear-gradient(45deg, transparent 0 44%, rgba(21, 23, 25, 0.78) 45% 57%, transparent 58% 100%);
+}
+
+.skin-ball {
+  border-radius: 50%;
+  background-image:
+    radial-gradient(circle, transparent 0 42%, rgba(21, 23, 25, 0.72) 43% 55%, transparent 56%);
+}
+
+.skin-ufo {
+  border-radius: 50%;
+  background-image:
+    radial-gradient(circle at 30% 52%, rgba(21, 23, 25, 0.75) 0 12%, transparent 13%),
+    radial-gradient(circle at 70% 52%, rgba(21, 23, 25, 0.75) 0 12%, transparent 13%),
+    linear-gradient(0deg, transparent 44%, rgba(21, 23, 25, 0.75) 45% 57%, transparent 58%);
+}
+
+.skin-wave {
+  border-radius: 50%;
+  background-image:
+    linear-gradient(135deg, transparent 0 38%, rgba(21, 23, 25, 0.78) 39% 53%, transparent 54% 100%),
+    linear-gradient(45deg, transparent 0 46%, rgba(21, 23, 25, 0.78) 47% 60%, transparent 61% 100%);
+}
+
+.skin-robot {
+  border-radius: 50%;
+  background-image:
+    radial-gradient(circle at 34% 38%, rgba(21, 23, 25, 0.78) 0 10%, transparent 11%),
+    radial-gradient(circle at 66% 38%, rgba(21, 23, 25, 0.78) 0 10%, transparent 11%),
+    linear-gradient(90deg, transparent 26%, rgba(21, 23, 25, 0.78) 27% 73%, transparent 74%);
+}
+
+.profile-preview {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+  max-width: 100%;
+  border: 3px solid #151719;
+  border-radius: 999px;
+  background: var(--profile-color);
+  color: #ffffff;
+  padding: 8px 14px;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.profile-actions strong {
+  overflow-wrap: anywhere;
+}
+
+.profile-panel button,
+.profile-panel input {
+  min-height: 42px;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.profile-panel button {
+  border: 0;
+  background: #151719;
+  color: #ffffff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.profile-panel button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.profile-panel input {
+  border: 1px solid #cfd6dd;
+  padding: 0 12px;
+}
+
+.profile-panel input[type='color'] {
+  padding: 4px;
+}
+
+.profile-panel .ghost,
+.profile-panel .ghost-button {
+  border: 1px solid #cfd6dd;
+  background: #f6f8fa;
+  color: #151719;
+}
+
+.profile-panel .danger-button {
+  background: #b42318;
+}
+
+.profile-message {
+  color: #46515c;
+  font-weight: 800;
+}
+
+.dark-mode .profile-page {
+  color: #f4f7fb;
+}
+
+.dark-mode .profile-panel {
+  border-color: #2a3440;
+  background: #111820;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+}
+
+.dark-mode .profile-panel input {
+  border-color: #334253;
+  background: #0d131a;
+  color: #f4f7fb;
+}
+
+.dark-mode .profile-panel .ghost,
+.dark-mode .profile-panel .ghost-button {
+  border-color: #334253;
+  background: #17212b;
+  color: #f4f7fb;
+}
+
+.dark-mode .profile-message {
+  color: #c9d3de;
+}
+
+:root[data-theme='dark'] .profile-page {
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .profile-page .menu-nav a {
+  color: #8fc9ff;
+}
+
+:root[data-theme='dark'] .profile-panel {
+  border-color: #2a3440;
+  background: #111820;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme='dark'] .profile-look {
+  border-color: #2a3440;
+  background: #0d131a;
+}
+
+:root[data-theme='dark'] .profile-guest-card {
+  border-color: #334253;
+  background: #17212b;
+}
+
+:root[data-theme='dark'] .profile-guest-card .card {
+  background: #0d131a;
+}
+
+:root[data-theme='dark'] .profile-guest-card p {
+  color: #c9d3de;
+}
+
+:root[data-theme='dark'] .profile-look label,
+:root[data-theme='dark'] .profile-look p {
+  color: #c9d3de;
+}
+
+:root[data-theme='dark'] .profile-panel button,
+:root[data-theme='dark'] .profile-panel .ghost,
+:root[data-theme='dark'] .profile-panel .ghost-button {
+  border: 1px solid #334253;
+  background: #17212b;
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .profile-skin-button {
+  border-color: #334253;
+  background: #17212b;
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .profile-skin-button.active {
+  border-color: #8fc9ff;
+}
+
+:root[data-theme='dark'] .profile-panel .danger-button {
+  border-color: #7f1d32;
+  background: #7f1d32;
+  color: #ffffff;
+}
+
+:root[data-theme='dark'] .profile-panel input {
+  border-color: #334253;
+  background: #0d131a;
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .profile-message {
+  color: #c9d3de;
+}

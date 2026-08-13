@@ -1,0 +1,91 @@
+.fighter-alive {
+  animation: fighter-idle 0.8s ease-in-out infinite;
+}
+
+.fighter-shooting .fighter-cannon {
+  animation: cannon-kick 0.18s ease-out;
+}
+
+.arena-mode-swordDuel .fighter-shooting .fighter-cannon {
+  animation: sword-slash 0.18s ease-out;
+}
+
+.fighter-core {
+  animation: fighter-core-pulse 1s ease-in-out infinite;
+}
+
+.fighter-dead {
+  animation: fighter-down 0.24s ease-out forwards;
+}
+
+.fighter-dead .fighter-core {
+  animation: none;
+}
+
+.zombie {
+  animation: zombie-walk 0.52s ease-in-out infinite;
+}
+
+.zombie-face {
+  animation: zombie-face-pulse 0.9s ease-in-out infinite;
+}
+
+.zombie-arm {
+  animation: zombie-arm-swing 0.52s ease-in-out infinite;
+}
+
+.zombie-arm-right {
+  animation-delay: -0.26s;
+}
+
+.reduce-motion .fighter-alive,
+.reduce-motion .ally,
+.reduce-motion .fighter-shooting .fighter-cannon,
+.reduce-motion .fighter-core,
+.reduce-motion .zombie,
+.reduce-motion .zombie-face,
+.reduce-motion .zombie-arm,
+.reduce-motion .hit-effect,
+.reduce-motion .achievement-toast {
+  animation: none;
+}
+
+@keyframes fighter-idle {
+  0%,
+  100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -52%) scale(1.04); }
+}
+
+@keyframes fighter-down {
+  from { transform: translate(-50%, -50%) scale(1); }
+  to { transform: translate(-50%, -50%) scale(0.86) rotate(18deg); }
+}
+
+@keyframes cannon-kick {
+  from { transform: translate(-9px, -50%) rotate(var(--aim-angle)) scaleX(0.82); }
+  to { transform: translate(-4px, -50%) rotate(var(--aim-angle)) scaleX(1); }
+}
+
+@keyframes fighter-core-pulse {
+  0%,
+  100% { transform: scale(0.9); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes zombie-walk {
+  0%,
+  100% { transform: translate(-50%, -50%) rotate(-4deg) scaleY(0.96); }
+  50% { transform: translate(-50%, -54%) rotate(4deg) scaleY(1.04); }
+}
+
+@keyframes zombie-arm-swing {
+  0%,
+  100% { transform: rotate(-20deg); }
+  50% { transform: rotate(22deg); }
+}
+
+@keyframes zombie-face-pulse {
+  0%,
+  100% { transform: scale(0.86); }
+  50% { transform: scale(1.12); }
+}

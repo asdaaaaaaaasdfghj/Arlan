@@ -1,0 +1,201 @@
+:root[data-theme='dark'] .home-page,
+:root[data-theme='dark'] .game-page,
+:root[data-theme='dark'] .settings-page,
+:root[data-theme='dark'] .map-editor-page,
+:root[data-theme='dark'] .profile-page {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .home-hero p,
+:root[data-theme='dark'] .mode-description,
+:root[data-theme='dark'] .weapon-name,
+:root[data-theme='dark'] .achievement-card span,
+:root[data-theme='dark'] .mode-card span,
+:root[data-theme='dark'] .tutorial-card span,
+:root[data-theme='dark'] .settings-panel label,
+:root[data-theme='dark'] .editor-copy p,
+:root[data-theme='dark'] .map-slots strong,
+:root[data-theme='dark'] .theme-control,
+:root[data-theme='dark'] .weapon-editor summary,
+:root[data-theme='dark'] .weapon-editor > span,
+:root[data-theme='dark'] .weapon-editor-grid label,
+:root[data-theme='dark'] .weapon-name-control,
+:root[data-theme='dark'] .editor-size-controls label,
+:root[data-theme='dark'] .brush-control,
+:root[data-theme='dark'] .magnet-settings label,
+:root[data-theme='dark'] .editor-tool-group summary {
+  color: var(--soft);
+}
+
+:root[data-theme='dark'] .mode-card,
+:root[data-theme='dark'] .settings-panel,
+:root[data-theme='dark'] .player-stat,
+:root[data-theme='dark'] .round-clock,
+:root[data-theme='dark'] .tutorial-card,
+:root[data-theme='dark'] .home-selection,
+:root[data-theme='dark'] .showcase-badge,
+:root[data-theme='dark'] .achievement-toast,
+:root[data-theme='dark'] .map-slots,
+:root[data-theme='dark'] .theme-control,
+:root[data-theme='dark'] .weapon-editor,
+:root[data-theme='dark'] .brush-control,
+:root[data-theme='dark'] .magnet-settings,
+:root[data-theme='dark'] .editor-tool-group {
+  border-color: var(--line);
+  background: var(--card);
+}
+
+:root[data-theme='dark'] .secondary-link,
+:root[data-theme='dark'] .settings-panel select,
+:root[data-theme='dark'] .achievement-card,
+:root[data-theme='dark'] .theme-control select,
+:root[data-theme='dark'] .weapon-editor select,
+:root[data-theme='dark'] .weapon-editor input,
+:root[data-theme='dark'] .editor-size-controls input,
+:root[data-theme='dark'] .magnet-settings select {
+  border-color: var(--line);
+  background: #11171b;
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] button,
+:root[data-theme='dark'] .music-button,
+:root[data-theme='dark'] .menu-picker button,
+:root[data-theme='dark'] .editor-tool-grid button,
+:root[data-theme='dark'] .map-slots button,
+:root[data-theme='dark'] .ghost-button,
+:root[data-theme='dark'] .secondary-link {
+  border-color: #2f3b44;
+  background: #11171b;
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .menu-picker button.selected,
+:root[data-theme='dark'] .editor-tool-grid .selected-tool,
+:root[data-theme='dark'] .map-slots .selected-slot,
+:root[data-theme='dark'] .weapon-picker .active-weapon {
+  background: #26323b;
+  box-shadow: inset 0 0 0 3px #6aa9ff;
+}
+
+:root[data-theme='dark'] .achievement-card.unlocked {
+  border-color: #4dabf7;
+  background: #132438;
+}
+
+:root[data-theme='dark'] .showcase-badge {
+  background: rgba(17, 23, 27, 0.88);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme='dark'] .showcase-badge strong,
+:root[data-theme='dark'] .home-selection strong {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .showcase-badge span,
+:root[data-theme='dark'] .home-selection span,
+:root[data-theme='dark'] .home-selection p {
+  color: var(--soft);
+}
+
+:root[data-theme='dark'] .arena,
+:root[data-theme='dark'] .menu-showcase {
+  border-color: #8fb7d6;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.12), transparent 34%),
+    linear-gradient(135deg, rgba(58, 134, 255, 0.32), #11171b 48%, rgba(239, 71, 111, 0.34));
+}
+
+:root[data-theme='dark'] .arena-grid {
+  opacity: 1;
+  background-image:
+    linear-gradient(rgba(216, 232, 244, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(216, 232, 244, 0.24) 1px, transparent 1px);
+}
+
+:root[data-theme='dark'] .editor-board {
+  border-color: #8fb7d6;
+  background:
+    linear-gradient(90deg, rgba(58, 134, 255, 0.18), rgba(239, 71, 111, 0.18)),
+    #11171b;
+}
+
+:root[data-theme='dark'] .editor-board button {
+  border-color: rgba(216, 232, 244, 0.22);
+}
+
+:root[data-theme='dark'] .editor-board button[class*='-cell']:not(.spawn-cell) {
+  box-shadow:
+    inset 0 0 0 2px rgba(17, 23, 27, 0.42),
+    0 0 0 1px rgba(216, 232, 244, 0.32);
+}
+
+:root[data-theme='dark'] .editor-board .wall-cell {
+  background: #56636d;
+}
+
+:root[data-theme='dark'] .editor-board .stoneWall-cell {
+  background: repeating-linear-gradient(90deg, #9aa6ad 0 9px, #687983 9px 18px);
+}
+
+:root[data-theme='dark'] .editor-board .metalWall-cell {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.38), transparent 38%),
+    repeating-linear-gradient(0deg, #64717a 0 6px, #d8e0e6 6px 9px);
+}
+
+:root[data-theme='dark'] .editor-board .sandWall-cell,
+:root[data-theme='dark'] .editor-board .board-cell {
+  filter: brightness(1.18) saturate(1.12);
+}
+
+:root[data-theme='dark'] .editor-board .spawn-cell {
+  background: rgba(77, 171, 247, 0.22);
+}
+
+:root[data-theme='dark'] .map-board,
+:root[data-theme='dark'] .moving-block,
+:root[data-theme='dark'] .conveyor-block,
+:root[data-theme='dark'] .magnet-block,
+:root[data-theme='dark'] .swap-rift-block,
+:root[data-theme='dark'] .code-block,
+:root[data-theme='dark'] .vehicle-block,
+:root[data-theme='dark'] .decoration-block,
+:root[data-theme='dark'] .tnt-block,
+:root[data-theme='dark'] .ricochet-block,
+:root[data-theme='dark'] .portal-block,
+:root[data-theme='dark'] .trap-block,
+:root[data-theme='dark'] .ally-checkpoint,
+:root[data-theme='dark'] .map-wall {
+  border-color: #d8e8f4;
+  box-shadow:
+    inset 0 0 0 2px rgba(17, 23, 27, 0.42),
+    0 0 0 1px rgba(216, 232, 244, 0.38),
+    0 8px 18px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme='dark'] .map-board-glass,
+:root[data-theme='dark'] .terrain-ice,
+:root[data-theme='dark'] .portal-block-blue,
+:root[data-theme='dark'] .portal-block-orange,
+:root[data-theme='dark'] .ricochet-block {
+  filter: saturate(1.25) brightness(1.12);
+}
+
+:root[data-theme='dark'] .terrain-water,
+:root[data-theme='dark'] .terrain-ice {
+  border-color: rgba(216, 232, 244, 0.62);
+  box-shadow:
+    inset 0 0 0 1px rgba(17, 23, 27, 0.35),
+    0 0 0 1px rgba(216, 232, 244, 0.28);
+}
+
+:root[data-theme='dark'] .game-overlay {
+  background: rgba(16, 20, 24, 0.72);
+}
+
+:root[data-theme='dark'] .game-overlay p,
+:root[data-theme='dark'] .round-clock small {
+  color: var(--soft);
+}

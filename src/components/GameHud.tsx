@@ -1,0 +1,55 @@
+import type { GameState, PlayerId } from '../lib/arenaShooter';
+import { isSwordMode, modeConfigs } from '../lib/arenaModes';
+import { getWeaponConfig } from '../lib/arenaWeapons';
+import type { Language } from '../lib/gameSettings';
+import { modeDescription, modeName, t } from '../lib/i18n';
+
+type GameHudProps = {
+  game: GameState;
+  language: Language;
+};
+
+const playerNames: Record<PlayerId, string> = {
+  blue: 'Blue',
+  red: 'Red',
+};
+
+export function GameHud({ game, language }: GameHudProps) {
+  return (
+    <header className="game-hud">
+      <div>
+        <p>{game.status === 'playing' ? t(language, 'liveDuel') : t(language, 'multiplayerShooter')}</p>
+        <h1>{modeName(game.mode, language)}</h1>
+        <p className="mode-description">{modeDescription(game.mode, language)}</p>
+      </div>
+      <div className="round-clock">
+        {modeConfigs[game.mode].noTimer ? '∞' : `${Math.ceil(game.timeLeft)}s`}
+        {game.zombies.length > 0 && <small>{game.zombies.length} {t(language, 'zombies')}</small>}
+        {game.disasters.length > 0 && <small>{game.disasters.length} {t(language, 'disasters')}</small>}
+      </div>
+      <div className="score-row">
+        <PlayerStat id="blue" game={game} />
+        <PlayerStat id="red" game={game} />
+      </div>
+    </header>
+  );
+}
+
+function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
+  const player = game.players[id];
+  const weapon = getWeaponConfig(player.weapon, game.mapId);
+  const weaponText = isSwordMode(game.mode) ? 'Sword - 0.46s' : `${weapon.name} - ${weapon.cooldown}s`;
+
+  return (
+    <section className={`player-stat player-stat-${id}`}>
+      <strong>{playerNames[id]}</strong>
+      <span>{Math.floor(player.score)}</span>
+      <p className="weapon-name">
+        {weaponText}
+      </p>
+      <div className="hp-track" aria-label={`${playerNames[id]} health`}>
+        <i style={{ width: `${player.hp}%` }} />
+      </div>
+    </section>
+  );
+}

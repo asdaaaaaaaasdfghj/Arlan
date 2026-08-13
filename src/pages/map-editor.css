@@ -1,0 +1,982 @@
+.map-editor-page {
+  min-height: 100vh;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 16px 18px 20px;
+  color: #151719;
+}
+
+.editor-locked-panel {
+  display: grid;
+  gap: 12px;
+  max-width: 520px;
+  margin-top: 28px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 20px;
+  box-shadow: 0 14px 34px rgba(21, 23, 25, 0.1);
+}
+
+.editor-locked-panel h1,
+.editor-locked-panel p {
+  margin: 0;
+}
+
+.editor-locked-panel .primary-action {
+  justify-self: start;
+  border-radius: 8px;
+  background: #151719;
+  color: #ffffff;
+  padding: 10px 14px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.editor-layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.editor-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.editor-copy h1 {
+  font-size: 38px;
+  line-height: 0.95;
+}
+
+.editor-copy p {
+  color: #4d565d;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.magnet-settings {
+  display: grid;
+  gap: 7px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 8px;
+}
+
+.magnet-settings label {
+  display: grid;
+  gap: 4px;
+  color: #4d565d;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.magnet-settings input[type='range'] {
+  width: 100%;
+}
+
+.magnet-settings select {
+  min-height: 30px;
+  border: 2px solid #cbd3d8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0 8px;
+  color: #151719;
+  font: inherit;
+  font-weight: 900;
+}
+
+.magnet-settings .magnet-toggle {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.editor-tools {
+  display: grid;
+  gap: 7px;
+}
+
+.editor-tool-group {
+  display: grid;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+  padding: 7px;
+}
+
+.editor-tool-group summary {
+  cursor: pointer;
+  color: #4d565d;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.editor-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.editor-size-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.map-slots {
+  display: grid;
+  gap: 7px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+  padding: 8px;
+}
+
+.map-slots strong {
+  color: #4d565d;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.map-slots div {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.map-slots button {
+  display: grid;
+  gap: 2px;
+  min-height: 34px;
+  border-radius: 8px;
+  background: #59636b;
+  padding: 4px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.map-slots button span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 10px;
+}
+
+.map-slots .selected-slot {
+  background: #26323b;
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.theme-control {
+  display: grid;
+  gap: 6px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+  padding: 8px;
+  color: #4d565d;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.theme-control select {
+  min-height: 32px;
+  border: 2px solid #cbd3d8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0 10px;
+  color: #151719;
+  font: inherit;
+  font-weight: 900;
+  text-transform: none;
+}
+
+.weapon-editor {
+  display: grid;
+  gap: 7px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+  padding: 8px;
+}
+
+.weapon-editor summary {
+  cursor: pointer;
+  color: #4d565d;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.weapon-editor strong,
+.weapon-editor > span {
+  color: #4d565d;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.weapon-editor strong {
+  display: none;
+}
+
+.weapon-editor > span {
+  text-transform: none;
+}
+
+.weapon-editor select,
+.weapon-editor input {
+  min-width: 0;
+  height: 30px;
+  border: 2px solid #cbd3d8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0 8px;
+  color: #151719;
+  font: inherit;
+  font-weight: 900;
+}
+
+.weapon-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.weapon-editor-grid label {
+  display: grid;
+  gap: 4px;
+  color: #4d565d;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.weapon-name-control {
+  display: grid;
+  gap: 4px;
+  color: #4d565d;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.editor-size-controls label {
+  display: grid;
+  gap: 5px;
+  color: #4d565d;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.editor-size-controls input {
+  min-width: 0;
+  height: 32px;
+  border: 2px solid #cbd3d8;
+  border-radius: 8px;
+  padding: 0 10px;
+  color: #151719;
+  font: inherit;
+  font-weight: 900;
+}
+
+.editor-size-controls button {
+  grid-column: 1 / -1;
+  min-height: 32px;
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.brush-control {
+  display: grid;
+  gap: 6px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+  padding: 8px;
+  color: #4d565d;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.brush-control input {
+  width: 100%;
+}
+
+.editor-tool-grid button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  min-height: 30px;
+  border-radius: 8px;
+  background: #59636b;
+  padding: 0 7px;
+  font-size: 11px;
+  font-weight: 900;
+  text-align: left;
+}
+
+.editor-tool-grid .selected-tool {
+  background: #26323b;
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.tool-icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.editor-actions button {
+  min-height: 34px;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-weight: 900;
+}
+
+.editor-message {
+  color: #2e6f95;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.ghost-button {
+  border: 1px solid #cbd3d8;
+  background: #ffffff;
+  color: #26323b;
+}
+
+.editor-board {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  aspect-ratio: 100 / 64;
+  overflow: hidden;
+  border: 2px solid #26323b;
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(46, 111, 149, 0.14), rgba(189, 37, 80, 0.14)),
+    #f8fafb;
+}
+
+.editor-theme-desert {
+  background: linear-gradient(135deg, #f7d794, #d99f55);
+}
+
+.editor-theme-mountain {
+  background: repeating-linear-gradient(135deg, #8d99a1 0 18px, #59636b 18px 36px);
+}
+
+.editor-theme-snow {
+  background: linear-gradient(135deg, #e7f5ff, #ffffff 52%, #d0ebff);
+}
+
+.editor-theme-acidLab {
+  background:
+    linear-gradient(90deg, rgba(21, 23, 25, 0.14) 0 2px, transparent 2px 16px),
+    linear-gradient(135deg, #1f3b2f, #94d82d);
+}
+
+.editor-theme-volcanic {
+  background: linear-gradient(135deg, #311617, #8a241f 52%, #f08c00);
+}
+
+.editor-theme-night {
+  background: linear-gradient(135deg, #111820, #26323b);
+}
+
+.editor-board button {
+  touch-action: none;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid rgba(38, 50, 59, 0.16);
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.editor-board .wall-cell,
+.tool-icon.wall-cell {
+  background: #26323b;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12);
+}
+
+.editor-board .stoneWall-cell,
+.tool-icon.stoneWall-cell {
+  background: repeating-linear-gradient(90deg, #6f7f86 0 9px, #59636b 9px 18px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .metalWall-cell,
+.tool-icon.metalWall-cell {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.34), transparent 38%),
+    repeating-linear-gradient(0deg, #495057 0 6px, #adb5bd 6px 9px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .glassWall-cell,
+.tool-icon.glassWall-cell {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0 18%, transparent 18% 100%),
+    rgba(116, 192, 252, 0.58);
+  box-shadow: inset 0 0 0 3px #2e6fca;
+}
+
+.editor-board .sandWall-cell,
+.tool-icon.sandWall-cell {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.35) 0 12%, transparent 13% 100%),
+    repeating-linear-gradient(45deg, #f1c27d 0 7px, #d99f55 7px 14px);
+  box-shadow: inset 0 0 0 3px #825e2d;
+}
+
+.editor-board .board-cell,
+.tool-icon.board-cell {
+  background: repeating-linear-gradient(90deg, #9b6a3d 0 8px, #7b4f2b 8px 16px);
+}
+
+.editor-board .luckyBlock-cell,
+.tool-icon.luckyBlock-cell {
+  background:
+    linear-gradient(90deg, rgba(21, 23, 25, 0.2) 0 10%, transparent 10% 90%, rgba(255, 255, 255, 0.34) 90% 100%),
+    linear-gradient(0deg, rgba(21, 23, 25, 0.22) 0 12%, transparent 12% 88%, rgba(255, 255, 255, 0.4) 88% 100%),
+    repeating-linear-gradient(0deg, #f08c00 0 6px, #ffd43b 6px 12px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .grass-cell,
+.tool-icon.grass-cell {
+  background: repeating-linear-gradient(45deg, rgba(47, 158, 68, 0.78) 0 6px, rgba(178, 242, 187, 0.72) 6px 12px);
+}
+
+.editor-board .water-cell,
+.tool-icon.water-cell {
+  background: linear-gradient(135deg, rgba(46, 111, 202, 0.74), rgba(32, 201, 151, 0.58));
+}
+
+.editor-board .ice-cell,
+.tool-icon.ice-cell {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0 18%, transparent 18% 100%),
+    repeating-linear-gradient(135deg, #d0ebff 0 7px, #74c0fc 7px 14px);
+  box-shadow: inset 0 0 0 3px #2e6fca;
+}
+
+.editor-board .flag-cell,
+.tool-icon.flag-cell {
+  background:
+    linear-gradient(90deg, #3a86ff 0 50%, #ef476f 50% 100%),
+    #ffffff;
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.editor-board .blueFlag-cell,
+.tool-icon.blueFlag-cell {
+  background:
+    linear-gradient(90deg, #151719 0 18%, transparent 18% 100%),
+    linear-gradient(135deg, #2e6fca 0 62%, #74c0fc 62% 100%);
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.editor-board .redFlag-cell,
+.tool-icon.redFlag-cell {
+  background:
+    linear-gradient(90deg, #151719 0 18%, transparent 18% 100%),
+    linear-gradient(135deg, #bd2550 0 62%, #ff8fa3 62% 100%);
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.editor-board .hillZone-cell,
+.tool-icon.hillZone-cell {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 15%, transparent 17% 100%),
+    repeating-radial-gradient(circle, #ffd43b 0 5px, #f08c00 5px 10px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .zombieSpawn-cell,
+.tool-icon.zombieSpawn-cell {
+  background:
+    radial-gradient(circle, #151719 0 14%, transparent 16% 100%),
+    linear-gradient(135deg, #2b8a3e, #8ce99a);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .healSpawn-cell,
+.tool-icon.healSpawn-cell {
+  background:
+    linear-gradient(90deg, transparent 0 38%, #ffffff 38% 62%, transparent 62% 100%),
+    linear-gradient(0deg, transparent 0 38%, #ffffff 38% 62%, transparent 62% 100%),
+    linear-gradient(135deg, #2f9e44, #8ce99a);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .speedSpawn-cell,
+.tool-icon.speedSpawn-cell {
+  background:
+    linear-gradient(135deg, transparent 0 42%, #ffffff 42% 50%, transparent 50% 100%),
+    repeating-linear-gradient(90deg, #15aabf 0 6px, #74c0fc 6px 12px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .repairSpawn-cell,
+.tool-icon.repairSpawn-cell {
+  background:
+    linear-gradient(45deg, transparent 0 36%, #ffffff 36% 46%, transparent 46% 100%),
+    linear-gradient(135deg, #868e96, #dee2e6);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .mover-cell,
+.tool-icon.mover-cell {
+  background:
+    linear-gradient(90deg, transparent 0 18%, #151719 18% 24%, transparent 24% 76%, #151719 76% 82%, transparent 82% 100%),
+    linear-gradient(135deg, #ffd43b, #74c0fc);
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.editor-board .moverUp-cell,
+.tool-icon.moverUp-cell {
+  background:
+    linear-gradient(0deg, transparent 0 18%, #151719 18% 24%, transparent 24% 76%, #151719 76% 82%, transparent 82% 100%),
+    linear-gradient(135deg, #ff6b6b, #74c0fc);
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.editor-board .carousel-cell,
+.tool-icon.carousel-cell {
+  background:
+    radial-gradient(circle, #151719 0 12%, transparent 14% 100%),
+    conic-gradient(from 0deg, #ffd43b 0 25%, #74c0fc 25% 50%, #ff6b6b 50% 75%, #20c997 75% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .swapRift-cell,
+.tool-icon.swapRift-cell {
+  background:
+    radial-gradient(circle, #ffffff 0 10%, transparent 12% 100%),
+    conic-gradient(from 45deg, #3a86ff 0 20%, #ef476f 20% 40%, #ffd43b 40% 60%, #20c997 60% 80%, #3a86ff 80% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .laser-cell,
+.tool-icon.laser-cell {
+  background:
+    linear-gradient(90deg, transparent 0 42%, #ffffff 42% 58%, transparent 58% 100%),
+    radial-gradient(circle, #ffffff 0 15%, transparent 17% 100%),
+    linear-gradient(135deg, #ff6b6b, #c9184a);
+  box-shadow:
+    inset 0 0 0 3px #151719,
+    0 0 12px rgba(201, 24, 74, 0.42);
+}
+
+.editor-board .codeBlock-cell,
+.tool-icon.codeBlock-cell {
+  background:
+    linear-gradient(90deg, transparent 0 22%, rgba(255, 255, 255, 0.94) 22% 32%, transparent 32% 100%),
+    linear-gradient(90deg, transparent 0 48%, rgba(255, 255, 255, 0.94) 48% 58%, transparent 58% 100%),
+    linear-gradient(90deg, transparent 0 74%, rgba(255, 255, 255, 0.94) 74% 84%, transparent 84% 100%),
+    linear-gradient(135deg, #151719, #3a86ff 54%, #20c997);
+  box-shadow:
+    inset 0 0 0 3px #151719,
+    0 0 12px rgba(58, 134, 255, 0.35);
+}
+
+.editor-board .vehicleBuggy-cell,
+.tool-icon.vehicleBuggy-cell,
+.editor-board .vehicleTank-cell,
+.tool-icon.vehicleTank-cell,
+.editor-board .vehicleHover-cell,
+.tool-icon.vehicleHover-cell {
+  background:
+    radial-gradient(circle at 28% 82%, #151719 0 9%, transparent 10% 100%),
+    radial-gradient(circle at 72% 82%, #151719 0 9%, transparent 10% 100%),
+    linear-gradient(0deg, transparent 0 34%, #ffffff 34% 44%, transparent 44% 100%),
+    linear-gradient(135deg, #3a86ff, #20c997);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .vehicleTank-cell,
+.tool-icon.vehicleTank-cell {
+  background:
+    linear-gradient(90deg, transparent 0 60%, #151719 60% 90%, transparent 90% 100%),
+    radial-gradient(circle at 24% 78%, #151719 0 8%, transparent 9% 100%),
+    radial-gradient(circle at 76% 78%, #151719 0 8%, transparent 9% 100%),
+    linear-gradient(135deg, #495057, #8ce99a);
+}
+
+.editor-board .vehicleHover-cell,
+.tool-icon.vehicleHover-cell {
+  background:
+    radial-gradient(circle at 50% 72%, #ffffff 0 12%, transparent 13% 100%),
+    linear-gradient(90deg, transparent 0 18%, #ffffff 18% 28%, transparent 28% 72%, #ffffff 72% 82%, transparent 82% 100%),
+    linear-gradient(135deg, #15aabf, #eebefa);
+}
+
+.editor-board .decorCrate-cell,
+.tool-icon.decorCrate-cell {
+  background:
+    linear-gradient(45deg, transparent 0 44%, rgba(255, 255, 255, 0.42) 44% 56%, transparent 56% 100%),
+    linear-gradient(135deg, #9b6a3d, #5f3c21);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorBarrel-cell,
+.tool-icon.decorBarrel-cell {
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent 0 20%, rgba(255, 255, 255, 0.44) 20% 30%, transparent 30% 70%, rgba(21, 23, 25, 0.35) 70% 80%, transparent 80% 100%),
+    linear-gradient(135deg, #bd2550, #f08c00);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorLamp-cell,
+.tool-icon.decorLamp-cell {
+  background:
+    radial-gradient(circle, #fff3bf 0 22%, transparent 24% 100%),
+    linear-gradient(90deg, transparent 0 44%, #151719 44% 56%, transparent 56% 100%),
+    linear-gradient(135deg, #26323b, #74c0fc);
+  box-shadow: 0 0 14px rgba(255, 212, 59, 0.55), inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorRocks-cell,
+.tool-icon.decorRocks-cell {
+  background:
+    radial-gradient(circle at 34% 62%, #868e96 0 18%, transparent 19% 100%),
+    radial-gradient(circle at 62% 44%, #495057 0 22%, transparent 23% 100%),
+    radial-gradient(circle at 70% 72%, #adb5bd 0 14%, transparent 15% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorTable-cell,
+.tool-icon.decorTable-cell {
+  background:
+    radial-gradient(circle at 20% 82%, #151719 0 7%, transparent 8% 100%),
+    radial-gradient(circle at 80% 82%, #151719 0 7%, transparent 8% 100%),
+    linear-gradient(90deg, transparent 0 9%, #5f3c21 9% 16%, transparent 16% 84%, #5f3c21 84% 91%, transparent 91% 100%),
+    linear-gradient(0deg, transparent 0 62%, #5f3c21 62% 78%, transparent 78% 100%),
+    radial-gradient(circle at 50% 36%, #ffd8a8 0 16%, transparent 17% 100%),
+    linear-gradient(135deg, #c1844f, #7b4f2b);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorSofa-cell,
+.tool-icon.decorSofa-cell {
+  background:
+    linear-gradient(90deg, #151719 0 12%, transparent 12% 88%, #151719 88% 100%),
+    linear-gradient(0deg, #151719 0 14%, transparent 14% 100%),
+    linear-gradient(0deg, transparent 0 52%, rgba(255, 255, 255, 0.42) 52% 64%, transparent 64% 100%),
+    linear-gradient(90deg, transparent 0 46%, rgba(21, 23, 25, 0.3) 46% 54%, transparent 54% 100%),
+    linear-gradient(135deg, var(--decor-color, #3a86ff), #845ef7);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorShelf-cell,
+.tool-icon.decorShelf-cell {
+  background:
+    linear-gradient(90deg, transparent 0 28%, rgba(21, 23, 25, 0.55) 28% 34%, transparent 34% 66%, rgba(21, 23, 25, 0.55) 66% 72%, transparent 72% 100%),
+    repeating-linear-gradient(0deg, #5f3c21 0 5px, #c1844f 5px 10px, #f1c27d 10px 13px),
+    linear-gradient(135deg, #7b4f2b, #c1844f);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorBed-cell,
+.tool-icon.decorBed-cell {
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, transparent 0 9%, #ffffff 9% 31%, transparent 31% 100%),
+    linear-gradient(0deg, transparent 0 22%, rgba(255, 255, 255, 0.92) 22% 52%, transparent 52% 100%),
+    linear-gradient(90deg, #5f3c21 0 16%, transparent 16% 100%),
+    linear-gradient(0deg, #5f3c21 0 18%, transparent 18% 100%),
+    linear-gradient(135deg, var(--decor-color, #3a86ff) 0 62%, #ffffff 62% 76%, #cbd3d8 76% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorPlant-cell,
+.tool-icon.decorPlant-cell {
+  border-radius: 999px 999px 8px 8px;
+  background:
+    radial-gradient(circle at 30% 28%, var(--decor-color, #2f9e44) 0 18%, transparent 19% 100%),
+    radial-gradient(circle at 66% 28%, var(--decor-color, #2f9e44) 0 18%, transparent 19% 100%),
+    radial-gradient(circle at 50% 18%, #8ce99a 0 16%, transparent 17% 100%),
+    linear-gradient(0deg, #7b4f2b 0 28%, transparent 28% 100%),
+    linear-gradient(135deg, #2f9e44, #1b7f36);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorRug-cell,
+.tool-icon.decorRug-cell {
+  border-radius: 4px;
+  background:
+    linear-gradient(90deg, rgba(21, 23, 25, 0.28) 0 8%, transparent 8% 92%, rgba(21, 23, 25, 0.28) 92% 100%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.74) 0 14%, transparent 14% 86%, rgba(255, 255, 255, 0.74) 86% 100%),
+    repeating-linear-gradient(45deg, var(--decor-color, #845ef7) 0 6px, rgba(255, 255, 255, 0.5) 6px 10px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .decorConsole-cell,
+.tool-icon.decorConsole-cell {
+  background:
+    radial-gradient(circle at 26% 38%, #20c997 0 8%, transparent 9% 100%),
+    radial-gradient(circle at 52% 38%, #ffd43b 0 8%, transparent 9% 100%),
+    radial-gradient(circle at 78% 38%, #ff3b5c 0 8%, transparent 9% 100%),
+    linear-gradient(135deg, #26323b, #8fb7d6);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .conveyorX-cell,
+.tool-icon.conveyorX-cell {
+  background:
+    linear-gradient(90deg, transparent 0 14%, #151719 14% 20%, transparent 20% 38%, #ffffff 38% 46%, transparent 46% 54%, #ffffff 54% 62%, transparent 62% 80%, #151719 80% 86%, transparent 86% 100%),
+    repeating-linear-gradient(0deg, #8ce99a 0 7px, #20c997 7px 14px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .conveyorY-cell,
+.tool-icon.conveyorY-cell {
+  background:
+    linear-gradient(0deg, transparent 0 14%, #151719 14% 20%, transparent 20% 38%, #ffffff 38% 46%, transparent 46% 54%, #ffffff 54% 62%, transparent 62% 80%, #151719 80% 86%, transparent 86% 100%),
+    repeating-linear-gradient(90deg, #8ce99a 0 7px, #20c997 7px 14px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .magnetPull-cell,
+.tool-icon.magnetPull-cell,
+.editor-board .magnetPush-cell,
+.tool-icon.magnetPush-cell {
+  background:
+    radial-gradient(circle, #ffffff 0 15%, transparent 17% 100%),
+    radial-gradient(circle, #eebefa 0 34%, #9c36b5 36% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .magnetPush-cell,
+.tool-icon.magnetPush-cell {
+  background:
+    radial-gradient(circle, #ffffff 0 15%, transparent 17% 100%),
+    radial-gradient(circle, #fff3bf 0 34%, #f03e3e 36% 100%);
+}
+
+.editor-board .tntBlue-cell,
+.tool-icon.tntBlue-cell {
+  background:
+    linear-gradient(0deg, transparent 0 42%, rgba(255, 255, 255, 0.88) 42% 58%, transparent 58% 100%),
+    linear-gradient(135deg, #1971c2, #74c0fc);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .tntRed-cell,
+.tool-icon.tntRed-cell {
+  background:
+    linear-gradient(0deg, transparent 0 42%, rgba(255, 255, 255, 0.88) 42% 58%, transparent 58% 100%),
+    linear-gradient(135deg, #c9184a, #ff6b6b);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .tntGray-cell,
+.tool-icon.tntGray-cell {
+  background:
+    linear-gradient(0deg, transparent 0 42%, rgba(255, 255, 255, 0.88) 42% 58%, transparent 58% 100%),
+    linear-gradient(135deg, #495057, #adb5bd);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .ricochet-cell,
+.tool-icon.ricochet-cell {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0 20%, transparent 20% 38%, rgba(255, 255, 255, 0.82) 38% 52%, transparent 52% 100%),
+    linear-gradient(135deg, #15aabf, #99e9f2);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .portalBlue-cell,
+.tool-icon.portalBlue-cell {
+  background: radial-gradient(circle, #d0ebff 0 22%, #228be6 24% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .portalOrange-cell,
+.tool-icon.portalOrange-cell {
+  background: radial-gradient(circle, #fff3bf 0 22%, #f76707 24% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .spikes-cell,
+.tool-icon.spikes-cell {
+  background: repeating-linear-gradient(135deg, #e9ecef 0 8px, #495057 8px 14px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .lava-cell,
+.tool-icon.lava-cell {
+  background: linear-gradient(135deg, #e03131, #f08c00);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .acid-cell,
+.tool-icon.acid-cell {
+  background: linear-gradient(135deg, #2f9e44, #94d82d);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .zap-cell,
+.tool-icon.zap-cell {
+  background: repeating-linear-gradient(90deg, #ffe066 0 7px, #15aabf 7px 14px);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .poison-cell,
+.tool-icon.poison-cell {
+  background:
+    radial-gradient(circle, rgba(240, 194, 255, 0.9) 0 16%, transparent 18% 100%),
+    linear-gradient(135deg, #862e9c, #cc5de8);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .sawTrap-cell,
+.tool-icon.sawTrap-cell {
+  background:
+    conic-gradient(from 0deg, #e9ecef 0 12%, #495057 12% 24%, #e9ecef 24% 36%, #495057 36% 48%, #e9ecef 48% 60%, #495057 60% 72%, #e9ecef 72% 84%, #495057 84% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .mineTrap-cell,
+.tool-icon.mineTrap-cell {
+  background:
+    radial-gradient(circle, #ff3b5c 0 11%, transparent 12% 100%),
+    radial-gradient(circle, #151719 0 42%, #495057 44% 100%);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .bearTrap-cell,
+.tool-icon.bearTrap-cell {
+  background:
+    radial-gradient(circle, transparent 0 34%, #e9ecef 35% 46%, transparent 47% 100%),
+    conic-gradient(from 45deg, #495057 0 12%, transparent 12% 25%, #495057 25% 37%, transparent 37% 50%, #495057 50% 62%, transparent 62% 75%, #495057 75% 87%, transparent 87% 100%),
+    linear-gradient(135deg, #adb5bd, #495057);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .webTrap-cell,
+.tool-icon.webTrap-cell {
+  background:
+    linear-gradient(45deg, transparent 0 45%, #ffffff 45% 55%, transparent 55% 100%),
+    linear-gradient(135deg, transparent 0 45%, #ffffff 45% 55%, transparent 55% 100%),
+    radial-gradient(circle, transparent 0 28%, rgba(255, 255, 255, 0.92) 29% 34%, transparent 35% 100%),
+    linear-gradient(135deg, #868e96, #d9dee3);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .blueAlly-cell,
+.tool-icon.blueAlly-cell,
+.editor-board .redAlly-cell,
+.tool-icon.redAlly-cell {
+  background:
+    radial-gradient(circle, #ffffff 0 18%, transparent 20% 100%),
+    linear-gradient(135deg, #2e6fca, #74c0fc);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .redAlly-cell,
+.tool-icon.redAlly-cell {
+  background:
+    radial-gradient(circle, #ffffff 0 18%, transparent 20% 100%),
+    linear-gradient(135deg, #bd2550, #ff8fa3);
+}
+
+.editor-board .blueCheckpoint-cell,
+.tool-icon.blueCheckpoint-cell,
+.editor-board .redCheckpoint-cell,
+.tool-icon.redCheckpoint-cell {
+  background:
+    linear-gradient(90deg, transparent 0 38%, rgba(255, 255, 255, 0.92) 38% 62%, transparent 62% 100%),
+    linear-gradient(0deg, transparent 0 38%, rgba(255, 255, 255, 0.92) 38% 62%, transparent 62% 100%),
+    linear-gradient(135deg, #2e6fca, #74c0fc);
+  box-shadow: inset 0 0 0 3px #151719;
+}
+
+.editor-board .redCheckpoint-cell,
+.tool-icon.redCheckpoint-cell {
+  background:
+    linear-gradient(90deg, transparent 0 38%, rgba(255, 255, 255, 0.92) 38% 62%, transparent 62% 100%),
+    linear-gradient(0deg, transparent 0 38%, rgba(255, 255, 255, 0.92) 38% 62%, transparent 62% 100%),
+    linear-gradient(135deg, #bd2550, #ff8fa3);
+}
+
+.editor-board .spawn-cell {
+  background: rgba(46, 111, 149, 0.18);
+  cursor: not-allowed;
+}
+
+@media (max-width: 760px) {
+  .editor-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-copy h1 {
+    font-size: 42px;
+  }
+}
+
+:root[data-theme='dark'] .editor-board button {
+  border-color: rgba(216, 232, 244, 0.26);
+}
+
+:root[data-theme='dark'] .editor-board button[class*='-cell']:not(.spawn-cell) {
+  border-color: rgba(245, 250, 255, 0.78);
+  box-shadow:
+    inset 0 0 0 2px rgba(13, 19, 26, 0.6),
+    0 0 0 1px rgba(245, 250, 255, 0.42),
+    0 0 12px rgba(77, 171, 247, 0.12);
+}
+
+:root[data-theme='dark'] .editor-board .wall-cell {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 46%),
+    #7b8a94;
+}
+
+:root[data-theme='dark'] .editor-board .stoneWall-cell {
+  background: repeating-linear-gradient(90deg, #b4c0c8 0 9px, #72838d 9px 18px);
+}
+
+:root[data-theme='dark'] .editor-board .metalWall-cell {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.42), transparent 38%),
+    repeating-linear-gradient(0deg, #6f7f86 0 6px, #e9ecef 6px 9px);
+}
+
+:root[data-theme='dark'] .editor-board .board-cell {
+  background: repeating-linear-gradient(90deg, #c1844f 0 8px, #8f5d34 8px 16px);
+}
+
+:root[data-theme='dark'] .editor-board .grass-cell {
+  background: repeating-linear-gradient(45deg, #37b24d 0 6px, #1f7a37 6px 12px);
+}
+
+:root[data-theme='dark'] .editor-board .water-cell,
+:root[data-theme='dark'] .editor-board .ice-cell,
+:root[data-theme='dark'] .editor-board .glassWall-cell,
+:root[data-theme='dark'] .editor-board .ricochet-cell,
+:root[data-theme='dark'] .editor-board .portalBlue-cell,
+:root[data-theme='dark'] .editor-board .portalOrange-cell {
+  filter: brightness(1.18) saturate(1.22);
+}
+
+:root[data-theme='dark'] .editor-board .spawn-cell {
+  background: rgba(77, 171, 247, 0.14);
+}

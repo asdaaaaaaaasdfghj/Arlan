@@ -1,0 +1,36 @@
+export const splashTexts = [
+  'Now with suspicious TNT!',
+  'Bot approved!',
+  'Secret zombies?',
+  'Build, boom, repeat!',
+  'Definitely balanced!',
+  'King of the hill!',
+  'Do not hug grenades!',
+  'Grass is OP!',
+  'Local chaos!',
+  'Friendship tester!',
+  'Chain reaction time!',
+  'Tiny bots, big drama!',
+  'Made by ADMINlol!',
+  'RTGBV456',
+  'You online?',
+  'Custom maps, custom pain!',
+  'Kick button included!',
+  'Blue vs red forever!',
+  'Lucky blocks are lying!',
+  'Barricades have feelings!',
+  'CTF moment!',
+  'Server owner energy!',
+  'Respawn maybe?',
+  'No scrolling required!',
+  'Zombie backup plan!',
+  'Portal science!',
+  'Do not trust gray TNT!',
+  'Grass stealth meta!',
+  'One more round!',
+  'The bot is thinking...',
+];
+
+export function pickSplashText(): string {
+  return splashTexts[Math.floor(Math.random() * splashTexts.length)] ?? splashTexts[0];
+}

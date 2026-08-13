@@ -1,0 +1,73 @@
+.ghost-button {
+  border: 1px solid #cbd3d8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #26323b;
+}
+
+.controls-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.controls-card {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: #f8fafb;
+  padding: 12px;
+}
+
+.controls-card strong {
+  color: #26323b;
+}
+
+.controls-card button {
+  display: grid;
+  grid-template-columns: 1fr minmax(74px, auto);
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  border-radius: 8px;
+  background: #59636b;
+  padding: 7px 10px;
+  text-align: left;
+}
+
+.controls-card b {
+  justify-self: end;
+  color: #ffffff;
+}
+
+.controls-card .listening-key {
+  background: #2e6f95;
+}
+
+@media (max-width: 640px) {
+  .controls-settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+:root[data-theme='dark'] .controls-card {
+  border-color: #2b353d;
+  background: #11171b;
+}
+
+:root[data-theme='dark'] .controls-card strong {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .controls-card button,
+:root[data-theme='dark'] .controls-card .listening-key {
+  border: 1px solid #334253;
+  background: #17212b;
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .controls-card .listening-key {
+  border-color: #2e6f95;
+  background: #1f5f54;
+}
