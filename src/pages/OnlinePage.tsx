@@ -27,7 +27,7 @@ import { loadGameSettings } from '../lib/gameSettings';
 import { useGameKeyboard } from '../lib/useGameKeyboard';
 import { mapName, modeName, t } from '../lib/i18n';
 import { modeOrder } from '../lib/arenaModes';
-import { mapNames, mapOrder } from '../lib/arenaMap';
+import { getMapObstacles, mapNames, mapOrder } from '../lib/arenaMap';
 import { getKickReasonLabel, isProfileBanned, recordKick, type KickPayload, type KickReason } from '../lib/onlineBans';
 import { loadGuestProfile, loadPlayerProfile, normalizePlayerProfile, type PlayerProfile, type PlayerSkinId } from '../lib/playerProfile';
 import { getWeaponConfig } from '../lib/arenaWeapons';
@@ -151,12 +151,12 @@ const defaultModeState: OnlineModeState = {
   builderVotes: {},
 };
 const officialDuelArena = {
-  code: 'DA32V4',
+  code: 'DA32V5',
   name: 'Duel Arena Official',
   maxPlayers: 32,
   mode: 'endlessDuel',
   mapId: 'crossfire',
-  rule: 'classic',
+  rule: 'ffa',
 } as const;
 const officialSecretPortal = { x: 92, y: 12, radius: 4 };
 const officialSecretRoom = { x: 10, y: 82, width: 28, height: 14, exitX: 35, exitY: 89 };
@@ -320,7 +320,7 @@ export function OnlinePage() {
 
     const timerId = window.setInterval(() => {
       setGame((current) => {
-        const collisionBlocks = isBuildWorldRule(activeOnlineRule) ? sandboxBlocks : [];
+        const collisionBlocks = getOnlineCollisionBlocks(activeOnlineRule, isOfficialRoom, sandboxBlocks);
         const moved = isFreeWorldRule(activeOnlineRule)
           ? tickSandboxHost(current, inputRef.current.blue, collisionBlocks, 1 / settings.gameFps)
           : tickGame(current, inputRef.current, 1 / settings.gameFps, settings.secretZombies);
@@ -386,7 +386,7 @@ export function OnlinePage() {
     const timerId = window.setInterval(() => {
       setExtraPlayers((current) => {
         const self = current[clientIdRef.current] ?? createExtraPlayer(clientIdRef.current, loadOnlineProfile(), 48, 34);
-        const collisionBlocks = isBuildWorldRule(activeOnlineRule) ? sandboxBlocks : [];
+        const collisionBlocks = getOnlineCollisionBlocks(activeOnlineRule, isOfficialRoom, sandboxBlocks);
         const moved = moveExtraPlayer(self, extraInputRef.current, collisionBlocks, 1 / 30);
         const next = isOfficialRoom ? moveThroughOfficialSecretRoom(moved) : moved;
         void sendBroadcast('extra-player', next);
@@ -694,7 +694,7 @@ export function OnlinePage() {
   }
 
   function nudgeFreeWorldPlayer() {
-    const collisionBlocks = isBuildWorldRule(activeOnlineRule) ? sandboxBlocks : [];
+    const collisionBlocks = getOnlineCollisionBlocks(activeOnlineRule, isOfficialRoom, sandboxBlocks);
 
     if (role === 'host') {
       setGame((current) => {
@@ -1195,15 +1195,15 @@ export function OnlinePage() {
           <div>
             <small>{language === 'ru' ? 'Официальный сервер' : 'Official server'}</small>
             <strong>{officialDuelArena.name}</strong>
-            <span>{language === 'ru' ? 'Duel Arena · Crossfire · classic arena · 32 игрока' : 'Duel Arena · Crossfire · classic arena · 32 players'}</span>
+            <span>{language === 'ru' ? 'Duel Arena · Crossfire · Crossfire arena · 32 игрока' : 'Duel Arena · Crossfire · Crossfire arena · 32 players'}</span>
           </div>
           <b className="online-official-count">{officialPlayerCount}/{officialDuelArena.maxPlayers}</b>
-          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V4' : 'Join DA32V4'}</button>
+          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V5' : 'Join DA32V5'}</button>
         </section>
         <section className="online-panel online-server-list">
           <strong>{language === 'ru' ? 'Живые серверы' : 'Live servers'}</strong>
           {serverListings.length === 0 ? (
-            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DA32V4.' : 'No live rooms yet. Create one or open DA32V4.'}</span>
+            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DA32V5.' : 'No live rooms yet. Create one or open DA32V5.'}</span>
           ) : (
             <div>
               {serverListings.map((server) => (
@@ -1728,6 +1728,18 @@ function OfficialSecretRoom({ active }: { active: boolean }) {
 function FreeWorldLandmarks({ officialRoom }: { officialRoom: boolean }) {
   return (
     <div className="online-free-world-bg" aria-hidden="true">
+      {officialRoom && getMapObstacles(officialDuelArena.mapId).map((wall) => (
+        <i
+          className="online-official-wall"
+          key={wall.id}
+          style={{
+            left: `${(wall.x / ARENA_WIDTH) * 100}%`,
+            top: `${(wall.y / ARENA_HEIGHT) * 100}%`,
+            width: `${(wall.width / ARENA_WIDTH) * 100}%`,
+            height: `${(wall.height / ARENA_HEIGHT) * 100}%`,
+          }}
+        />
+      ))}
       {officialRoom && <b className="online-secret-pointer" style={{ left: '92%', top: '12%' }}>?</b>}
     </div>
   );
@@ -1767,6 +1779,25 @@ function tickSandboxHost(state: GameState, input: PlayerInput, blocks: SandboxBl
 function isSandboxBlocked(x: number, y: number, blocks: SandboxBlock[]): boolean {
   const cell = positionToSandboxCell(x, y);
   return blocks.some((block) => block.col === cell.col && block.row === cell.row && isSolidSandboxBlock(block.kind));
+}
+
+function getOnlineCollisionBlocks(rule: OnlineRule, officialRoom: boolean, blocks: SandboxBlock[]): SandboxBlock[] {
+  if (isBuildWorldRule(rule)) return blocks;
+  return officialRoom ? getOfficialWallBlocks() : [];
+}
+
+function getOfficialWallBlocks(): SandboxBlock[] {
+  return getMapObstacles(officialDuelArena.mapId).flatMap((wall) => {
+    const start = positionToSandboxCell((wall.x / ARENA_WIDTH) * 100, (wall.y / ARENA_HEIGHT) * 100);
+    const end = positionToSandboxCell(((wall.x + wall.width) / ARENA_WIDTH) * 100, ((wall.y + wall.height) / ARENA_HEIGHT) * 100);
+    const blocks: SandboxBlock[] = [];
+    for (let row = start.row; row <= end.row; row += 1) {
+      for (let col = start.col; col <= end.col; col += 1) {
+        blocks.push({ id: `official-${wall.id}-${col}-${row}`, col, row, kind: 'stoneWall' });
+      }
+    }
+    return blocks;
+  });
 }
 
 function isSolidSandboxBlock(kind: SandboxBlockKind): boolean {
@@ -2472,6 +2503,8 @@ function normalizeInput(value: unknown): PlayerInput {
 function normalizeWeapon(value: unknown): WeaponId | null {
   return typeof value === 'string' && ['blaster', 'railgun', 'shotgun', 'custom4', 'custom5', 'termos'].includes(value) ? value as WeaponId : null;
 }
+
+
 
 
 
