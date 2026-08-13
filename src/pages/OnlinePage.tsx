@@ -115,6 +115,10 @@ const kickReasons: KickReason[] = ['cheats', 'bugAbuse', 'toxic', 'chatSpam', 'o
 const onlineRules: OnlineRule[] = ['classic', 'ffa', 'sandbox', 'murderMystery', 'builderBattle', 'zombieInfection'];
 const sandboxGridSize = 50;
 const sandboxCameraZoom = 1.35;
+const antiCheatMaxExtraSpeed = 76;
+const antiCheatMoveGrace = 9;
+const antiCheatMinShotIntervalMs = 110;
+const antiCheatKickThreshold = 3;
 const sandboxBlockKinds: SandboxBlockKind[] = ['wall', 'stoneWall', 'metalWall', 'glassWall', 'board', 'luckyBlock', 'grass', 'water', 'ice', 'lava'];
 const emotes: Array<{ id: EmoteId; label: string }> = [
   { id: 'wave', label: 'o/' },
@@ -175,6 +179,9 @@ export function OnlinePage() {
   const [officialPlayerCount, setOfficialPlayerCount] = useState(0);
   const [playerProfiles, setPlayerProfiles] = useState<Partial<Record<PlayerId, PlayerProfile>>>({});
   const [game, setGame] = useState(() => createInitialGame(settings.defaultMode, settings.defaultMap));
+  const gameRef = useRef(game);
+  const roomPlayersRef = useRef<OnlineParticipant[]>([]);
+  const extraPlayersRef = useRef<Record<string, ExtraPlayer>>({});
   const channelRef = useRef<RealtimeChannel | null>(null);
   const officialLobbyRef = useRef<RealtimeChannel | null>(null);
   const clientIdRef = useRef(makeClientId());
@@ -182,12 +189,27 @@ export function OnlinePage() {
   const extraInputRef = useRef<PlayerInput>({ ...emptyInput.red });
   const extraWeaponRef = useRef<WeaponId>('blaster');
   const lastOnlineShotAtRef = useRef(0);
+  const lastRemoteShotAtRef = useRef<Record<string, number>>({});
+  const lastRemoteExtraRef = useRef<Record<string, { x: number; y: number; time: number }>>({});
+  const antiCheatViolationsRef = useRef<Record<string, number>>({});
   const isOfficialRoom = roomCode === officialDuelArena.code;
   const activeOnlineRule = isOfficialRoom ? officialDuelArena.rule : onlineRule;
   const activeMaxPlayers = isOfficialRoom ? officialDuelArena.maxPlayers : serverMaxPlayers;
   const isGuestAccount = !user;
 
   useEffect(() => () => leaveRoom(), []);
+
+  useEffect(() => {
+    gameRef.current = game;
+  }, [game]);
+
+  useEffect(() => {
+    roomPlayersRef.current = roomPlayers;
+  }, [roomPlayers]);
+
+  useEffect(() => {
+    extraPlayersRef.current = extraPlayers;
+  }, [extraPlayers]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -415,11 +437,13 @@ export function OnlinePage() {
     });
     channel.on('broadcast', { event: 'extra-player' }, ({ payload }) => {
       const extra = normalizeExtraPlayer(payload);
+      if (!acceptRemoteExtraPlayer(extra, code)) return;
       setExtraPlayers((current) => ({ ...current, [extra.clientId]: extra }));
     });
     channel.on('broadcast', { event: 'online-shot' }, ({ payload }) => {
       const bullet = normalizeOnlineBullet(payload);
       if (bullet.ownerClientId === clientIdRef.current) return;
+      if (!acceptRemoteShot(bullet)) return;
       addOnlineBullet(bullet);
     });
     channel.on('broadcast', { event: 'sandbox-block' }, ({ payload }) => {
@@ -778,6 +802,70 @@ export function OnlinePage() {
     });
     setNotice(getHostKickNotice(profile, kick, language));
     void sendBroadcast('kick', { ...kick, targetClientId: player.clientId } satisfies TargetedKickPayload);
+  }
+
+  function acceptRemoteExtraPlayer(extra: ExtraPlayer, code: string): boolean {
+    const now = Date.now();
+    const previous = lastRemoteExtraRef.current[extra.clientId];
+    lastRemoteExtraRef.current = {
+      ...lastRemoteExtraRef.current,
+      [extra.clientId]: { x: extra.x, y: extra.y, time: now },
+    };
+
+    if (!previous) return true;
+    if (code === officialDuelArena.code && isAllowedOfficialTeleport(previous, extra)) return true;
+
+    const elapsed = Math.max(0.08, (now - previous.time) / 1000);
+    const distance = Math.hypot(extra.x - previous.x, extra.y - previous.y);
+    const allowed = antiCheatMaxExtraSpeed * elapsed + antiCheatMoveGrace;
+    if (distance <= allowed) return true;
+
+    recordAntiCheatViolation(extra.clientId, 'speed');
+    return false;
+  }
+
+  function acceptRemoteShot(bullet: OnlineBullet): boolean {
+    const now = Date.now();
+    const lastShotAt = lastRemoteShotAtRef.current[bullet.ownerClientId] ?? 0;
+    lastRemoteShotAtRef.current = { ...lastRemoteShotAtRef.current, [bullet.ownerClientId]: now };
+
+    if (now - lastShotAt < antiCheatMinShotIntervalMs || !isOnlineShotNearOwner(bullet)) {
+      recordAntiCheatViolation(bullet.ownerClientId, 'shot');
+      return false;
+    }
+
+    return true;
+  }
+
+  function isOnlineShotNearOwner(bullet: OnlineBullet): boolean {
+    const owner = roomPlayersRef.current.find((item) => item.clientId === bullet.ownerClientId);
+    if (!owner) return false;
+
+    if (owner.slot === 'host') {
+      const player = gameRef.current.players.blue;
+      return Math.hypot(bullet.x - (player.x / ARENA_WIDTH) * 100, bullet.y - (player.y / ARENA_HEIGHT) * 100) < 9;
+    }
+
+    if (owner.slot === 'red') {
+      const player = gameRef.current.players.red;
+      return Math.hypot(bullet.x - (player.x / ARENA_WIDTH) * 100, bullet.y - (player.y / ARENA_HEIGHT) * 100) < 9;
+    }
+
+    const extra = extraPlayersRef.current[owner.clientId];
+    return extra ? Math.hypot(bullet.x - extra.x, bullet.y - extra.y) < 9 : false;
+  }
+
+  function recordAntiCheatViolation(clientId: string, reason: 'speed' | 'shot') {
+    const count = (antiCheatViolationsRef.current[clientId] ?? 0) + 1;
+    antiCheatViolationsRef.current = { ...antiCheatViolationsRef.current, [clientId]: count };
+    if (role !== 'host' || count < antiCheatKickThreshold) return;
+
+    const player = roomPlayersRef.current.find((item) => item.clientId === clientId);
+    if (!player || player.slot === 'host') return;
+    setNotice(language === 'ru'
+      ? `Античит кикнул ${player.nickname}: ${reason === 'speed' ? 'слишком быстрое движение' : 'подозрительные выстрелы'}.`
+      : `Anti-cheat kicked ${player.nickname}: ${reason === 'speed' ? 'impossible movement' : 'suspicious shooting'}.`);
+    kickParticipant(player, 'cheats');
   }
 
   function sendChatMessage() {
@@ -1867,6 +1955,16 @@ function isInsideOfficialSecretRoom(player: Pick<ExtraPlayer, 'x' | 'y'>): boole
     && player.x <= officialSecretRoom.x + officialSecretRoom.width
     && player.y >= officialSecretRoom.y
     && player.y <= officialSecretRoom.y + officialSecretRoom.height;
+}
+
+function isAllowedOfficialTeleport(previous: { x: number; y: number }, next: Pick<ExtraPlayer, 'x' | 'y'>): boolean {
+  const enteredRoom = isNearPoint(previous, officialSecretPortal.x, officialSecretPortal.y, officialSecretPortal.radius + 1) && isInsideOfficialSecretRoom(next);
+  const leftRoom = isInsideOfficialSecretRoom(previous) && isNearPoint(next, 82, 18, 5);
+  return enteredRoom || leftRoom;
+}
+
+function isNearPoint(point: { x: number; y: number }, x: number, y: number, radius: number): boolean {
+  return Math.hypot(point.x - x, point.y - y) <= radius;
 }
 
 function getModeStatusText(rule: OnlineRule, state: OnlineModeState, players: OnlineParticipant[], selfId: string, language: 'ru' | 'en'): string {
