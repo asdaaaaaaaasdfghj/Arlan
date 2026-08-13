@@ -169,6 +169,7 @@ export function OnlinePage() {
   const [roomCode, setRoomCode] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [status, setStatus] = useState<ConnectionStatus>('idle');
+  const [authReady, setAuthReady] = useState(false);
   const [serverMode, setServerMode] = useState(settings.defaultMode);
   const [serverMap, setServerMap] = useState(settings.defaultMap);
   const [serverName, setServerName] = useState('My Arena Server');
@@ -227,10 +228,27 @@ export function OnlinePage() {
   }, [extraPlayers]);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      setAuthReady(true);
+    });
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setAuthReady(true);
+    });
     return () => data.subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!authReady || role || !isSupabaseConfigured) {
+      return;
+    }
+
+    const code = getInviteRoomCode();
+    if (!code) return;
+    setJoinCode(code);
+    joinRoomByCode(code);
+  }, [authReady, role]);
 
   useEffect(() => {
     if (role || !isSupabaseConfigured) {
@@ -1154,6 +1172,17 @@ export function OnlinePage() {
     await channelRef.current?.send({ type: 'broadcast', event, payload });
   }
 
+  async function copyInviteLink() {
+    if (!roomCode) return;
+    const link = makeInviteLink(roomCode);
+    try {
+      await navigator.clipboard.writeText(link);
+      setNotice('Invite link copied.');
+    } catch {
+      setNotice(link);
+    }
+  }
+
   async function sendLobbyListing(channel: RealtimeChannel) {
     if (!roomCode) return;
     const maxPlayers = isOfficialRoom ? officialDuelArena.maxPlayers : serverMaxPlayers;
@@ -1268,6 +1297,7 @@ export function OnlinePage() {
           <section className="online-status">
             <span>{role === 'host' ? 'Blue host' : guestSlot === 'red' ? 'Red guest' : 'Extra player'}</span>
             <strong>{roomCode}</strong>
+            <button type="button" onClick={copyInviteLink}>Copy invite</button>
             <span>{getOnlineRuleLabel(activeOnlineRule, language)} · {status} · {roomPlayers.length}/{activeMaxPlayers}</span>
           </section>
           <section className="online-panel online-roster-panel">
@@ -1525,6 +1555,17 @@ function makeRoomCode(): string {
 
 function makeClientId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function getInviteRoomCode(): string {
+  const hashQuery = window.location.hash.split('?')[1] ?? '';
+  const query = hashQuery || window.location.search.slice(1);
+  const code = new URLSearchParams(query).get('room') ?? '';
+  return code.trim().toUpperCase().slice(0, 8);
+}
+
+function makeInviteLink(code: string): string {
+  return `${window.location.origin}${window.location.pathname}#/online?room=${encodeURIComponent(code)}`;
 }
 
 function createParticipant(clientId: string, profile: PlayerProfile, slot: OnlineParticipant['slot']): OnlineParticipant {
