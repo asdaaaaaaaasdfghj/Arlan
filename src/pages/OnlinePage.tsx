@@ -151,12 +151,12 @@ const defaultModeState: OnlineModeState = {
   builderVotes: {},
 };
 const officialDuelArena = {
-  code: 'DA32V2',
+  code: 'DA32V3',
   name: 'Duel Arena Official',
   maxPlayers: 32,
   mode: 'endlessDuel',
   mapId: 'crossfire',
-  rule: 'ffa',
+  rule: 'classic',
 } as const;
 const officialSecretPortal = { x: 92, y: 12, radius: 4 };
 const officialSecretRoom = { x: 10, y: 82, width: 28, height: 14, exitX: 35, exitY: 89 };
@@ -462,7 +462,7 @@ export function OnlinePage() {
     setOnlineBullets([]);
     setModeState(createModeState(officialDuelArena.rule));
     setSandboxBlocks([]);
-    setGame(createOnlineInitialGame(officialDuelArena.mode, officialDuelArena.mapId, officialDuelArena.rule));
+    setGame(createOfficialInitialGame());
     connectChannel(officialDuelArena.code, 'host', {
       maxPlayers: officialDuelArena.maxPlayers,
       onlineRule: officialDuelArena.rule,
@@ -806,7 +806,7 @@ export function OnlinePage() {
     const nextMap = isOfficialRoom ? officialDuelArena.mapId : serverMap;
     const nextRule = isOfficialRoom ? officialDuelArena.rule : onlineRule;
     const nextMaxPlayers = isOfficialRoom ? officialDuelArena.maxPlayers : serverMaxPlayers;
-    const next = createOnlineInitialGame(nextMode, nextMap, nextRule);
+    const next = isOfficialRoom ? createOfficialInitialGame() : createOnlineInitialGame(nextMode, nextMap, nextRule);
     const nextModeState = createModeState(nextRule);
     setModeState(nextModeState);
     setGame(next);
@@ -1199,15 +1199,15 @@ export function OnlinePage() {
           <div>
             <small>{language === 'ru' ? 'Официальный сервер' : 'Official server'}</small>
             <strong>{officialDuelArena.name}</strong>
-            <span>{language === 'ru' ? 'Duel Arena · Crossfire · free arena · 32 игрока' : 'Duel Arena · Crossfire · free arena · 32 players'}</span>
+            <span>{language === 'ru' ? 'Duel Arena · Crossfire · classic arena · 32 игрока' : 'Duel Arena · Crossfire · classic arena · 32 players'}</span>
           </div>
           <b className="online-official-count">{officialPlayerCount}/{officialDuelArena.maxPlayers}</b>
-          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V2' : 'Join DA32V2'}</button>
+          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V3' : 'Join DA32V3'}</button>
         </section>
         <section className="online-panel online-server-list">
           <strong>{language === 'ru' ? 'Живые серверы' : 'Live servers'}</strong>
           {serverListings.length === 0 ? (
-            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DA32V2.' : 'No live rooms yet. Create one or open DA32V2.'}</span>
+            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DA32V3.' : 'No live rooms yet. Create one or open DA32V3.'}</span>
           ) : (
             <div>
               {serverListings.map((server) => (
@@ -1541,6 +1541,13 @@ function createOnlineInitialGame(mode: Parameters<typeof createInitialGame>[0], 
   const gameMode = getGameModeForOnlineRule(mode, rule);
   const game = createInitialGame(gameMode, mapId);
   return rule === 'ffa' || isBuildWorldRule(rule) ? { ...game, status: 'playing', timeLeft: 999 } : game;
+}
+
+function createOfficialInitialGame(): GameState {
+  return {
+    ...createInitialGame(officialDuelArena.mode, officialDuelArena.mapId),
+    status: 'playing',
+  };
 }
 
 function getGameModeForOnlineRule(mode: Parameters<typeof createInitialGame>[0], rule: OnlineRule): Parameters<typeof createInitialGame>[0] {
@@ -2469,4 +2476,5 @@ function normalizeInput(value: unknown): PlayerInput {
 function normalizeWeapon(value: unknown): WeaponId | null {
   return typeof value === 'string' && ['blaster', 'railgun', 'shotgun', 'custom4', 'custom5', 'termos'].includes(value) ? value as WeaponId : null;
 }
+
 
