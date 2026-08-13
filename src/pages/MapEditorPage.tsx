@@ -47,6 +47,8 @@ export function MapEditorPage() {
   const [decorColor, setDecorColor] = useState<NonNullable<EditorCell['decorColor']>>('green');
   const [pistonLength, setPistonLength] = useState(8);
   const [pistonSpeed, setPistonSpeed] = useState(3);
+  const [pistonDirection, setPistonDirection] = useState<NonNullable<EditorCell['pistonDirection']>>('right');
+  const [pistonActive, setPistonActive] = useState(true);
   const [brushSize, setBrushSize] = useState(1);
   const [size, setSize] = useState(loadCustomSize);
   const [cells, setCells] = useState(loadCustomCells);
@@ -109,6 +111,8 @@ export function MapEditorPage() {
           decorColor,
           pistonLength,
           pistonSpeed,
+          pistonDirection,
+          pistonActive,
         }));
 
     setCells((current) => {
@@ -391,6 +395,19 @@ export function MapEditorPage() {
                 <span>{language === 'ru' ? 'Скорость' : 'Speed'}: {pistonSpeed}</span>
                 <input type="range" min="1" max="10" value={pistonSpeed} onChange={(event) => setPistonSpeed(Number(event.target.value))} />
               </label>
+              <label>
+                <span>{language === 'ru' ? 'Направление' : 'Direction'}</span>
+                <select value={pistonDirection} onChange={(event) => setPistonDirection(event.target.value as NonNullable<EditorCell['pistonDirection']>)}>
+                  <option value="right">{language === 'ru' ? 'Вправо' : 'Right'}</option>
+                  <option value="left">{language === 'ru' ? 'Влево' : 'Left'}</option>
+                  <option value="up">{language === 'ru' ? 'Вверх' : 'Up'}</option>
+                  <option value="down">{language === 'ru' ? 'Вниз' : 'Down'}</option>
+                </select>
+              </label>
+              <label className="magnet-toggle">
+                <input type="checkbox" checked={pistonActive} onChange={(event) => setPistonActive(event.target.checked)} />
+                <span>{language === 'ru' ? 'Включён' : 'Enabled'}</span>
+              </label>
             </section>
           )}
           <div className="editor-actions">
@@ -482,7 +499,7 @@ function NumberControl({ label, value, min, max, step = 1, onChange }: {
 function createEditorCell(
   cell: Pick<EditorCell, 'col' | 'row'>,
   kind: CustomBlockKind,
-  settings: Pick<EditorCell, 'magnetForce' | 'magnetRadius' | 'magnetBullets' | 'magnetGrenades' | 'laserSides' | 'laserColor' | 'laserPerSide' | 'codeAction' | 'codeTeam' | 'codePower' | 'decorColor' | 'pistonLength' | 'pistonSpeed'>,
+  settings: Pick<EditorCell, 'magnetForce' | 'magnetRadius' | 'magnetBullets' | 'magnetGrenades' | 'laserSides' | 'laserColor' | 'laserPerSide' | 'codeAction' | 'codeTeam' | 'codePower' | 'decorColor' | 'pistonLength' | 'pistonSpeed' | 'pistonDirection' | 'pistonActive'>,
 ): EditorCell {
   if (kind === 'magnetPull' || kind === 'magnetPush') {
     const { magnetForce, magnetRadius, magnetBullets, magnetGrenades } = settings;
@@ -504,7 +521,7 @@ function createEditorCell(
   }
 
   if (kind === 'piston' || kind === 'stickyPiston') {
-    return { ...cell, kind, pistonLength: settings.pistonLength, pistonSpeed: settings.pistonSpeed };
+    return { ...cell, kind, pistonLength: settings.pistonLength, pistonSpeed: settings.pistonSpeed, pistonDirection: settings.pistonDirection, pistonActive: settings.pistonActive };
   }
 
   return { ...cell, kind };
@@ -539,7 +556,10 @@ function haveSameToolSettings(first: EditorCell | undefined, second: EditorCell 
   }
 
   if (first.kind === 'piston' || first.kind === 'stickyPiston') {
-    return first.pistonLength === second.pistonLength && first.pistonSpeed === second.pistonSpeed;
+    return first.pistonLength === second.pistonLength
+      && first.pistonSpeed === second.pistonSpeed
+      && first.pistonDirection === second.pistonDirection
+      && first.pistonActive === second.pistonActive;
   }
 
   return true;

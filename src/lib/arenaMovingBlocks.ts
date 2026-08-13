@@ -7,17 +7,22 @@ export function tickMovingBlocks(blocks: MovingBlock[], elapsed: number): Moving
   return blocks.map((block) => {
     const offset = Math.sin(elapsed * block.speed + block.phase) * block.range;
     const angle = elapsed * block.speed + block.phase;
-    if (block.axis === 'pistonX') {
-      const progress = getPistonProgress(elapsed * block.speed + block.phase);
+    if (block.axis === 'piston') {
+      const progress = block.active === false ? 0 : getPistonProgress(elapsed * block.speed + block.phase);
       const baseWidth = block.baseWidth ?? block.width;
+      const baseHeight = block.baseHeight ?? block.height;
+      const extension = progress * block.range;
+      const direction = block.direction ?? 'right';
       return {
         ...block,
-        lastX: block.x + block.width,
-        lastY: block.y,
-        x: block.originX,
-        y: block.originY,
-        width: baseWidth + progress * block.range,
+        lastX: getPistonHeadX(block),
+        lastY: getPistonHeadY(block),
+        x: direction === 'left' ? block.originX - extension : block.originX,
+        y: direction === 'up' ? block.originY - extension : block.originY,
+        width: direction === 'left' || direction === 'right' ? baseWidth + extension : baseWidth,
+        height: direction === 'up' || direction === 'down' ? baseHeight + extension : baseHeight,
         baseWidth,
+        baseHeight,
       };
     }
 
@@ -76,13 +81,46 @@ function getPistonProgress(value: number): number {
 }
 
 function pullStickyPlayer(player: Player, block: MovingBlock): Player {
-  const headX = block.x + block.width;
+  if (block.axis !== 'piston') return player;
+  const headX = getPistonHeadX(block);
+  const headY = getPistonHeadY(block);
   const movedX = headX - block.lastX;
-  if (movedX >= 0 || Math.abs(movedX) < 0.01) return player;
+  const movedY = headY - block.lastY;
+  if (isExtending(block, movedX, movedY) || Math.hypot(movedX, movedY) < 0.01) return player;
 
-  const nearHead = Math.abs(player.x - (headX + playerRadius)) < 1.7;
-  const sameHeight = player.y >= block.y - playerRadius && player.y <= block.y + block.height + playerRadius;
-  return nearHead && sameHeight ? { ...player, x: player.x + movedX } : player;
+  const nearHead = isNearPistonHead(player, block, headX, headY);
+  return nearHead ? { ...player, x: player.x + movedX, y: player.y + movedY } : player;
+}
+
+function getPistonHeadX(block: MovingBlock): number {
+  if (block.direction === 'left') return block.x;
+  if (block.direction === 'up' || block.direction === 'down') return block.x + block.width / 2;
+  return block.x + block.width;
+}
+
+function getPistonHeadY(block: MovingBlock): number {
+  if (block.direction === 'up') return block.y;
+  if (block.direction === 'left' || block.direction === 'right' || !block.direction) return block.y + block.height / 2;
+  return block.y + block.height;
+}
+
+function isExtending(block: MovingBlock, movedX: number, movedY: number): boolean {
+  if (block.direction === 'left') return movedX < 0;
+  if (block.direction === 'up') return movedY < 0;
+  if (block.direction === 'down') return movedY > 0;
+  return movedX > 0;
+}
+
+function isNearPistonHead(player: Player, block: MovingBlock, headX: number, headY: number): boolean {
+  if (block.direction === 'left' || block.direction === 'right' || !block.direction) {
+    return Math.abs(player.x - (headX + (block.direction === 'left' ? -playerRadius : playerRadius))) < 1.7
+      && player.y >= block.y - playerRadius
+      && player.y <= block.y + block.height + playerRadius;
+  }
+
+  return Math.abs(player.y - (headY + (block.direction === 'up' ? -playerRadius : playerRadius))) < 1.7
+    && player.x >= block.x - playerRadius
+    && player.x <= block.x + block.width + playerRadius;
 }
 
 function pushByVector(player: Player, dx: number, dy: number, distance: number) {

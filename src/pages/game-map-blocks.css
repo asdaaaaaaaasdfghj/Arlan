@@ -91,6 +91,11 @@
     linear-gradient(135deg, #2f9e44, #d9dee3);
 }
 
+.moving-block-piston-off {
+  filter: grayscale(0.85) brightness(0.82);
+  opacity: 0.78;
+}
+
 .conveyor-block {
   position: absolute;
   border: 2px solid rgba(21, 23, 25, 0.72);

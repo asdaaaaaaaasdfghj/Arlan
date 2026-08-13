@@ -56,6 +56,8 @@ export type EditorCell = {
   decorColor?: DecorationColor;
   pistonLength?: number;
   pistonSpeed?: number;
+  pistonDirection?: 'right' | 'left' | 'up' | 'down';
+  pistonActive?: boolean;
 };
 
 export type CustomMapSize = {

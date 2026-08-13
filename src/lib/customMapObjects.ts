@@ -32,6 +32,7 @@ export function createMover(cell: EditorCell, obstacle: Obstacle, index: number)
   }
 
   if (cell.kind === 'piston' || cell.kind === 'stickyPiston') {
+    const direction = normalizePistonDirection(cell.pistonDirection);
     return {
       id: index + 1,
       originX: obstacle.x,
@@ -41,12 +42,15 @@ export function createMover(cell: EditorCell, obstacle: Obstacle, index: number)
       lastX: obstacle.x,
       lastY: obstacle.y,
       baseWidth: obstacle.width,
+      baseHeight: obstacle.height,
       width: obstacle.width,
       height: obstacle.height,
-      axis: 'pistonX',
-      range: clamp(cell.pistonLength ?? 8, 1, 80) * editorCellWidth,
+      axis: 'piston',
+      direction,
+      range: clamp(cell.pistonLength ?? 8, 1, 80) * (direction === 'up' || direction === 'down' ? editorCellHeight : editorCellWidth),
       speed: clamp(cell.pistonSpeed ?? 3, 1, 10),
       phase: index * 0.7,
+      active: cell.pistonActive ?? true,
       sticky: cell.kind === 'stickyPiston',
     };
   }
@@ -236,4 +240,8 @@ function normalizeCodeTeam(value: unknown): CodeTeam {
 
 function normalizeDecorationColor(value: unknown): DecorationColor {
   return value === 'red' || value === 'blue' || value === 'yellow' || value === 'purple' || value === 'gray' ? value : 'green';
+}
+
+function normalizePistonDirection(value: unknown): NonNullable<MovingBlock['direction']> {
+  return value === 'left' || value === 'up' || value === 'down' ? value : 'right';
 }

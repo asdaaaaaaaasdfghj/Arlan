@@ -74,8 +74,8 @@ export function SwapRiftSprite({ rift }: { rift: Obstacle }) {
 export function MovingBlockSprite({ block }: { block: MovingBlock }) {
   const axisClass = block.axis === 'orbit'
     ? 'moving-block-carousel'
-    : block.axis === 'pistonX'
-      ? block.sticky ? 'moving-block-sticky-piston' : 'moving-block-piston'
+    : block.axis === 'piston'
+      ? `${block.sticky ? 'moving-block-sticky-piston' : 'moving-block-piston'} piston-dir-${block.direction ?? 'right'} ${block.active === false ? 'moving-block-piston-off' : ''}`
       : block.axis === 'y' ? 'moving-block-vertical' : 'moving-block-horizontal';
   return <span className={`moving-block ${axisClass}`} style={rectStyle(block)} />;
 }

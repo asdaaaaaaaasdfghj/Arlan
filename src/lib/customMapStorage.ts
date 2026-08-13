@@ -210,6 +210,8 @@ function toCell(value: Partial<EditorCell> & Partial<Obstacle>): EditorCell | nu
       decorColor: normalizeDecorationColor(value.decorColor),
       pistonLength: finiteOrUndefined(value.pistonLength),
       pistonSpeed: finiteOrUndefined(value.pistonSpeed),
+      pistonDirection: normalizePistonDirection(value.pistonDirection),
+      pistonActive: value.pistonActive,
     };
   }
 
@@ -272,4 +274,8 @@ function normalizeDecorationColor(value: unknown): EditorCell['decorColor'] {
     || value === 'gray'
     ? value
     : undefined;
+}
+
+function normalizePistonDirection(value: unknown): EditorCell['pistonDirection'] {
+  return value === 'left' || value === 'up' || value === 'down' || value === 'right' ? value : undefined;
 }
