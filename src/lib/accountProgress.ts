@@ -20,6 +20,8 @@ import { loadGameStats, saveGameStats, type GameStats } from './gameStats';
 import { loadPlayerProfile, savePlayerProfile, type PlayerProfile } from './playerProfile';
 import { supabase } from './supabase';
 
+const accountProgressBackupPrefix = 'duel-arena-account-progress:';
+
 export type CloudProgress = {
   settings: GameSettings;
   stats: GameStats;
@@ -36,13 +38,14 @@ export type CloudProgress = {
 
 export async function saveProgressToAccount(user: User): Promise<void> {
   const progress = collectLocalProgress();
+  saveLocalAccountProgress(user.id, progress);
   const { error } = await supabase.from('user_progress').upsert({
     user_id: user.id,
     progress,
     updated_at: new Date().toISOString(),
   });
 
-  if (error) throw new Error(error.message);
+  if (error && !isMissingProgressTable(error)) throw new Error(error.message);
 }
 
 export async function loadProgressFromAccount(user: User): Promise<CloudProgress | null> {
@@ -52,8 +55,12 @@ export async function loadProgressFromAccount(user: User): Promise<CloudProgress
     .eq('user_id', user.id)
     .maybeSingle();
 
-  if (error) throw new Error(error.message);
-  return data?.progress as CloudProgress | null;
+  if (error) {
+    if (isMissingProgressTable(error)) return loadLocalAccountProgress(user.id);
+    throw new Error(error.message);
+  }
+
+  return (data?.progress as CloudProgress | null) ?? loadLocalAccountProgress(user.id);
 }
 
 export function applyCloudProgress(progress: CloudProgress) {
@@ -66,15 +73,7 @@ export function applyCloudProgress(progress: CloudProgress) {
       return [];
     }
 
-    return [{
-      col: Number(cell.col),
-      row: Number(cell.row),
-      kind: cell.kind,
-      magnetForce: cell.magnetForce,
-      magnetRadius: cell.magnetRadius,
-      magnetBullets: cell.magnetBullets,
-      magnetGrenades: cell.magnetGrenades,
-    }];
+    return [{ ...cell, col: Number(cell.col), row: Number(cell.row), kind: cell.kind }];
   });
 
   saveGameSettings(progress.settings);
@@ -133,4 +132,25 @@ function collectLocalProgress(): CloudProgress {
     playerProfile: loadPlayerProfile(),
     savedAt: new Date().toISOString(),
   };
+}
+
+function saveLocalAccountProgress(userId: string, progress: CloudProgress) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(`${accountProgressBackupPrefix}${userId}`, JSON.stringify(progress));
+}
+
+function loadLocalAccountProgress(userId: string): CloudProgress | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const saved = window.localStorage.getItem(`${accountProgressBackupPrefix}${userId}`);
+    return saved ? JSON.parse(saved) as CloudProgress : null;
+  } catch {
+    return null;
+  }
+}
+
+function isMissingProgressTable(error: { message?: string; code?: string }): boolean {
+  const message = error.message ?? '';
+  return error.code === 'PGRST205' || message.includes('user_progress') || message.includes('schema cache') || message.includes('relation');
 }
