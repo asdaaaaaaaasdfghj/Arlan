@@ -151,7 +151,7 @@ const defaultModeState: OnlineModeState = {
   builderVotes: {},
 };
 const officialDuelArena = {
-  code: 'DA32V3',
+  code: 'DA32V4',
   name: 'Duel Arena Official',
   maxPlayers: 32,
   mode: 'endlessDuel',
@@ -431,11 +431,6 @@ export function OnlinePage() {
   }
 
   function enterOfficialDuelArena() {
-    if (officialPlayerCount > 0 || serverListings.some((server) => server.code === officialDuelArena.code)) {
-      joinRoomByCode(officialDuelArena.code);
-      return;
-    }
-
     createOfficialDuelArena();
   }
 
@@ -1203,12 +1198,12 @@ export function OnlinePage() {
             <span>{language === 'ru' ? 'Duel Arena · Crossfire · classic arena · 32 игрока' : 'Duel Arena · Crossfire · classic arena · 32 players'}</span>
           </div>
           <b className="online-official-count">{officialPlayerCount}/{officialDuelArena.maxPlayers}</b>
-          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V3' : 'Join DA32V3'}</button>
+          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V4' : 'Join DA32V4'}</button>
         </section>
         <section className="online-panel online-server-list">
           <strong>{language === 'ru' ? 'Живые серверы' : 'Live servers'}</strong>
           {serverListings.length === 0 ? (
-            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DA32V3.' : 'No live rooms yet. Create one or open DA32V3.'}</span>
+            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DA32V4.' : 'No live rooms yet. Create one or open DA32V4.'}</span>
           ) : (
             <div>
               {serverListings.map((server) => (
@@ -2477,5 +2472,6 @@ function normalizeInput(value: unknown): PlayerInput {
 function normalizeWeapon(value: unknown): WeaponId | null {
   return typeof value === 'string' && ['blaster', 'railgun', 'shotgun', 'custom4', 'custom5', 'termos'].includes(value) ? value as WeaponId : null;
 }
+
 
 
