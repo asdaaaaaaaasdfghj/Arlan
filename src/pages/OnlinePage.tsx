@@ -298,20 +298,24 @@ export function OnlinePage() {
   useEffect(() => {
     const timerId = window.setInterval(() => {
       const now = Date.now();
+      const collisionBlocks = getOnlineCollisionBlocks(activeOnlineRule, isOfficialRoom, sandboxBlocks);
       setPlayerEmotes((current) => Object.fromEntries(
         Object.entries(current).filter(([, emote]) => now - emote.createdAt < emoteLifeMs),
       ));
       setOnlineBullets((current) => current
-        .map((bullet) => ({
-          ...bullet,
-          x: bullet.x + bullet.dx * 2.9,
-          y: bullet.y + bullet.dy * 2.9,
-        }))
-        .filter((bullet) => now - bullet.createdAt < 900 && bullet.x > -5 && bullet.x < 105 && bullet.y > -5 && bullet.y < 105));
+        .map((bullet) => moveOnlineBullet(bullet))
+        .filter((bullet) => (
+          now - bullet.createdAt < 900
+          && bullet.x > -5
+          && bullet.x < 105
+          && bullet.y > -5
+          && bullet.y < 105
+          && !isOnlineBulletBlocked(bullet, collisionBlocks)
+        )));
     }, 1000 / 30);
 
     return () => window.clearInterval(timerId);
-  }, []);
+  }, [activeOnlineRule, isOfficialRoom, sandboxBlocks]);
 
   useEffect(() => {
     if (role !== 'host' || status !== 'online') {
@@ -1779,6 +1783,19 @@ function tickSandboxHost(state: GameState, input: PlayerInput, blocks: SandboxBl
 function isSandboxBlocked(x: number, y: number, blocks: SandboxBlock[]): boolean {
   const cell = positionToSandboxCell(x, y);
   return blocks.some((block) => block.col === cell.col && block.row === cell.row && isSolidSandboxBlock(block.kind));
+}
+
+function moveOnlineBullet(bullet: OnlineBullet): OnlineBullet {
+  return {
+    ...bullet,
+    x: bullet.x + bullet.dx * 2.9,
+    y: bullet.y + bullet.dy * 2.9,
+  };
+}
+
+function isOnlineBulletBlocked(bullet: OnlineBullet, blocks: SandboxBlock[]): boolean {
+  if (blocks.length === 0) return false;
+  return isSandboxBlocked(bullet.x, bullet.y, blocks);
 }
 
 function getOnlineCollisionBlocks(rule: OnlineRule, officialRoom: boolean, blocks: SandboxBlock[]): SandboxBlock[] {
