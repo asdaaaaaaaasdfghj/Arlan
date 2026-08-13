@@ -76,16 +76,18 @@
 .moving-block-piston,
 .moving-block-sticky-piston {
   background:
-    linear-gradient(90deg, #151719 0 18%, transparent 18% 100%),
+    linear-gradient(90deg, #151719 0 14%, transparent 14% 78%, #151719 78% 100%),
     linear-gradient(0deg, transparent 0 38%, rgba(255, 255, 255, 0.9) 38% 62%, transparent 62% 100%),
+    repeating-linear-gradient(90deg, transparent 0 10px, rgba(21, 23, 25, 0.24) 10px 13px),
     linear-gradient(135deg, #868e96, #d9dee3);
 }
 
 .moving-block-sticky-piston {
   background:
-    radial-gradient(circle at 74% 50%, #8ce99a 0 13%, transparent 14% 100%),
-    linear-gradient(90deg, #151719 0 18%, transparent 18% 100%),
+    radial-gradient(circle at 88% 50%, #8ce99a 0 9%, transparent 10% 100%),
+    linear-gradient(90deg, #151719 0 14%, transparent 14% 78%, #151719 78% 100%),
     linear-gradient(0deg, transparent 0 38%, rgba(255, 255, 255, 0.9) 38% 62%, transparent 62% 100%),
+    repeating-linear-gradient(90deg, transparent 0 10px, rgba(21, 23, 25, 0.24) 10px 13px),
     linear-gradient(135deg, #2f9e44, #d9dee3);
 }
 

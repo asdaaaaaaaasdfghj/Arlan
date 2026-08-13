@@ -9,8 +9,16 @@ export function tickMovingBlocks(blocks: MovingBlock[], elapsed: number): Moving
     const angle = elapsed * block.speed + block.phase;
     if (block.axis === 'pistonX') {
       const progress = getPistonProgress(elapsed * block.speed + block.phase);
-      const x = block.originX + progress * block.range;
-      return { ...block, lastX: block.x, lastY: block.y, x, y: block.originY };
+      const baseWidth = block.baseWidth ?? block.width;
+      return {
+        ...block,
+        lastX: block.x + block.width,
+        lastY: block.y,
+        x: block.originX,
+        y: block.originY,
+        width: baseWidth + progress * block.range,
+        baseWidth,
+      };
     }
 
     return {
@@ -68,10 +76,11 @@ function getPistonProgress(value: number): number {
 }
 
 function pullStickyPlayer(player: Player, block: MovingBlock): Player {
-  const movedX = block.x - block.lastX;
+  const headX = block.x + block.width;
+  const movedX = headX - block.lastX;
   if (movedX >= 0 || Math.abs(movedX) < 0.01) return player;
 
-  const nearHead = Math.abs(player.x - (block.x + block.width + playerRadius)) < 1.7;
+  const nearHead = Math.abs(player.x - (headX + playerRadius)) < 1.7;
   const sameHeight = player.y >= block.y - playerRadius && player.y <= block.y + block.height + playerRadius;
   return nearHead && sameHeight ? { ...player, x: player.x + movedX } : player;
 }

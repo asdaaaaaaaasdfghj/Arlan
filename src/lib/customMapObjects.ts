@@ -40,6 +40,7 @@ export function createMover(cell: EditorCell, obstacle: Obstacle, index: number)
       y: obstacle.y,
       lastX: obstacle.x,
       lastY: obstacle.y,
+      baseWidth: obstacle.width,
       width: obstacle.width,
       height: obstacle.height,
       axis: 'pistonX',

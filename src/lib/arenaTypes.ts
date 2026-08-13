@@ -72,6 +72,7 @@ export type MovingBlock = {
   id: number;
   originX: number; originY: number; x: number; y: number; width: number; height: number;
   lastX: number; lastY: number;
+  baseWidth?: number;
   axis: 'x' | 'y' | 'orbit' | 'pistonX';
   range: number; speed: number; phase: number;
   sticky?: boolean;
