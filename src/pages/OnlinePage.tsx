@@ -39,6 +39,7 @@ type OnlineRole = 'host' | 'guest';
 type ConnectionStatus = 'idle' | 'connecting' | 'online';
 type GuestSlot = 'red' | 'extra';
 type OnlineRule = 'classic' | 'ffa' | 'sandbox' | 'murderMystery' | 'builderBattle' | 'zombieInfection';
+type ServerVisibility = 'public' | 'private';
 type ChatMessage = {
   id: string;
   sender: OnlineRole;
@@ -80,6 +81,7 @@ type OnlineServerListing = {
   players: number;
   maxPlayers: number;
   official: boolean;
+  public: boolean;
   seenAt: number;
 };
 type OnlineProfilePayload = {
@@ -174,6 +176,7 @@ export function OnlinePage() {
   const [serverMap, setServerMap] = useState(settings.defaultMap);
   const [serverName, setServerName] = useState('My Arena Server');
   const [serverMaxPlayers, setServerMaxPlayers] = useState(8);
+  const [serverVisibility, setServerVisibility] = useState<ServerVisibility>('public');
   const [onlineRule, setOnlineRule] = useState<OnlineRule>('classic');
   const [sandboxBlockKind, setSandboxBlockKind] = useState<SandboxBlockKind>('wall');
   const [sandboxBlocks, setSandboxBlocks] = useState<SandboxBlock[]>([]);
@@ -283,7 +286,7 @@ export function OnlinePage() {
       if (!listing) return;
       setServerListings((current) => {
         const next = current.filter((server) => server.code !== listing.code);
-        return [...next, listing].sort((a, b) => Number(b.official) - Number(a.official) || b.players - a.players);
+        return [...next, listing].sort((a, b) => Number(b.official) - Number(a.official) || Number(b.public) - Number(a.public) || b.players - a.players);
       });
       if (listing.code === officialDuelArena.code) {
         setOfficialPlayerCount(listing.players);
@@ -398,7 +401,7 @@ export function OnlinePage() {
       window.clearInterval(timerId);
       supabase.removeChannel(channel);
     };
-  }, [activeOnlineRule, isOfficialRoom, role, roomCode, roomPlayers, serverMap, serverMaxPlayers, serverMode, serverName, status]);
+  }, [activeOnlineRule, isOfficialRoom, role, roomCode, roomPlayers, serverMap, serverMaxPlayers, serverMode, serverName, serverVisibility, status]);
 
   useEffect(() => {
     if (role !== 'guest' || guestSlot !== 'extra' || status !== 'online') {
@@ -1202,6 +1205,7 @@ export function OnlinePage() {
 
   async function sendLobbyListing(channel: RealtimeChannel) {
     if (!roomCode) return;
+    if (!isOfficialRoom && serverVisibility === 'private') return;
     const maxPlayers = isOfficialRoom ? officialDuelArena.maxPlayers : serverMaxPlayers;
     await channel.send({
       type: 'broadcast',
@@ -1215,6 +1219,7 @@ export function OnlinePage() {
         players: roomPlayers.length,
         maxPlayers,
         official: isOfficialRoom,
+        public: true,
         seenAt: Date.now(),
       } satisfies OnlineServerListing,
     });
@@ -1251,15 +1256,18 @@ export function OnlinePage() {
           <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V5' : 'Join DA32V5'}</button>
         </section>
         <section className="online-panel online-server-list">
-          <strong>{language === 'ru' ? 'Живые серверы' : 'Live servers'}</strong>
+          <strong>{language === 'ru' ? 'Публичные серверы' : 'Public servers'}</strong>
           {serverListings.length === 0 ? (
-            <span>{language === 'ru' ? 'Пока нет активных комнат. Создай свою или открой DA32V5.' : 'No live rooms yet. Create one or open DA32V5.'}</span>
+            <span>{language === 'ru' ? 'Пока нет публичных комнат. Создай публичную или открой DA32V5.' : 'No public rooms yet. Create a public room or open DA32V5.'}</span>
           ) : (
             <div>
               {serverListings.map((server) => (
                 <button type="button" className="online-server-card" disabled={isGuestAccount && server.official} onClick={() => joinRoomByCode(server.code)} key={server.code}>
                   <b>{server.name}</b>
-                  <span>{server.code} · {getOnlineRuleLabel(server.onlineRule, language)} · {modeName(server.mode, language)}</span>
+                  <span>
+                    <em>{server.official ? 'Official' : 'Public'}</em>
+                    {getOnlineRuleLabel(server.onlineRule, language)} · {modeName(server.mode, language)}
+                  </span>
                   <small>{server.players}/{server.maxPlayers}</small>
                 </button>
               ))}
@@ -1270,6 +1278,13 @@ export function OnlinePage() {
           <label>
             {language === 'ru' ? 'Название сервака' : 'Server name'}
             <input value={serverName} maxLength={28} onChange={(event) => setServerName(event.target.value)} />
+          </label>
+          <label>
+            {language === 'ru' ? 'Вид сервера' : 'Server type'}
+            <select value={serverVisibility} onChange={(event) => setServerVisibility(event.target.value as ServerVisibility)}>
+              <option value="public">{language === 'ru' ? 'Публичный - виден всем, код не нужен' : 'Public - visible to everyone, no code needed'}</option>
+              <option value="private">{language === 'ru' ? 'Приватный - только по коду' : 'Private - code only'}</option>
+            </select>
           </label>
           <label>
             {t(language, 'mode')}
@@ -1295,7 +1310,11 @@ export function OnlinePage() {
               ))}
             </select>
           </label>
-          <button type="button" onClick={createRoom}>{language === 'ru' ? 'Создать комнату' : 'Create room'}</button>
+          <button type="button" onClick={createRoom}>
+            {serverVisibility === 'public'
+              ? (language === 'ru' ? 'Создать публичный сервер' : 'Create public server')
+              : (language === 'ru' ? 'Создать приватную комнату' : 'Create private room')}
+          </button>
           <label>
             {language === 'ru' ? 'Код комнаты' : 'Room code'}
             <input className="room-code-input" value={joinCode} maxLength={6} onChange={(event) => setJoinCode(event.target.value.toUpperCase())} />
@@ -2030,6 +2049,7 @@ function normalizeServerListing(value: unknown): OnlineServerListing | null {
     players: clampInt(Number(payload.players), 0, 32),
     maxPlayers: clampInt(Number(payload.maxPlayers), 2, 32),
     official: payload.official === true,
+    public: payload.public !== false || payload.official === true,
     seenAt: Date.now(),
   };
 }
