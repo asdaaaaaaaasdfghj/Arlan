@@ -11,7 +11,7 @@ export const boardHp = 80;
 export const defaultMapTheme: CustomMapTheme = 'arena';
 
 export type CustomMapTheme = 'arena' | 'desert' | 'mountain' | 'snow' | 'acidLab' | 'volcanic' | 'night';
-export type EditableWeaponId = Exclude<WeaponId, 'termos'>;
+export type EditableWeaponId = Exclude<WeaponId, 'termos' | 'flamethrower'>;
 export type CustomWeaponStats = {
   name: string;
   cooldown: number;

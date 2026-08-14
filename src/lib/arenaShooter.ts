@@ -11,7 +11,7 @@ import { tickLasers } from './arenaLasers';
 import { tickLuckyBlocks } from './arenaLuckyBlocks';
 import { applySwordAttacks } from './arenaMelee';
 import { moveBarricadesFromMovingBlocks, pushPlayersFromMovingBlocks, tickMovingBlocks } from './arenaMovingBlocks';
-import { isSwordMode, modeConfigs } from './arenaModes';
+import { isFlameMode, isSwordMode, modeConfigs } from './arenaModes';
 import { teleportPlayers } from './arenaPortals';
 import { tickPowerUps } from './arenaPowerUps';
 import { updatePlayers } from './arenaPlayers';
@@ -213,6 +213,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
 
 export function changeWeapon(state: GameState, playerId: PlayerId, weapon: WeaponId): GameState {
   if (isSwordMode(state.mode)) return state;
+  if (isFlameMode(state.mode) && weapon !== 'flamethrower') return state;
   if (state.mode === 'railDuel' && weapon !== 'termos') return state;
   if (isCustomOnlyWeapon(weapon) && state.mapId !== 'custom') return state;
 

@@ -43,6 +43,16 @@ export const weaponConfigs: Record<WeaponId, WeaponConfig> = {
     spread: 0.28,
     size: 11,
   },
+  flamethrower: {
+    id: 'flamethrower',
+    name: 'Flamethrower',
+    cooldown: 0.08,
+    damage: 5,
+    speed: 38,
+    bullets: 4,
+    spread: 0.13,
+    size: 18,
+  },
   custom4: {
     id: 'custom4',
     name: 'Custom 4',
@@ -87,7 +97,7 @@ export function isCustomOnlyWeapon(id: WeaponId): boolean {
 }
 
 export function getWeaponConfig(id: WeaponId, mapId: MapId): WeaponConfig {
-  if (mapId !== 'custom' || id === 'termos') {
+  if (mapId !== 'custom' || id === 'termos' || id === 'flamethrower') {
     return weaponConfigs[id];
   }
 

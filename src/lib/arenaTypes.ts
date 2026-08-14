@@ -1,8 +1,8 @@
 export type PlayerId = 'blue' | 'red';
 export type GameStatus = 'ready' | 'playing' | 'finished';
 export type GameMode = 'duel' | 'zombies' | 'quickDraw' | 'blitz' | 'tankDuel' | 'railDuel'
-  | 'grenadeMayhem' | 'swordDuel' | 'swarmNight' | 'nightmare' | 'fortress' | 'endlessDuel' | 'disasters' | 'captureFlag' | 'kingHill' | 'glassWars' | 'luckyBlocks';
-export type WeaponId = 'blaster' | 'railgun' | 'shotgun' | 'custom4' | 'custom5' | 'termos';
+  | 'grenadeMayhem' | 'flameDuel' | 'swordDuel' | 'swarmNight' | 'nightmare' | 'fortress' | 'endlessDuel' | 'disasters' | 'captureFlag' | 'kingHill' | 'glassWars' | 'luckyBlocks';
+export type WeaponId = 'blaster' | 'railgun' | 'shotgun' | 'flamethrower' | 'custom4' | 'custom5' | 'termos';
 export type MapId = 'crossfire' | 'lanes' | 'bunker' | 'open' | 'custom';
 
 export type Player = {

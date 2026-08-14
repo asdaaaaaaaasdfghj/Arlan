@@ -6,6 +6,10 @@ import { cannotSeeInGrass, canSeeWhilePoisoned } from './botVision';
 type BotTarget = Player | Zombie;
 
 export function chooseRedBotWeapon(game: GameState, enabled: boolean): WeaponId {
+  if (game.mode === 'flameDuel') {
+    return 'flamethrower';
+  }
+
   if (!enabled || game.mode === 'railDuel' || game.status !== 'playing') {
     return game.players.red.weapon;
   }

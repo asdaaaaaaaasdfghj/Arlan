@@ -1,5 +1,5 @@
 import type { GameState, PlayerId, PlayerInput, WeaponId } from '../lib/arenaShooter';
-import { isSwordMode } from '../lib/arenaModes';
+import { isFlameMode, isSwordMode } from '../lib/arenaModes';
 import { getWeaponConfig, getWeaponOrder } from '../lib/arenaWeapons';
 import type { Language } from '../lib/gameSettings';
 import { t } from '../lib/i18n';
@@ -53,7 +53,11 @@ function ControlPanel({ game, player, showTouchControls, language, onPress, onWe
   onPress: GameControlsProps['onPress'];
   onWeaponChange: GameControlsProps['onWeaponChange'];
 }) {
-  const weapons = game.mode === 'railDuel' ? ['railgun' as const] : getWeaponOrder(game.mapId);
+  const weapons = isFlameMode(game.mode)
+    ? ['flamethrower' as const]
+    : game.mode === 'railDuel'
+      ? ['railgun' as const]
+      : getWeaponOrder(game.mapId);
 
   return (
     <div className="control-panel">
