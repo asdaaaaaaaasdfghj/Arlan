@@ -15,10 +15,10 @@ const emptyInput: PlayerInput = {
   enterVehicle: false,
 };
 
-const searchByDifficulty: Record<BotDifficulty, number> = {
-  easy: 26,
-  normal: 38,
-  hard: 54,
+const searchByDifficulty: Record<BotDifficulty, { radius: number; distancePenalty: number }> = {
+  easy: { radius: 34, distancePenalty: 0.42 },
+  normal: { radius: 54, distancePenalty: 0.3 },
+  hard: { radius: 74, distancePenalty: 0.22 },
 };
 
 export function createPaintBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {
@@ -33,12 +33,14 @@ export function createPaintBotInput(game: GameState, difficulty: BotDifficulty):
   const dy = moveTarget.y - red.y;
   const blueDistance = Math.hypot(game.players.blue.x - red.x, game.players.blue.y - red.y);
 
+  const attackPulse = Math.sin(game.elapsedTime * 9 + red.x * 0.17) > 1 - getShootChance(difficulty) * 2;
+
   return {
     up: dy < -1.5,
     down: dy > 1.5,
     left: dx < -1.5,
     right: dx > 1.5,
-    shoot: blueDistance < 18 && Math.random() < getShootChance(difficulty),
+    shoot: blueDistance < 16 && attackPulse,
     build: false,
     grenade: false,
     enterVehicle: false,
@@ -51,36 +53,58 @@ function choosePaintTarget(game: GameState, difficulty: BotDifficulty): { x: num
   const cols = Math.ceil(bounds.width / paintCellSize);
   const rows = Math.ceil(bounds.height / paintCellSize);
   const painted = new Map((game.paintTiles ?? []).map((tile) => [tile.id, tile]));
-  const scanRadius = searchByDifficulty[difficulty];
+  const profile = searchByDifficulty[difficulty];
+  const timeBucket = Math.floor(game.elapsedTime / 1.7);
+  const stride = cols * rows > 2500 ? 2 : 1;
   let best: { x: number; y: number; value: number } | null = null;
 
-  for (let row = 0; row < rows; row += 1) {
-    for (let col = 0; col < cols; col += 1) {
+  for (let row = 0; row < rows; row += stride) {
+    for (let col = 0; col < cols; col += stride) {
       const tile = painted.get(`${col}:${row}`);
       if (tile?.owner === 'red') continue;
 
       const x = col * paintCellSize + paintCellSize / 2;
       const y = row * paintCellSize + paintCellSize / 2;
       const distance = Math.hypot(x - red.x, y - red.y);
-      if (distance > scanRadius) continue;
+      const tooFarPenalty = distance > profile.radius ? (distance - profile.radius) * 0.55 : 0;
+      const blueDistance = Math.hypot(x - game.players.blue.x, y - game.players.blue.y);
+      const repaintBonus = tile?.owner === 'blue' ? 26 : 12;
+      const frontierBonus = countNearbyNonRed(col, row, painted) * 3.5;
+      const contestBonus = blueDistance < 18 ? 8 : 0;
+      const stableWander = Math.sin(timeBucket * 2.1 + col * 0.73 + row * 1.11) * 2.5;
+      const value = repaintBonus + frontierBonus + contestBonus + stableWander - distance * profile.distancePenalty - tooFarPenalty;
 
-      const repaintBonus = tile?.owner === 'blue' ? 18 : 8;
-      const wander = Math.sin(game.elapsedTime * 1.7 + col * 0.9 + row * 1.3) * 4;
-      const value = repaintBonus + wander - distance * 0.34;
       if (!best || value > best.value) {
         best = { x, y, value };
       }
     }
   }
 
-  return best ?? chooseFallbackTarget(game.paintTiles ?? [], bounds.width, bounds.height);
+  return best ?? chooseFallbackTarget(game.paintTiles ?? [], red.x, red.y, bounds.width, bounds.height);
 }
 
-function chooseFallbackTarget(tiles: PaintTile[], width: number, height: number): { x: number; y: number } {
+function chooseFallbackTarget(tiles: PaintTile[], redX: number, redY: number, width: number, height: number): { x: number; y: number } {
   const blueTiles = tiles.filter((tile) => tile.owner === 'blue');
-  const tile = blueTiles[Math.floor(Math.random() * Math.max(1, blueTiles.length))];
-  if (tile) return { x: tile.x + tile.width / 2, y: tile.y + tile.height / 2 };
-  return { x: width * 0.5, y: height * 0.5 };
+  const nearest = blueTiles.reduce<PaintTile | null>((best, tile) => {
+    if (!best) return tile;
+    const bestDistance = Math.hypot(best.x + best.width / 2 - redX, best.y + best.height / 2 - redY);
+    const distance = Math.hypot(tile.x + tile.width / 2 - redX, tile.y + tile.height / 2 - redY);
+    return distance < bestDistance ? tile : best;
+  }, null);
+
+  if (nearest) return { x: nearest.x + nearest.width / 2, y: nearest.y + nearest.height / 2 };
+  return redX < width / 2 ? { x: width * 0.75, y: height * 0.5 } : { x: width * 0.25, y: height * 0.5 };
+}
+
+function countNearbyNonRed(col: number, row: number, painted: Map<string, PaintTile>): number {
+  const offsets = [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ];
+
+  return offsets.filter(([dx, dy]) => painted.get(`${col + dx}:${row + dy}`)?.owner !== 'red').length;
 }
 
 function getShootChance(difficulty: BotDifficulty): number {
