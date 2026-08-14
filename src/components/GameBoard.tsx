@@ -3,7 +3,7 @@ import { ARENA_HEIGHT, ARENA_WIDTH, type GameState } from '../lib/arenaShooter';
 import { getArenaBounds, type ArenaBounds } from '../lib/arenaBounds';
 import { getHillZone } from '../lib/arenaKingHill';
 import { getMapObstacles } from '../lib/arenaMap';
-import { getMiniGameRule, isMiniGamesMode } from '../lib/arenaMiniGames';
+import { getMiniGameIndex, getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arenaMiniGames';
 import { poisonSeconds } from '../lib/arenaTraps';
 import { loadCustomCodeBlocks, loadCustomConveyors, loadCustomDecorations, loadCustomMagnets, loadCustomSolidDecorations, loadCustomSwapRifts, loadCustomTerrain, loadCustomTheme, loadCustomVehicles } from '../lib/customMap';
 import type { Language } from '../lib/gameSettings';
@@ -137,8 +137,23 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
       {poisonedPlayer && (
         <PoisonFog timer={poisonedPlayer.poisonTimer} x={poisonedPlayer.x} y={poisonedPlayer.y} />
       )}
+      {isMiniGamesMode(game) && <MiniGameBanner game={game} />}
       {game.status !== 'playing' && <GameOverlay game={game} language={language} />}
     </section>
+  );
+}
+
+function MiniGameBanner({ game }: { game: GameState }) {
+  const phaseAge = game.elapsedTime % miniGameDuration;
+  if (game.status !== 'playing' || phaseAge > 3.2) return null;
+
+  const rule = getMiniGameRule(game);
+  return (
+    <div className="mini-game-banner">
+      <span>{getMiniGameIndex(game.elapsedTime) + 1}/10</span>
+      <strong>{rule.name}</strong>
+      <small>{rule.description}</small>
+    </div>
   );
 }
 
