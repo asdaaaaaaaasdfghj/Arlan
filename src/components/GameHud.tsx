@@ -25,7 +25,7 @@ export function GameHud({ game, language }: GameHudProps) {
         {isMiniGamesMode(game) && <p className="mode-description">{getMiniGameText(game)}</p>}
       </div>
       <div className="round-clock">
-        {modeConfigs[game.mode].noTimer ? '∞' : `${Math.ceil(game.timeLeft)}s`}
+        {getClockText(game)}
         {game.zombies.length > 0 && <small>{game.zombies.length} {t(language, 'zombies')}</small>}
         {game.disasters.length > 0 && <small>{game.disasters.length} {t(language, 'disasters')}</small>}
       </div>
@@ -60,5 +60,14 @@ function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
 function getMiniGameText(game: GameState): string {
   const rule = getMiniGameRule(game);
   const remaining = miniGameDuration - Math.floor(game.elapsedTime % miniGameDuration);
-  return `${rule.name}: ${rule.description} (${remaining}s)`;
+  return `${rule.name}: ${rule.description} · next in ${remaining}s`;
+}
+
+function getClockText(game: GameState): string {
+  if (isMiniGamesMode(game)) {
+    const index = Math.min(10, Math.floor(game.elapsedTime / miniGameDuration) + 1);
+    return `${index}/10`;
+  }
+
+  return modeConfigs[game.mode].noTimer ? '∞' : `${Math.ceil(game.timeLeft)}s`;
 }
