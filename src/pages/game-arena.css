@@ -555,8 +555,8 @@
 }
 
 .arena-mode-hideSeek .fighter-hidden {
-  opacity: 0.24;
-  filter: saturate(0.35) blur(0.4px);
+  opacity: 0;
+  filter: none;
 }
 
 .arena-mode-hideSeek .fighter-hidden .fighter-name {
