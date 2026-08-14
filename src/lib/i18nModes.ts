@@ -14,6 +14,7 @@ const modes: Omit<Record<GameMode, { en: [string, string]; ru: [string, string] 
   railDuel: { en: ['Rail Duel', 'Railguns only. Slow shots, scary damage.'], ru: ['Рельсовая дуэль', 'Только рейлган: медленно, но больно.'] },
   flameDuel: { en: ['Flamethrower Fight', 'Only flamethrowers. Get close and melt the arena.'], ru: ['Бой огнемётами', 'Только огнемёты: подойди ближе и прожарь арену.'] },
   paintBattle: { en: ['Paint Battle', 'Leave paint trails while moving. Highest map coverage wins.'], ru: ['Битва краской', 'Бегай и оставляй краску. Побеждает тот, кто закрасил больше карты.'] },
+  miniGames: { en: ['Mini Games', 'Ten mini-games, thirty seconds each. Adapt fast.'], ru: ['Mini Games', '10 мини-игр по 30 секунд. Правила постоянно меняются.'] },
   grenadeMayhem: { en: ['Grenade Mayhem', 'Fast grenades, loud explosions, first to 5.'], ru: ['Гранатный хаос', 'Быстрые гранаты, громкие взрывы, игра до 5.'] },
   endlessDuel: { en: ['Endless Duel', 'No timer. Fight until someone reaches 7 points.'], ru: ['Бесконечная дуэль', 'Без таймера: бой до 7 очков.'] },
   kingHill: { en: ['King of the Hill', 'Hold the center zone alone to score. First to 20.'], ru: ['Царь горы', 'Удерживай центр в одиночку, чтобы получать очки. Первый до 20.'] },

@@ -10,6 +10,7 @@ import { tickKingHill } from './arenaKingHill';
 import { tickLasers } from './arenaLasers';
 import { tickLuckyBlocks } from './arenaLuckyBlocks';
 import { applySwordAttacks } from './arenaMelee';
+import { getMiniGameRule, isMiniGamesMode, lockMiniGameWeapons } from './arenaMiniGames';
 import { moveBarricadesFromMovingBlocks, pushPlayersFromMovingBlocks, tickMovingBlocks } from './arenaMovingBlocks';
 import { isFlameMode, isSwordMode, modeConfigs } from './arenaModes';
 import { tickPaintBattle } from './arenaPaint';
@@ -55,13 +56,16 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const players = tickSwapRifts(teleportPlayers(pushPlayersFromMovingBlocks(movedPlayers, movingBlocks), state.portals), state.mapId, mechanics.swapRifts);
   const movedState = { ...state, barricades: pushedBarricades, mapBoards: pushedMapBoards, movingBlocks };
   const building = buildZombieModeBarricades(movedState, players, input);
-  const swordState = isSwordMode(state.mode)
-    ? applySwordAttacks(building.players, input, state.mapId, state.nextEffectId)
-    : { players: building.players, effects: [] };
-  const throwing = isSwordMode(state.mode)
+  const miniGameRule = getMiniGameRule(state);
+  const lockedPlayers = isMiniGamesMode(state) ? lockMiniGameWeapons({ ...state, players: building.players }) : building.players;
+  const swordActive = isSwordMode(state.mode) || (isMiniGamesMode(state) && miniGameRule.sword);
+  const swordState = swordActive
+    ? applySwordAttacks(lockedPlayers, input, state.mapId, state.nextEffectId)
+    : { players: lockedPlayers, effects: [] };
+  const throwing = swordActive
     ? { players: swordState.players, grenades: [] }
     : spawnGrenades(swordState.players, input, state.mode, state.nextGrenadeId);
-  const shooting = isSwordMode(state.mode)
+  const shooting = swordActive
     ? { players: throwing.players, bullets: [] }
     : spawnBullets(throwing.players, input, state.nextBulletId, state.mapId);
   const allyBlockers = [...building.barricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
@@ -216,6 +220,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
 
 export function changeWeapon(state: GameState, playerId: PlayerId, weapon: WeaponId): GameState {
   if (isSwordMode(state.mode)) return state;
+  if (isMiniGamesMode(state)) return state;
   if (isFlameMode(state.mode) && weapon !== 'flamethrower') return state;
   if (state.mode === 'railDuel' && weapon !== 'termos') return state;
   if (isCustomOnlyWeapon(weapon) && state.mapId !== 'custom') return state;

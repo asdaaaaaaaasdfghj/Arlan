@@ -2633,7 +2633,7 @@ function normalizeInput(value: unknown): PlayerInput {
 }
 
 function normalizeWeapon(value: unknown): WeaponId | null {
-  return typeof value === 'string' && ['blaster', 'railgun', 'shotgun', 'custom4', 'custom5', 'termos'].includes(value) ? value as WeaponId : null;
+  return typeof value === 'string' && ['blaster', 'railgun', 'shotgun', 'flamethrower', 'custom4', 'custom5', 'termos'].includes(value) ? value as WeaponId : null;
 }
 
 

@@ -1,5 +1,6 @@
 import type { GameState, PlayerId, PlayerInput, WeaponId } from '../lib/arenaShooter';
 import { isFlameMode, isSwordMode } from '../lib/arenaModes';
+import { getMiniGameRule, getMiniGameWeapon, isMiniGamesMode } from '../lib/arenaMiniGames';
 import { getWeaponConfig, getWeaponOrder } from '../lib/arenaWeapons';
 import type { Language } from '../lib/gameSettings';
 import { t } from '../lib/i18n';
@@ -53,7 +54,10 @@ function ControlPanel({ game, player, showTouchControls, language, onPress, onWe
   onPress: GameControlsProps['onPress'];
   onWeaponChange: GameControlsProps['onWeaponChange'];
 }) {
-  const weapons = isFlameMode(game.mode)
+  const miniSword = isMiniGamesMode(game) && getMiniGameRule(game).sword;
+  const weapons = isMiniGamesMode(game)
+    ? [getMiniGameWeapon(game)]
+    : isFlameMode(game.mode)
     ? ['flamethrower' as const]
     : game.mode === 'railDuel'
       ? ['railgun' as const]
@@ -63,8 +67,8 @@ function ControlPanel({ game, player, showTouchControls, language, onPress, onWe
     <div className="control-panel">
       {showTouchControls && <TouchPad player={player} language={language} onPress={onPress} />}
       <div className="weapon-picker">
-        {isSwordMode(game.mode) && <button className="active-weapon" type="button">Sword</button>}
-        {!isSwordMode(game.mode) && weapons.map((weapon) => (
+        {(isSwordMode(game.mode) || miniSword) && <button className="active-weapon" type="button">Sword</button>}
+        {!isSwordMode(game.mode) && !miniSword && weapons.map((weapon) => (
           <button
             className={game.players[player].weapon === weapon ? 'active-weapon' : ''}
             type="button"

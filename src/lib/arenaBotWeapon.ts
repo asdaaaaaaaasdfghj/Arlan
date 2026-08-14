@@ -1,4 +1,5 @@
 import { isPointInsideObstacle } from './arenaMap';
+import { getMiniGameWeapon, isMiniGamesMode } from './arenaMiniGames';
 import type { GameState, Player, WeaponId, Zombie } from './arenaTypes';
 import { getWeaponOrder } from './arenaWeapons';
 import { cannotSeeInGrass, canSeeWhilePoisoned } from './botVision';
@@ -6,6 +7,10 @@ import { cannotSeeInGrass, canSeeWhilePoisoned } from './botVision';
 type BotTarget = Player | Zombie;
 
 export function chooseRedBotWeapon(game: GameState, enabled: boolean): WeaponId {
+  if (isMiniGamesMode(game)) {
+    return getMiniGameWeapon(game);
+  }
+
   if (game.mode === 'flameDuel') {
     return 'flamethrower';
   }

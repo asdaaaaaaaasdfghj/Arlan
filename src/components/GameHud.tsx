@@ -1,5 +1,6 @@
 import type { GameState, PlayerId } from '../lib/arenaShooter';
 import { isSwordMode, modeConfigs } from '../lib/arenaModes';
+import { getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arenaMiniGames';
 import { getWeaponConfig } from '../lib/arenaWeapons';
 import type { Language } from '../lib/gameSettings';
 import { modeDescription, modeName, t } from '../lib/i18n';
@@ -21,6 +22,7 @@ export function GameHud({ game, language }: GameHudProps) {
         <p>{game.status === 'playing' ? t(language, 'liveDuel') : t(language, 'multiplayerShooter')}</p>
         <h1>{modeName(game.mode, language)}</h1>
         <p className="mode-description">{modeDescription(game.mode, language)}</p>
+        {isMiniGamesMode(game) && <p className="mode-description">{getMiniGameText(game)}</p>}
       </div>
       <div className="round-clock">
         {modeConfigs[game.mode].noTimer ? '∞' : `${Math.ceil(game.timeLeft)}s`}
@@ -38,7 +40,8 @@ export function GameHud({ game, language }: GameHudProps) {
 function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
   const player = game.players[id];
   const weapon = getWeaponConfig(player.weapon, game.mapId);
-  const weaponText = isSwordMode(game.mode) ? 'Sword - 0.46s' : `${weapon.name} - ${weapon.cooldown}s`;
+  const miniSword = isMiniGamesMode(game) && getMiniGameRule(game).sword;
+  const weaponText = isSwordMode(game.mode) || miniSword ? 'Sword - 0.46s' : `${weapon.name} - ${weapon.cooldown}s`;
 
   return (
     <section className={`player-stat player-stat-${id}`}>
@@ -52,4 +55,10 @@ function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
       </div>
     </section>
   );
+}
+
+function getMiniGameText(game: GameState): string {
+  const rule = getMiniGameRule(game);
+  const remaining = miniGameDuration - Math.floor(game.elapsedTime % miniGameDuration);
+  return `${rule.name}: ${rule.description} (${remaining}s)`;
 }

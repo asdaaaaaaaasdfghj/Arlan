@@ -3,6 +3,7 @@ import { ARENA_HEIGHT, ARENA_WIDTH, type GameState } from '../lib/arenaShooter';
 import { getArenaBounds, type ArenaBounds } from '../lib/arenaBounds';
 import { getHillZone } from '../lib/arenaKingHill';
 import { getMapObstacles } from '../lib/arenaMap';
+import { getMiniGameRule, isMiniGamesMode } from '../lib/arenaMiniGames';
 import { poisonSeconds } from '../lib/arenaTraps';
 import { loadCustomCodeBlocks, loadCustomConveyors, loadCustomDecorations, loadCustomMagnets, loadCustomSolidDecorations, loadCustomSwapRifts, loadCustomTerrain, loadCustomTheme, loadCustomVehicles } from '../lib/customMap';
 import type { Language } from '../lib/gameSettings';
@@ -93,7 +94,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   ];
 
   return (
-    <section className={`arena arena-theme-${theme} arena-mode-${game.mode}`} aria-label="Battle arena" style={cameraVars(camera, bounds)}>
+    <section className={`arena arena-theme-${theme} arena-mode-${game.mode} ${isMiniGamesMode(game) && getMiniGameRule(game).sword ? 'arena-mode-swordDuel' : ''}`} aria-label="Battle arena" style={cameraVars(camera, bounds)}>
       <div className="arena-world">
         <div className="arena-grid" />
         {(game.paintTiles ?? []).map((tile) => <PaintTileSprite tile={tile} key={tile.id} />)}
