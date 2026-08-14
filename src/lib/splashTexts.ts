@@ -14,6 +14,8 @@ export const splashTexts = [
   'Made by ADMINlol!',
   'RTGBV456',
   'You online?',
+  'привет Россия',
+  'GUEST0001?',
   'Custom maps, custom pain!',
   'Kick button included!',
   'Blue vs red forever!',

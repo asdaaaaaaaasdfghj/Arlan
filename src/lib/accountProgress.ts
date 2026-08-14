@@ -45,7 +45,7 @@ export async function saveProgressToAccount(user: User): Promise<void> {
     updated_at: new Date().toISOString(),
   });
 
-  if (error && !isMissingProgressTable(error)) throw new Error(error.message);
+  if (error) throw new Error(getProgressErrorMessage(error));
 }
 
 export async function loadProgressFromAccount(user: User): Promise<CloudProgress | null> {
@@ -56,7 +56,7 @@ export async function loadProgressFromAccount(user: User): Promise<CloudProgress
     .maybeSingle();
 
   if (error) {
-    if (isMissingProgressTable(error)) return loadLocalAccountProgress(user.id);
+    if (isMissingProgressTable(error)) throw new Error(getProgressErrorMessage(error));
     throw new Error(error.message);
   }
 
@@ -153,4 +153,12 @@ function loadLocalAccountProgress(userId: string): CloudProgress | null {
 function isMissingProgressTable(error: { message?: string; code?: string }): boolean {
   const message = error.message ?? '';
   return error.code === 'PGRST205' || message.includes('user_progress') || message.includes('schema cache') || message.includes('relation');
+}
+
+function getProgressErrorMessage(error: { message?: string; code?: string }): string {
+  if (isMissingProgressTable(error)) {
+    return 'Cloud progress table is missing. Run: npm run db:push -- --yes';
+  }
+
+  return error.message ?? 'Could not sync cloud progress.';
 }

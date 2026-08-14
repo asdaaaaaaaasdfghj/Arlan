@@ -24,9 +24,12 @@ import { mapOrder } from '../lib/arenaMap';
 import { withRedBotInput } from '../lib/arenaBot';
 import { chooseRedBotWeapon } from '../lib/arenaBotWeapon';
 import { modeOrder } from '../lib/arenaModes';
+import { saveProgressToAccount } from '../lib/accountProgress';
 import { getAchievementText } from '../lib/achievements';
 import { recordFinishedGame } from '../lib/gameStats';
 import { loadPlayerProfile } from '../lib/playerProfile';
+import { isSupabaseConfigured, supabase } from '../lib/supabase';
+import type { User } from '@supabase/supabase-js';
 import { useAchievementToasts } from '../lib/useAchievementToasts';
 import { t } from '../lib/i18n';
 import './game.css';
@@ -37,6 +40,7 @@ export function GamePage() {
   const initialChoice = getInitialChoice(settings.defaultMode, settings.defaultMap);
   const [game, setGame] = useState(() => createInitialGame(initialChoice.mode, initialChoice.mapId));
   const [musicOn, setMusicOn] = useState(settings.music);
+  const [user, setUser] = useState<User | null>(null);
   const [playerProfile] = useState(loadPlayerProfile);
   const inputRef = useRef<GameInput>(cloneInput(emptyInput));
   const redHumanRef = useRef(false);
@@ -48,6 +52,13 @@ export function GamePage() {
   const achievementToast = useAchievementToasts(game, settings.achievementToasts, achievementContext);
   useGameMusic(musicOn);
   useCheatCode(() => setWeapon('blue', 'termos'));
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
+    return () => data.subscription.unsubscribe();
+  }, []);
 
   function restartGame() {
     inputRef.current = cloneInput(emptyInput);
@@ -107,7 +118,12 @@ export function GamePage() {
 
     recordedMatchRef.current = matchKey;
     recordFinishedGame(game);
-  }, [game]);
+    if (user) {
+      void saveProgressToAccount(user).catch((error) => {
+        console.warn('Could not auto-save progress', error);
+      });
+    }
+  }, [game, user]);
 
   useEffect(() => {
     const fps = settings.gameFps;
