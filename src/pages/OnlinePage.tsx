@@ -2198,7 +2198,7 @@ function getParticipantBadge(clientId: string, players: OnlineParticipant[], sta
   if (rule === 'zombieInfection') {
     return state.infectedIds.includes(player.clientId) ? 'ZOMBIE' : 'SURVIVOR';
   }
-  return '';
+  return getPlayerNumberBadge(player.clientId, players);
 }
 
 function getOnlinePlayerBadge(player: ExtraPlayer, players: OnlineParticipant[], state: OnlineModeState, rule: OnlineRule, officialRoom: boolean): string {
@@ -2207,6 +2207,11 @@ function getOnlinePlayerBadge(player: ExtraPlayer, players: OnlineParticipant[],
   }
 
   return getParticipantBadge(player.clientId, players, state, rule);
+}
+
+function getPlayerNumberBadge(clientId: string, players: OnlineParticipant[]): string {
+  const index = players.findIndex((player) => player.clientId === clientId || (clientId === 'host' && player.slot === 'host'));
+  return index >= 0 ? `P${index + 1}` : '';
 }
 
 function isInsideOfficialSecretRoom(player: Pick<ExtraPlayer, 'x' | 'y'>): boolean {
