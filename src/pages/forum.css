@@ -1,0 +1,132 @@
+.forum-page {
+  min-height: 100vh;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 18px 44px;
+  color: #151719;
+}
+
+.forum-panel {
+  display: grid;
+  gap: 14px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 20px;
+}
+
+.forum-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.forum-heading h1 {
+  font-size: 38px;
+  line-height: 1;
+}
+
+.forum-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.forum-tabs button,
+.forum-heading button,
+.forum-form button {
+  min-height: 40px;
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.forum-tabs button.selected {
+  background: #2e6f95;
+  color: #ffffff;
+}
+
+.forum-tabs button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.forum-form {
+  display: grid;
+  gap: 8px;
+}
+
+.forum-form textarea {
+  min-height: 92px;
+  resize: vertical;
+  border: 1px solid #cbd3d8;
+  border-radius: 8px;
+  background: #f8fafb;
+  color: #151719;
+  padding: 10px;
+  font: inherit;
+  font-weight: 800;
+}
+
+.forum-warning {
+  border: 1px solid rgba(240, 140, 0, 0.38);
+  border-radius: 8px;
+  background: #fff9db;
+  color: #4d3b12;
+  padding: 10px;
+  font-weight: 900;
+}
+
+.forum-posts {
+  display: grid;
+  gap: 8px;
+}
+
+.forum-post {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #e3e8ed;
+  border-radius: 8px;
+  background: #f8fafb;
+  padding: 12px;
+}
+
+.forum-post time {
+  color: #697077;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.forum-post p {
+  white-space: pre-wrap;
+}
+
+:root[data-theme='dark'] .forum-page {
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .forum-page .menu-nav a {
+  color: #8fc9ff;
+}
+
+:root[data-theme='dark'] .forum-panel,
+:root[data-theme='dark'] .forum-post {
+  border-color: #2a3440;
+  background: #111820;
+}
+
+:root[data-theme='dark'] .forum-form textarea {
+  border-color: #334253;
+  background: #0d131a;
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .forum-warning {
+  border-color: #806018;
+  background: #211a09;
+  color: #ffe28c;
+}
+
+:root[data-theme='dark'] .forum-post time {
+  color: #c9d3de;
+}

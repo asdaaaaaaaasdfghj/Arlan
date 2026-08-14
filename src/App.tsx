@@ -5,6 +5,7 @@ import { GamePage } from './pages/GamePage';
 import { OnlinePage } from './pages/OnlinePage';
 import { MapEditorPage } from './pages/MapEditorPage';
 import { MapCatalogPage } from './pages/MapCatalogPage';
+import { ForumPage } from './pages/ForumPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { LeaderboardPage } from './pages/LeaderboardPage';
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/online" component={OnlinePage} />
         <Route path="/editor" component={MapEditorPage} />
         <Route path="/catalog" component={MapCatalogPage} />
+        <Route path="/forum" component={ForumPage} />
         <Route path="/profile" component={ProfilePage} />
         <Route path="/leaderboard" component={LeaderboardPage} />
         <Route path="/tutorial" component={TutorialPage} />
