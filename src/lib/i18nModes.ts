@@ -13,6 +13,7 @@ const modes: Omit<Record<GameMode, { en: [string, string]; ru: [string, string] 
   tankDuel: { en: ['Tank Duel', 'Big health bars and longer trades.'], ru: ['Танковая дуэль', 'Больше здоровья и дольше перестрелки.'] },
   railDuel: { en: ['Rail Duel', 'Railguns only. Slow shots, scary damage.'], ru: ['Рельсовая дуэль', 'Только рейлган: медленно, но больно.'] },
   flameDuel: { en: ['Flamethrower Fight', 'Only flamethrowers. Get close and melt the arena.'], ru: ['Бой огнемётами', 'Только огнемёты: подойди ближе и прожарь арену.'] },
+  paintBattle: { en: ['Paint Battle', 'Leave paint trails while moving. Highest map coverage wins.'], ru: ['Битва краской', 'Бегай и оставляй краску. Побеждает тот, кто закрасил больше карты.'] },
   grenadeMayhem: { en: ['Grenade Mayhem', 'Fast grenades, loud explosions, first to 5.'], ru: ['Гранатный хаос', 'Быстрые гранаты, громкие взрывы, игра до 5.'] },
   endlessDuel: { en: ['Endless Duel', 'No timer. Fight until someone reaches 7 points.'], ru: ['Бесконечная дуэль', 'Без таймера: бой до 7 очков.'] },
   kingHill: { en: ['King of the Hill', 'Hold the center zone alone to score. First to 20.'], ru: ['Царь горы', 'Удерживай центр в одиночку, чтобы получать очки. Первый до 20.'] },

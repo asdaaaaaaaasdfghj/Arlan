@@ -12,6 +12,7 @@ import { tickLuckyBlocks } from './arenaLuckyBlocks';
 import { applySwordAttacks } from './arenaMelee';
 import { moveBarricadesFromMovingBlocks, pushPlayersFromMovingBlocks, tickMovingBlocks } from './arenaMovingBlocks';
 import { isFlameMode, isSwordMode, modeConfigs } from './arenaModes';
+import { tickPaintBattle } from './arenaPaint';
 import { teleportPlayers } from './arenaPortals';
 import { tickPowerUps } from './arenaPowerUps';
 import { updatePlayers } from './arenaPlayers';
@@ -160,11 +161,12 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const timeLeft = config.noTimer ? state.timeLeft : Math.max(0, state.timeLeft - delta);
   const flagState = tickFlags({ ...state, players: disasterState.players });
   const scoredPlayers = tickKingHill(flagState.players, state.mode, state.mapId, delta);
-  const secretState = spawnSecretZombies(state.players, scoredPlayers, trapState.zombies, codeState.nextZombieId, secretZombies);
+  const paintState = tickPaintBattle({ ...state, players: scoredPlayers, paintTiles: state.paintTiles ?? [] });
+  const secretState = spawnSecretZombies(state.players, paintState.players, trapState.zombies, codeState.nextZombieId, secretZombies);
   const secretHappened = secretState.nextZombieId > codeState.nextZombieId;
-  const winner = secretHappened ? null : findWinner(scoredPlayers, timeLeft, state.mode);
+  const winner = secretHappened ? null : findWinner(paintState.players, timeLeft, state.mode, { ...state, paintTiles: paintState.paintTiles });
   const powerUps = tickPowerUps(
-    scoredPlayers,
+    paintState.players,
     codeState.barricades,
     [...state.powerUps, ...moved.powerUps],
     moved.nextPowerUpId,
@@ -188,6 +190,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     ricochetBlocks: state.ricochetBlocks,
     portals: state.portals,
     traps: trapState.traps,
+    paintTiles: paintState.paintTiles,
     bullets: fuseState.bullets,
     grenades: grenadeState.grenades,
     powerUps: powerUps.powerUps,

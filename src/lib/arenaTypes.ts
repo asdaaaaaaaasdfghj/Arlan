@@ -1,7 +1,7 @@
 export type PlayerId = 'blue' | 'red';
 export type GameStatus = 'ready' | 'playing' | 'finished';
 export type GameMode = 'duel' | 'zombies' | 'quickDraw' | 'blitz' | 'tankDuel' | 'railDuel'
-  | 'grenadeMayhem' | 'flameDuel' | 'swordDuel' | 'swarmNight' | 'nightmare' | 'fortress' | 'endlessDuel' | 'disasters' | 'captureFlag' | 'kingHill' | 'glassWars' | 'luckyBlocks';
+  | 'grenadeMayhem' | 'flameDuel' | 'paintBattle' | 'swordDuel' | 'swarmNight' | 'nightmare' | 'fortress' | 'endlessDuel' | 'disasters' | 'captureFlag' | 'kingHill' | 'glassWars' | 'luckyBlocks';
 export type WeaponId = 'blaster' | 'railgun' | 'shotgun' | 'flamethrower' | 'custom4' | 'custom5' | 'termos';
 export type MapId = 'crossfire' | 'lanes' | 'bunker' | 'open' | 'custom';
 
@@ -126,6 +126,7 @@ export type DecorationColor = 'green' | 'red' | 'blue' | 'yellow' | 'purple' | '
 export type DecorationBlock = Obstacle & { kind: DecorationKind; color: DecorationColor };
 export type TrapKind = 'spikes' | 'lava' | 'acid' | 'zap' | 'poison' | 'saw' | 'mine' | 'bear' | 'web';
 export type TrapBlock = Obstacle & { kind: TrapKind };
+export type PaintTile = Obstacle & { owner: PlayerId };
 
 export type HitEffect = {
   id: number;
@@ -190,6 +191,7 @@ export type GameState = {
   ricochetBlocks: RicochetBlock[];
   portals: PortalBlock[];
   traps: TrapBlock[];
+  paintTiles: PaintTile[];
   bullets: Bullet[];
   grenades: Grenade[];
   powerUps: PowerUp[];

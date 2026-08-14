@@ -1,6 +1,7 @@
 import { type GameMode, type GameState, type Player, type PlayerId } from './arenaTypes';
 import { isGlassCoreDestroyed } from './arenaGlassWars';
 import { isDisasterMode, isZombieMode, modeConfigs } from './arenaModes';
+import { getPaintBattleWinner } from './arenaPaint';
 
 export function findWinner(
   players: Record<PlayerId, Player>,
@@ -23,6 +24,10 @@ export function findWinner(
 
   if (isDisasterMode(mode)) {
     return players.blue.hp <= 0 && players.red.hp <= 0 ? 'catastrophes' : timeLeft <= 0 ? 'survivors' : null;
+  }
+
+  if (mode === 'paintBattle') {
+    return timeLeft <= 0 && state ? getPaintBattleWinner(state) : null;
   }
 
   const scoreToWin = modeConfigs[mode].scoreToWin;

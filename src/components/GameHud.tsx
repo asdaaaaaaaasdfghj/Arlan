@@ -43,7 +43,7 @@ function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
   return (
     <section className={`player-stat player-stat-${id}`}>
       <strong>{playerNames[id]}</strong>
-      <span>{Math.floor(player.score)}</span>
+      <span>{game.mode === 'paintBattle' ? `${player.score.toFixed(1)}%` : Math.floor(player.score)}</span>
       <p className="weapon-name">
         {weaponText}
       </p>

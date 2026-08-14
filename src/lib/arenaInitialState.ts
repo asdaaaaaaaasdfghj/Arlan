@@ -47,6 +47,7 @@ export function createInitialGame(mode: GameMode = 'duel', mapId: MapId = 'cross
     ricochetBlocks: mapId === 'custom' ? loadCustomRicochets() : [],
     portals: mapId === 'custom' ? loadCustomPortals() : [],
     traps: mapId === 'custom' ? loadCustomTraps() : [],
+    paintTiles: [],
     bullets: [],
     grenades: [],
     powerUps: customPowerUps,

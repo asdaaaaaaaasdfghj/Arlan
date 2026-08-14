@@ -26,6 +26,7 @@ export const modeConfigs: Record<GameMode, ModeConfig> = {
   tankDuel: createDuel('tankDuel', 'Tank Duel', 'Big health bars and longer trades.', 80, 4, 180),
   railDuel: createDuel('railDuel', 'Rail Duel', 'Railguns only. Slow shots, scary damage.', 55, 4, 100, 'railgun'),
   flameDuel: createDuel('flameDuel', 'Flamethrower Fight', 'Only flamethrowers. Get close and melt the arena.', 55, 5, 115, 'flamethrower'),
+  paintBattle: createDuel('paintBattle', 'Paint Battle', 'Leave paint trails while moving. Highest map coverage wins.', 60, 0),
   swordDuel: createDuel('swordDuel', 'Sword Fights', 'No guns or grenades. Close in and slash with swords.', 70, 5),
   grenadeMayhem: {
     ...createDuel('grenadeMayhem', 'Grenade Mayhem', 'Fast grenades, loud explosions, first to 5.', 60, 5),
@@ -60,6 +61,7 @@ export const modeOrder: GameMode[] = [
   'tankDuel',
   'railDuel',
   'flameDuel',
+  'paintBattle',
   'swordDuel',
   'grenadeMayhem',
   'endlessDuel',
