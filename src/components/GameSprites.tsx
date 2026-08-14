@@ -165,6 +165,10 @@ function getPowerUpLabel(kind: PowerUp['kind']) {
   if (kind === 'speed' || kind === 'overdrive') return '>>';
   if (kind === 'repair') return 'B';
   if (kind === 'termos') return '*';
+  if (kind === 'weaponBlaster') return 'BL';
+  if (kind === 'weaponRailgun') return 'RG';
+  if (kind === 'weaponShotgun') return 'SG';
+  if (kind === 'weaponFlame') return 'FL';
   if (kind === 'damage') return '!';
   if (kind === 'shock') return 'Z';
   if (kind === 'poison') return 'P';

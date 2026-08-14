@@ -91,6 +91,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     state.portals,
     state.nextPowerUpId,
     mechanics.magnets,
+    state.mode,
   );
   const oldEffects = ageHitEffects(state.hitEffects, delta);
   const tntState = triggerTnts({

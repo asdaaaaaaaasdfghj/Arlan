@@ -108,6 +108,22 @@ function applyPowerUp(player: Player, barricades: Barricade[], kind: PowerUpKind
     return { player: { ...player, weapon: 'termos' }, barricades };
   }
 
+  if (kind === 'weaponBlaster') {
+    return { player: { ...player, weapon: 'blaster', cooldown: 0 }, barricades };
+  }
+
+  if (kind === 'weaponRailgun') {
+    return { player: { ...player, weapon: 'railgun', cooldown: 0 }, barricades };
+  }
+
+  if (kind === 'weaponShotgun') {
+    return { player: { ...player, weapon: 'shotgun', cooldown: 0 }, barricades };
+  }
+
+  if (kind === 'weaponFlame') {
+    return { player: { ...player, weapon: 'flamethrower', cooldown: 0 }, barricades };
+  }
+
   if (kind === 'damage') {
     return { player: { ...player, hp: Math.max(1, player.hp - 38) }, barricades };
   }

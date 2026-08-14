@@ -60,6 +60,7 @@ export function moveBullets(
   portals: PortalBlock[],
   nextPowerUpId: number,
   magnets: MagnetBlock[] = [],
+  mode: GameMode = 'luckyBlocks',
 ): { bullets: Bullet[]; mapBoards: Barricade[]; checkpoints: AllyCheckpoint[]; powerUps: PowerUp[]; nextPowerUpId: number } {
   const nextBoards = mapBoards.map((board) => ({ ...board }));
   const nextCheckpoints = checkpoints.map((checkpoint) => ({ ...checkpoint }));
@@ -73,7 +74,7 @@ export function moveBullets(
     .map((bullet) => teleportBullet(bullet, portals))
     .map((bullet) => bounceOrKeepBullet(bullet, ricochets))
     .filter((bullet): bullet is Bullet => Boolean(bullet))
-    .filter((bullet) => keepBullet(bullet, mapId, barricades, nextBoards, nextCheckpoints, luckyPowerUps, () => powerUpId++));
+    .filter((bullet) => keepBullet(bullet, mapId, barricades, nextBoards, nextCheckpoints, luckyPowerUps, () => powerUpId++, mode));
 
   return {
     bullets: moved,
@@ -105,6 +106,7 @@ function keepBullet(
   checkpoints: AllyCheckpoint[],
   powerUps: PowerUp[],
   takePowerUpId: () => number,
+  mode: GameMode,
 ): boolean {
   const bounds = getArenaBounds(mapId);
   if (bullet.x <= 0 || bullet.x >= bounds.width || bullet.y <= 0 || bullet.y >= bounds.height) {
@@ -119,7 +121,7 @@ function keepBullet(
   if (board) {
     board.hp -= bullet.damage;
     if (board.hp <= 0 && board.variant === 'lucky') {
-      powerUps.push(...createLuckyDrops(board, takePowerUpId));
+      powerUps.push(...createLuckyDrops(board, takePowerUpId, mode));
     }
     return false;
   }
@@ -133,9 +135,18 @@ function keepBullet(
   return true;
 }
 
-function createLuckyDrops(board: Barricade, takePowerUpId: () => number): PowerUp[] {
+function createLuckyDrops(board: Barricade, takePowerUpId: () => number, mode: GameMode): PowerUp[] {
   const roll = Math.random();
   const center = { x: board.x + board.width / 2, y: board.y + board.height / 2 };
+  const weaponKinds: PowerUpKind[] = roll < 0.24
+    ? ['weaponBlaster', 'speed']
+    : roll < 0.48
+      ? ['weaponRailgun', 'heal']
+      : roll < 0.72
+        ? ['weaponShotgun', 'overdrive']
+        : roll < 0.9
+          ? ['weaponFlame', 'superHeal']
+          : ['termos', 'damage'];
   const kinds: PowerUpKind[] = roll < 0.16
     ? ['superHeal']
     : roll < 0.32
@@ -154,7 +165,7 @@ function createLuckyDrops(board: Barricade, takePowerUpId: () => number): PowerU
                   ? ['poison']
                   : ['burn', 'damage'];
 
-  return kinds.map((kind, index) => ({
+  return (mode === 'hungerGames' ? weaponKinds : kinds).map((kind, index) => ({
     id: takePowerUpId(),
     kind,
     x: center.x + (index - (kinds.length - 1) / 2) * 4,

@@ -509,6 +509,39 @@
   outline: 2px solid rgba(239, 71, 111, 0.42);
 }
 
+.run-fake-decoration {
+  position: absolute;
+  z-index: 5;
+  border-radius: 5px;
+  opacity: 0.84;
+  pointer-events: none;
+}
+
+.run-fake-decoration-crate {
+  border: 2px dashed rgba(63, 47, 36, 0.72);
+  background:
+    linear-gradient(45deg, transparent 0 44%, rgba(255, 255, 255, 0.34) 44% 56%, transparent 56% 100%),
+    linear-gradient(135deg, rgba(155, 106, 61, 0.66), rgba(95, 60, 33, 0.52));
+}
+
+.run-fake-decoration-rocks {
+  background:
+    radial-gradient(circle at 34% 62%, rgba(134, 142, 150, 0.74) 0 18%, transparent 19% 100%),
+    radial-gradient(circle at 62% 44%, rgba(73, 80, 87, 0.7) 0 22%, transparent 23% 100%),
+    radial-gradient(circle at 70% 72%, rgba(173, 181, 189, 0.72) 0 14%, transparent 15% 100%);
+  filter: drop-shadow(0 2px 2px rgba(21, 23, 25, 0.18));
+}
+
+.arena-mode-hideSeek .map-wall,
+.arena-mode-hideSeek .map-board,
+.arena-mode-hideSeek .decoration-block {
+  z-index: 24;
+}
+
+.arena-mode-hideSeek .fighter {
+  z-index: 12;
+}
+
 .bullet-blue { background: #0057d8; }
 .bullet-red { background: #c9184a; }
 .bullet-railgun { border-radius: 3px; }

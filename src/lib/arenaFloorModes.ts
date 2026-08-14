@@ -16,7 +16,10 @@ export function tickFloorModes(state: GameState, input: GameInput): Pick<GameSta
   if (state.mode === 'tileRun') {
     (['blue', 'red'] as PlayerId[]).forEach((id) => {
       const player = players[id];
-      if (player.hp > 0) holes.set(getCellId(player), createHole(player, id, state.mapId));
+      const cellId = getCellId(player);
+      if (player.hp > 0 && !holes.has(cellId)) {
+        holes.set(cellId, createHole(player, id, state.mapId));
+      }
     });
   }
 

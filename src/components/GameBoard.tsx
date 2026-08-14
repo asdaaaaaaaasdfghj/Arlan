@@ -82,6 +82,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   const theme = game.mapId === 'custom' ? loadCustomTheme() : 'arena';
   const poisonedPlayer = getPoisonedPlayerForCamera(camera, game);
   const mapObstacles = getMapObstacles(game.mapId);
+  const runDecorations = game.mode === 'tileRun' ? getRunFakeDecorations(bounds) : [];
   const laserBlockers = [
     ...mapObstacles,
     ...game.mapBoards,
@@ -99,6 +100,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
         <div className="arena-grid" />
         {(game.paintTiles ?? []).map((tile) => <PaintTileSprite tile={tile} key={tile.id} />)}
         {(game.floorHoles ?? []).map((hole) => <FloorHoleSprite hole={hole} key={hole.id} />)}
+        {runDecorations.map((decoration) => <span className={`run-fake-decoration run-fake-decoration-${decoration.kind}`} style={rectStyle(decoration)} key={decoration.id} />)}
         {game.mode === 'kingHill' && <HillZoneSprite mapId={game.mapId} />}
         {water.map((terrain) => <TerrainSprite terrain={terrain} kind="water" key={terrain.id} />)}
         {ice.map((terrain) => <TerrainSprite terrain={terrain} kind="ice" key={terrain.id} />)}
@@ -178,6 +180,16 @@ function PaintTileSprite({ tile }: { tile: GameState['paintTiles'][number] }) {
 
 function FloorHoleSprite({ hole }: { hole: GameState['floorHoles'][number] }) {
   return <span className={`floor-hole floor-hole-${hole.owner ?? 'neutral'}`} style={rectStyle(hole)} />;
+}
+
+function getRunFakeDecorations(bounds: ArenaBounds) {
+  const wideOffset = Math.max(0, (bounds.width - ARENA_WIDTH) / 2);
+  return [
+    { id: 'fake-crate-a', kind: 'crate', x: 20 + wideOffset, y: 14, width: 8, height: 8 },
+    { id: 'fake-rocks-a', kind: 'rocks', x: 62 + wideOffset, y: 12, width: 12, height: 7 },
+    { id: 'fake-crate-b', kind: 'crate', x: 38 + wideOffset, y: 45, width: 9, height: 8 },
+    { id: 'fake-rocks-b', kind: 'rocks', x: 76 + wideOffset, y: 42, width: 11, height: 8 },
+  ];
 }
 
 function PlayerEmoteLabel({ player, label }: { player: GameState['players']['blue']; label: string }) {

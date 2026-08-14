@@ -137,7 +137,7 @@ export type HitEffect = {
   age: number;
 };
 
-export type PowerUpKind = 'heal' | 'speed' | 'repair' | 'superHeal' | 'overdrive' | 'termos' | 'damage' | 'shock' | 'poison' | 'burn';
+export type PowerUpKind = 'heal' | 'speed' | 'repair' | 'superHeal' | 'overdrive' | 'termos' | 'weaponBlaster' | 'weaponRailgun' | 'weaponShotgun' | 'weaponFlame' | 'damage' | 'shock' | 'poison' | 'burn';
 
 export type PowerUp = { id: number; kind: PowerUpKind; x: number; y: number };
 

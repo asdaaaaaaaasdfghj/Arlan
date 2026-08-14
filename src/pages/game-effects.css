@@ -67,6 +67,15 @@
   background: linear-gradient(135deg, #eebefa, #ffd43b);
 }
 
+.power-up-weaponBlaster,
+.power-up-weaponRailgun,
+.power-up-weaponShotgun,
+.power-up-weaponFlame {
+  background: linear-gradient(135deg, #151719, #3a86ff 56%, #ffd43b);
+  color: #ffffff;
+  font-size: 10px;
+}
+
 .power-up-damage,
 .power-up-shock,
 .power-up-poison,
