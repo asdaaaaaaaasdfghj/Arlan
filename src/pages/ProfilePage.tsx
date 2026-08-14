@@ -3,12 +3,30 @@ import type { CSSProperties } from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { Auth } from '../components/Auth';
-import { applyCloudProgress, loadProgressFromAccount, saveProgressToAccount } from '../lib/accountProgress';
 import { loadGameSettings } from '../lib/gameSettings';
 import { t } from '../lib/i18n';
 import { loadGuestProfile, loadPlayerProfile, playerSkins, savePlayerProfile, type PlayerProfile, type PlayerSkinId } from '../lib/playerProfile';
-import { isSupabaseConfigured, supabase } from '../lib/supabase';
+import { isSupabaseConfigured, supabase, supabaseProjectRef } from '../lib/supabase';
+import { useCloudProgress } from '../lib/useCloudProgress';
 import './profile.css';
+
+function CloudSetupCard() {
+  const linkCommand = supabaseProjectRef
+    ? `npm run db:link -- --project-ref ${supabaseProjectRef}`
+    : 'npm run db:link -- --project-ref YOUR_PROJECT_REF';
+
+  void getErrorMessage;
+
+  return (
+    <section className="profile-setup-card">
+      <strong>Cloud progress setup</strong>
+      <span>Run these commands once in PowerShell inside the project folder:</span>
+      <code>cd C:\Users\Admin\Desktop\Arlan\Arlan</code>
+      <code>{linkCommand}</code>
+      <code>npm run db:push -- --yes</code>
+    </section>
+  );
+}
 
 const labels = {
   ru: {
@@ -74,8 +92,8 @@ export function ProfilePage() {
   const text = labels[language];
   const [user, setUser] = useState<User | null>(null);
   const [message, setMessage] = useState('');
-  const [busy, setBusy] = useState(false);
   const [playerProfile, setPlayerProfile] = useState(loadPlayerProfile);
+  const cloudProgress = useCloudProgress(user, language, () => setPlayerProfile(loadPlayerProfile()));
   const guestProfile = loadGuestProfile();
 
   useEffect(() => {
@@ -83,21 +101,6 @@ export function ProfilePage() {
     const { data } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
     return () => data.subscription.unsubscribe();
   }, []);
-
-  async function saveCloud() {
-    if (!user) return;
-    await runAction(text.saved, () => saveProgressToAccount(user));
-  }
-
-  async function loadCloud() {
-    if (!user) return;
-    await runAction(text.loaded, async () => {
-      const progress = await loadProgressFromAccount(user);
-      if (!progress) throw new Error(text.noSave);
-      applyCloudProgress(progress);
-      setPlayerProfile(loadPlayerProfile());
-    });
-  }
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -110,20 +113,8 @@ export function ProfilePage() {
 
   function saveLook() {
     savePlayerProfile(playerProfile);
+    cloudProgress.clearMessage();
     setMessage(text.lookSaved);
-  }
-
-  async function runAction(success: string, action: () => Promise<void>) {
-    setBusy(true);
-    setMessage('');
-    try {
-      await action();
-      setMessage(success);
-    } catch (error) {
-      setMessage(getErrorMessage(error, language));
-    } finally {
-      setBusy(false);
-    }
   }
 
   return (
@@ -181,12 +172,13 @@ export function ProfilePage() {
         {user && (
           <div className="profile-actions">
             <strong>{user.email}</strong>
-            <button type="button" disabled={busy} onClick={saveCloud}>{text.save}</button>
-            <button type="button" className="ghost-button" disabled={busy} onClick={loadCloud}>{text.load}</button>
-            <button type="button" className="danger-button" disabled={busy} onClick={signOut}>{text.signOut}</button>
+            <button type="button" disabled={cloudProgress.busy} onClick={() => { setMessage(''); void cloudProgress.save(); }}>{text.save}</button>
+            <button type="button" className="ghost-button" disabled={cloudProgress.busy} onClick={() => { setMessage(''); void cloudProgress.load(); }}>{text.load}</button>
+            <button type="button" className="danger-button" disabled={cloudProgress.busy} onClick={signOut}>{text.signOut}</button>
           </div>
         )}
-        {message && <p className="profile-message">{message}</p>}
+        {cloudProgress.setupNeeded && <CloudSetupCard />}
+        {(message || cloudProgress.message) && <p className="profile-message">{message || cloudProgress.message}</p>}
       </section>
     </main>
   );

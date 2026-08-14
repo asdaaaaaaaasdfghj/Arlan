@@ -285,6 +285,32 @@
   color: #c9d3de;
 }
 
+.profile-setup-card {
+  display: grid;
+  gap: 7px;
+  border: 1px solid rgba(240, 140, 0, 0.38);
+  border-radius: 8px;
+  background: #fff9db;
+  color: #4d3b12;
+  padding: 12px;
+  font-weight: 900;
+}
+
+.profile-setup-card span {
+  font-size: 0.9rem;
+}
+
+.profile-setup-card code {
+  display: block;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111820;
+  padding: 8px 10px;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
 :root[data-theme='dark'] .profile-page {
   color: #f4f7fb;
 }
@@ -354,4 +380,15 @@
 
 :root[data-theme='dark'] .profile-message {
   color: #c9d3de;
+}
+
+:root[data-theme='dark'] .profile-setup-card {
+  border-color: #806018;
+  background: #211a09;
+  color: #ffe28c;
+}
+
+:root[data-theme='dark'] .profile-setup-card code {
+  background: #0d131a;
+  color: #f4f7fb;
 }

@@ -155,6 +155,15 @@ function isMissingProgressTable(error: { message?: string; code?: string }): boo
   return error.code === 'PGRST205' || message.includes('user_progress') || message.includes('schema cache') || message.includes('relation');
 }
 
+export function isCloudProgressSetupError(error: unknown): boolean {
+  if (error instanceof Error) return isMissingProgressTable({ message: error.message });
+  if (typeof error === 'object' && error !== null && 'message' in error) {
+    return isMissingProgressTable({ message: String(error.message) });
+  }
+
+  return false;
+}
+
 function getProgressErrorMessage(error: { message?: string; code?: string }): string {
   if (isMissingProgressTable(error)) {
     return 'Cloud progress table is missing. Run: npm run db:push -- --yes';
