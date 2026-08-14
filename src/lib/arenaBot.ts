@@ -1,5 +1,6 @@
 import { isPointInsideObstacle } from './arenaMap';
 import { createCaptureBotInput } from './arenaCaptureBot';
+import { createPaintBotInput } from './arenaPaintBot';
 import { findBotMoveTarget } from './arenaBotPath';
 import { hillZone } from './arenaKingHill';
 import { addStrafeTarget } from './botTactics';
@@ -42,6 +43,10 @@ export function withRedBotInput(
 function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {
   if (game.mode === 'captureFlag' && game.zombies.length === 0) {
     return createCaptureBotInput(game, difficulty);
+  }
+
+  if (game.mode === 'paintBattle') {
+    return createPaintBotInput(game, difficulty);
   }
 
   const profile = botProfiles[difficulty];

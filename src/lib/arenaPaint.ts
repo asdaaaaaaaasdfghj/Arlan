@@ -1,7 +1,7 @@
 import { getArenaBounds } from './arenaBounds';
 import type { GameState, PaintTile, PlayerId } from './arenaTypes';
 
-const paintCellSize = 4;
+export const paintCellSize = 4;
 
 export function tickPaintBattle(state: GameState): Pick<GameState, 'paintTiles' | 'players'> {
   if (state.mode !== 'paintBattle') {
