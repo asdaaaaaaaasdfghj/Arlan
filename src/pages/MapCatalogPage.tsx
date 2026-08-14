@@ -84,8 +84,11 @@ function MapPreview({ map }: { map: PublishedMap }) {
   const rows = Math.max(10, Math.min(100, Math.round(map.map_data.size?.rows ?? 12)));
 
   return (
-    <div className={`catalog-preview editor-theme-${map.map_data.theme ?? 'arena'}`}>
-      {cells.slice(0, 220).map((cell, index) => (
+    <div
+      className={`catalog-preview editor-theme-${map.map_data.theme ?? 'arena'}`}
+      style={{ aspectRatio: `${cols} / ${rows}` }}
+    >
+      {cells.map((cell, index) => (
         <span
           className={`${cell.kind ?? 'wall'}-cell`}
           style={{

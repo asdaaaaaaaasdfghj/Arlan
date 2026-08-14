@@ -40,8 +40,9 @@
 
 .catalog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 320px));
   gap: 12px;
+  align-items: start;
 }
 
 .catalog-card {
@@ -79,7 +80,9 @@
 
 .catalog-preview {
   position: relative;
-  aspect-ratio: 100 / 64;
+  width: 100%;
+  min-height: 150px;
+  max-height: 260px;
   overflow: hidden;
   border: 2px solid #26323b;
   border-radius: 8px;
@@ -90,8 +93,74 @@
 
 .catalog-preview span {
   position: absolute;
-  border: 1px solid rgba(21, 23, 25, 0.2);
+  border: 1px solid rgba(21, 23, 25, 0.34);
+  min-width: 2px;
+  min-height: 2px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
+
+.catalog-preview .wall-cell { background: #26323b; }
+.catalog-preview .stoneWall-cell { background: repeating-linear-gradient(90deg, #6f7f86 0 5px, #59636b 5px 10px); }
+.catalog-preview .metalWall-cell { background: linear-gradient(135deg, #c8d0d6, #55616a); }
+.catalog-preview .glassWall-cell { background: rgba(116, 192, 252, 0.72); }
+.catalog-preview .sandWall-cell { background: #d99f55; }
+.catalog-preview .board-cell { background: repeating-linear-gradient(90deg, #9b6a3d 0 5px, #7b4f2b 5px 10px); }
+.catalog-preview .luckyBlock-cell { background: radial-gradient(circle, #fff 0 12%, transparent 13%), linear-gradient(135deg, #ffd43b, #f08c00); }
+.catalog-preview .grass-cell { background: #2f9e44; }
+.catalog-preview .water-cell { background: #228be6; }
+.catalog-preview .ice-cell { background: #99e9f2; }
+.catalog-preview .lava-cell { background: #f03e3e; }
+.catalog-preview .acid-cell,
+.catalog-preview .poison-cell { background: #9c36b5; }
+.catalog-preview .blueFlag-cell,
+.catalog-preview .portalBlue-cell { background: #3a86ff; }
+.catalog-preview .redFlag-cell,
+.catalog-preview .tntRed-cell { background: #ef476f; }
+.catalog-preview .tntBlue-cell { background: #4dabf7; }
+.catalog-preview .tntGray-cell { background: #868e96; }
+.catalog-preview .hillZone-cell { background: rgba(255, 212, 59, 0.82); }
+.catalog-preview .zombieSpawn-cell { background: #2b8a3e; }
+.catalog-preview .healSpawn-cell { background: #51cf66; }
+.catalog-preview .speedSpawn-cell { background: #20c997; }
+.catalog-preview .repairSpawn-cell { background: #ffd43b; }
+.catalog-preview .mover-cell,
+.catalog-preview .moverUp-cell,
+.catalog-preview .carousel-cell,
+.catalog-preview .piston-cell,
+.catalog-preview .stickyPiston-cell,
+.catalog-preview .conveyorX-cell,
+.catalog-preview .conveyorY-cell { background: #748ffc; }
+.catalog-preview .swapRift-cell { background: #845ef7; }
+.catalog-preview .magnetPull-cell { background: #15aabf; }
+.catalog-preview .magnetPush-cell { background: #e64980; }
+.catalog-preview .vehicleBuggy-cell,
+.catalog-preview .vehicleTank-cell,
+.catalog-preview .vehicleHover-cell { background: #495057; }
+.catalog-preview .laser-cell { background: #ff6b6b; }
+.catalog-preview .codeBlock-cell { background: #212529; }
+.catalog-preview .ricochet-cell { background: #f783ac; }
+.catalog-preview .portalOrange-cell { background: #fd7e14; }
+.catalog-preview .blueAlly-cell,
+.catalog-preview .blueCheckpoint-cell { background: #1971c2; }
+.catalog-preview .redAlly-cell,
+.catalog-preview .redCheckpoint-cell { background: #c2255c; }
+.catalog-preview .spikes-cell,
+.catalog-preview .sawTrap-cell,
+.catalog-preview .mineTrap-cell,
+.catalog-preview .bearTrap-cell,
+.catalog-preview .webTrap-cell,
+.catalog-preview .zap-cell { background: #343a40; }
+.catalog-preview .decorCrate-cell,
+.catalog-preview .decorBarrel-cell,
+.catalog-preview .decorTable-cell,
+.catalog-preview .decorSofa-cell,
+.catalog-preview .decorShelf-cell,
+.catalog-preview .decorConsole-cell,
+.catalog-preview .decorBed-cell { background: #8d6e63; }
+.catalog-preview .decorLamp-cell { background: #ffd43b; }
+.catalog-preview .decorRocks-cell { background: #868e96; }
+.catalog-preview .decorPlant-cell { background: #2f9e44; }
+.catalog-preview .decorRug-cell { background: #be4bdb; }
 
 :root[data-theme='dark'] .map-catalog-page {
   color: var(--ink);
