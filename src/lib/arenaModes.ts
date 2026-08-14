@@ -68,25 +68,80 @@ export const modeOrder: GameMode[] = [
   'blitz',
   'tankDuel',
   'railDuel',
-  'flameDuel',
+  'endlessDuel',
+  'zombies',
+  'swarmNight',
+  'nightmare',
+  'fortress',
+  'glassWars',
+  'captureFlag',
   'paintBattle',
   'miniGames',
   'spleef',
   'tileRun',
   'hideSeek',
-  'hungerGames',
+  'luckyBlocks',
+  'flameDuel',
   'swordDuel',
   'grenadeMayhem',
-  'endlessDuel',
   'kingHill',
-  'captureFlag',
-  'glassWars',
-  'luckyBlocks',
-  'zombies',
-  'swarmNight',
-  'nightmare',
-  'fortress',
+  'hungerGames',
   'disasters',
+];
+
+export type ModeGroupId = 'classic' | 'zombies' | 'strategy' | 'arcade' | 'other';
+
+export type ModeGroup = {
+  id: ModeGroupId;
+  label: Record<'en' | 'ru', string>;
+  modes: GameMode[];
+};
+
+export const modeGroups: ModeGroup[] = [
+  {
+    id: 'classic',
+    label: { en: 'Classic', ru: 'Классические' },
+    modes: ['duel', 'quickDraw', 'blitz', 'tankDuel', 'railDuel', 'endlessDuel'],
+  },
+  {
+    id: 'zombies',
+    label: { en: 'Zombies', ru: 'Зомби' },
+    modes: ['zombies', 'swarmNight', 'nightmare', 'fortress'],
+  },
+  {
+    id: 'strategy',
+    label: { en: 'Strategy', ru: 'Стратегические' },
+    modes: ['glassWars', 'captureFlag'],
+  },
+  {
+    id: 'arcade',
+    label: { en: 'Arcade', ru: 'Аркады' },
+    modes: ['paintBattle', 'miniGames', 'spleef', 'tileRun', 'hideSeek', 'luckyBlocks'],
+  },
+  {
+    id: 'other',
+    label: { en: 'Other', ru: 'Другое' },
+    modes: modeOrder.filter((mode) => ![
+      'duel',
+      'quickDraw',
+      'blitz',
+      'tankDuel',
+      'railDuel',
+      'endlessDuel',
+      'zombies',
+      'swarmNight',
+      'nightmare',
+      'fortress',
+      'glassWars',
+      'captureFlag',
+      'paintBattle',
+      'miniGames',
+      'spleef',
+      'tileRun',
+      'hideSeek',
+      'luckyBlocks',
+    ].includes(mode)),
+  },
 ];
 
 export function isZombieMode(mode: GameMode): boolean {

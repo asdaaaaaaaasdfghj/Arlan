@@ -9,7 +9,7 @@ import {
   type AchievementId,
 } from '../lib/achievements';
 import { mapNames, mapOrder } from '../lib/arenaMap';
-import { modeOrder } from '../lib/arenaModes';
+import { modeGroups, modeOrder } from '../lib/arenaModes';
 import { applyVisualSettings, fpsOptions, loadGameSettings, saveGameSettings, type GameFps, type GameSettings } from '../lib/gameSettings';
 import { clearGameStats, formatPlayTime, loadGameStats, type GameStats } from '../lib/gameStats';
 import { mapName, modeName, t } from '../lib/i18n';
@@ -52,7 +52,11 @@ export function SettingsPage() {
           <option value="ru">Русский</option>
         </SelectField>
         <SelectField label={t(language, 'defaultMode')} value={settings.defaultMode} onChange={(value) => updateSettings({ ...settings, defaultMode: value as GameSettings['defaultMode'] })}>
-          {modeOrder.map((mode) => <option value={mode} key={mode}>{modeName(mode, language)}</option>)}
+          {modeGroups.map((group) => (
+            <optgroup label={group.label[language]} key={group.id}>
+              {group.modes.map((mode) => <option value={mode} key={mode}>{modeName(mode, language)}</option>)}
+            </optgroup>
+          ))}
         </SelectField>
         <SelectField label={t(language, 'defaultMap')} value={settings.defaultMap} onChange={(value) => updateSettings({ ...settings, defaultMap: value as GameSettings['defaultMap'] })}>
           {mapOrder.map((mapId) => <option value={mapId} key={mapId}>{mapName(mapId, mapNames[mapId], language)}</option>)}

@@ -26,7 +26,7 @@ import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { loadGameSettings } from '../lib/gameSettings';
 import { useGameKeyboard } from '../lib/useGameKeyboard';
 import { mapName, modeName, t } from '../lib/i18n';
-import { modeOrder } from '../lib/arenaModes';
+import { modeGroups, modeOrder } from '../lib/arenaModes';
 import { getMapObstacles, mapNames, mapOrder } from '../lib/arenaMap';
 import { getKickReasonLabel, isProfileBanned, recordKick, type KickPayload, type KickReason } from '../lib/onlineBans';
 import { loadGuestProfile, loadPlayerProfile, normalizePlayerProfile, type PlayerProfile, type PlayerSkinId } from '../lib/playerProfile';
@@ -1306,8 +1306,12 @@ export function OnlinePage() {
           <label>
             {t(language, 'mode')}
             <select value={serverMode} onChange={(event) => setServerMode(event.target.value as typeof serverMode)}>
-              {modeOrder.map((mode) => (
-                <option value={mode} key={mode}>{modeName(mode, language)}</option>
+              {modeGroups.map((group) => (
+                <optgroup label={group.label[language]} key={group.id}>
+                  {group.modes.map((mode) => (
+                    <option value={mode} key={mode}>{modeName(mode, language)}</option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </label>
@@ -1398,8 +1402,12 @@ export function OnlinePage() {
               <label>
                 {t(language, 'mode')}
                 <select value={serverMode} onChange={(event) => setServerMode(event.target.value as typeof serverMode)}>
-                  {modeOrder.map((mode) => (
-                    <option value={mode} key={mode}>{modeName(mode, language)}</option>
+                  {modeGroups.map((group) => (
+                    <optgroup label={group.label[language]} key={group.id}>
+                      {group.modes.map((mode) => (
+                        <option value={mode} key={mode}>{modeName(mode, language)}</option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </label>

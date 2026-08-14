@@ -2,7 +2,7 @@ import { type ReactNode, useState } from 'react';
 import { Link } from 'wouter';
 import { MenuShowcase } from '../components/MenuShowcase';
 import { mapNames, mapOrder } from '../lib/arenaMap';
-import { modeOrder } from '../lib/arenaModes';
+import { modeGroups } from '../lib/arenaModes';
 import { loadGameSettings } from '../lib/gameSettings';
 import { mapName, modeDescription, modeName, t } from '../lib/i18n';
 import { pickSplashText } from '../lib/splashTexts';
@@ -31,10 +31,17 @@ export function HomePage() {
           </div>
           <p>{t(language, 'heroCopy')}</p>
           <MenuPicker title={t(language, 'mode')}>
-            {modeOrder.map((item) => (
-              <button className={mode === item ? 'selected' : ''} type="button" key={item} onClick={() => setMode(item)}>
-                {modeName(item, language)}
-              </button>
+            {modeGroups.map((group) => (
+              <div className="mode-picker-group" key={group.id}>
+                <span>{group.label[language]}</span>
+                <div>
+                  {group.modes.map((item) => (
+                    <button className={mode === item ? 'selected' : ''} type="button" key={item} onClick={() => setMode(item)}>
+                      {modeName(item, language)}
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </MenuPicker>
           <MenuPicker title={t(language, 'map')}>
