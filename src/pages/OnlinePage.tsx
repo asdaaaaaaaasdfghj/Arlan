@@ -387,7 +387,7 @@ export function OnlinePage() {
       return;
     }
 
-    const channel = supabase.channel('arena-lobby-host', { config: { broadcast: { self: false } } });
+    const channel = supabase.channel('arena-lobby', { config: { broadcast: { self: false } } });
     channel.subscribe((nextStatus) => {
       if (nextStatus === 'SUBSCRIBED') {
         void sendLobbyListing(channel);
