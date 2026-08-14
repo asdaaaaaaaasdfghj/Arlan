@@ -14,7 +14,7 @@ const spawnPoints = [
 ];
 
 export function createLuckyBlocks(mode: GameMode, mapId: MapId): Barricade[] {
-  if (mode !== 'luckyBlocks') {
+  if (!usesLuckyBlocks(mode)) {
     return [];
   }
 
@@ -28,7 +28,7 @@ export function tickLuckyBlocks(
   elapsed: number,
   nextId: number,
 ): { mapBoards: Barricade[]; nextId: number } {
-  if (mode !== 'luckyBlocks') {
+  if (!usesLuckyBlocks(mode)) {
     return { mapBoards, nextId };
   }
 
@@ -49,4 +49,8 @@ export function tickLuckyBlocks(
 
 function createLuckyBlock(id: number, x: number, y: number): Barricade {
   return { id, x, y, width: 6, height: 6, hp: luckyHp, variant: 'lucky' };
+}
+
+function usesLuckyBlocks(mode: GameMode): boolean {
+  return mode === 'luckyBlocks' || mode === 'hungerGames';
 }

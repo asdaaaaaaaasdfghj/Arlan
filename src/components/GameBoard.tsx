@@ -98,6 +98,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
       <div className="arena-world">
         <div className="arena-grid" />
         {(game.paintTiles ?? []).map((tile) => <PaintTileSprite tile={tile} key={tile.id} />)}
+        {(game.floorHoles ?? []).map((hole) => <FloorHoleSprite hole={hole} key={hole.id} />)}
         {game.mode === 'kingHill' && <HillZoneSprite mapId={game.mapId} />}
         {water.map((terrain) => <TerrainSprite terrain={terrain} kind="water" key={terrain.id} />)}
         {ice.map((terrain) => <TerrainSprite terrain={terrain} kind="ice" key={terrain.id} />)}
@@ -173,6 +174,10 @@ function getPoisonedPlayerForCamera(camera: CameraView, game: GameState): GameSt
 
 function PaintTileSprite({ tile }: { tile: GameState['paintTiles'][number] }) {
   return <span className={`paint-tile paint-tile-${tile.owner}`} style={rectStyle(tile)} />;
+}
+
+function FloorHoleSprite({ hole }: { hole: GameState['floorHoles'][number] }) {
+  return <span className={`floor-hole floor-hole-${hole.owner ?? 'neutral'}`} style={rectStyle(hole)} />;
 }
 
 function PlayerEmoteLabel({ player, label }: { player: GameState['players']['blue']; label: string }) {

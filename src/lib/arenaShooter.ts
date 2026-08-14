@@ -3,6 +3,7 @@ import { tickAllies } from './arenaAllies';
 import { tickCodeBlocks } from './arenaCodeBlocks';
 import { applyBulletHits, moveBullets, spawnBullets } from './arenaCombat';
 import { tickDisasters } from './arenaDisasters';
+import { tickFloorModes } from './arenaFloorModes';
 import { tickFlags } from './arenaFlags';
 import { spawnGrenades, tickGrenades } from './arenaGrenades';
 export { createInitialGame } from './arenaInitialState';
@@ -161,9 +162,10 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   }, delta);
   const trapState = tickTraps(codeState.players, codeState.zombies, state.traps, state.mode, state.mapId, elapsedTime, delta, codeState.nextEffectId);
   const disasterState = tickDisasters({ ...state, players: trapState.players }, delta);
+  const floorState = tickFloorModes({ ...state, players: disasterState.players, floorHoles: state.floorHoles ?? [] }, input);
   const config = modeConfigs[state.mode];
   const timeLeft = config.noTimer ? state.timeLeft : Math.max(0, state.timeLeft - delta);
-  const flagState = tickFlags({ ...state, players: disasterState.players });
+  const flagState = tickFlags({ ...state, players: floorState.players });
   const scoredPlayers = tickKingHill(flagState.players, state.mode, state.mapId, delta);
   const paintState = tickPaintBattle({ ...state, players: scoredPlayers, paintTiles: state.paintTiles ?? [] });
   const secretState = spawnSecretZombies(state.players, paintState.players, trapState.zombies, codeState.nextZombieId, secretZombies);
@@ -195,6 +197,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     portals: state.portals,
     traps: trapState.traps,
     paintTiles: paintState.paintTiles,
+    floorHoles: floorState.floorHoles,
     bullets: fuseState.bullets,
     grenades: grenadeState.grenades,
     powerUps: powerUps.powerUps,

@@ -490,6 +490,25 @@
   box-shadow: inset 0 0 0 1px rgba(201, 24, 74, 0.18);
 }
 
+.floor-hole {
+  position: absolute;
+  z-index: 2;
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(0, 0, 0, 0.92) 0 42%, rgba(21, 23, 25, 0.74) 43% 74%, rgba(255, 255, 255, 0.18) 75% 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 3px 8px rgba(21, 23, 25, 0.24);
+}
+
+.floor-hole-blue {
+  outline: 2px solid rgba(58, 134, 255, 0.42);
+}
+
+.floor-hole-red {
+  outline: 2px solid rgba(239, 71, 111, 0.42);
+}
+
 .bullet-blue { background: #0057d8; }
 .bullet-red { background: #c9184a; }
 .bullet-railgun { border-radius: 3px; }
