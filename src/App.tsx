@@ -7,6 +7,7 @@ import { MapEditorPage } from './pages/MapEditorPage';
 import { MapCatalogPage } from './pages/MapCatalogPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { SettingsPage } from './pages/SettingsPage';
+import { LeaderboardPage } from './pages/LeaderboardPage';
 import { TutorialPage } from './pages/TutorialPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/editor" component={MapEditorPage} />
         <Route path="/catalog" component={MapCatalogPage} />
         <Route path="/profile" component={ProfilePage} />
+        <Route path="/leaderboard" component={LeaderboardPage} />
         <Route path="/tutorial" component={TutorialPage} />
         <Route path="/settings" component={SettingsPage} />
         <Route component={NotFoundPage} />

@@ -1,5 +1,6 @@
 import { modeOrder } from './arenaModes';
 import type { GameMode, GameState } from './arenaTypes';
+import { recordLeaderboardGame } from './leaderboard';
 
 const statsKey = 'duel-arena-stats';
 
@@ -42,6 +43,7 @@ export function clearGameStats() {
 export function recordFinishedGame(game: GameState) {
   if (game.status !== 'finished') return;
 
+  recordLeaderboardGame(game);
   const stats = loadGameStats();
   const winner = game.winner;
   const modeWins = winner && winner !== 'draw' ? addModeWin(stats.winsByMode, game.mode) : stats.winsByMode;

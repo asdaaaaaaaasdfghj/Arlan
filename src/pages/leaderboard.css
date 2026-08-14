@@ -1,0 +1,133 @@
+.leaderboard-page {
+  min-height: 100vh;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 28px 18px 44px;
+  color: #151719;
+}
+
+.leaderboard-panel {
+  display: grid;
+  gap: 16px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 22px;
+}
+
+.leaderboard-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.leaderboard-heading h1 {
+  font-size: 38px;
+  line-height: 1;
+}
+
+.leaderboard-empty {
+  border: 1px dashed #b7c2ca;
+  border-radius: 8px;
+  background: #f8fafb;
+  padding: 18px;
+  color: #59636b;
+  font-weight: 900;
+}
+
+.leaderboard-table {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 100px 90px 90px;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  border-top: 1px solid #e6eaee;
+  padding: 8px 12px;
+}
+
+.leaderboard-row:first-child {
+  border-top: 0;
+}
+
+.leaderboard-row.header {
+  min-height: 40px;
+  background: #f2f6f8;
+  color: #59636b;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.leaderboard-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-weight: 900;
+}
+
+.leaderboard-player i {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 2px solid #111820;
+  border-radius: 50%;
+  background: var(--leader-color);
+}
+
+.leaderboard-player em {
+  border-radius: 999px;
+  background: #e8edf1;
+  color: #59636b;
+  padding: 3px 7px;
+  font-size: 11px;
+  font-style: normal;
+}
+
+@media (max-width: 680px) {
+  .leaderboard-row {
+    grid-template-columns: 34px minmax(0, 1fr) 64px 58px;
+  }
+
+  .leaderboard-row span:last-child {
+    display: none;
+  }
+}
+
+:root[data-theme='dark'] .leaderboard-page {
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .leaderboard-page .menu-nav a {
+  color: #8fc9ff;
+}
+
+:root[data-theme='dark'] .leaderboard-panel,
+:root[data-theme='dark'] .leaderboard-table {
+  border-color: #2a3440;
+  background: #111820;
+}
+
+:root[data-theme='dark'] .leaderboard-row {
+  border-color: #2a3440;
+}
+
+:root[data-theme='dark'] .leaderboard-row.header,
+:root[data-theme='dark'] .leaderboard-empty {
+  border-color: #334253;
+  background: #17212b;
+  color: #c9d3de;
+}
+
+:root[data-theme='dark'] .leaderboard-player em {
+  background: #24313d;
+  color: #c9d3de;
+}
