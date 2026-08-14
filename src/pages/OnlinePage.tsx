@@ -694,7 +694,7 @@ export function OnlinePage() {
   }
 
   function setPressed(player: PlayerId, key: keyof PlayerInput, pressed: boolean) {
-    const controlledPlayer = isFreeWorldRule(activeOnlineRule) && role === 'host' ? 'blue' : player;
+    const controlledPlayer = getOnlineControlledPlayer(player, key);
 
     if (isBuildWorldRule(activeOnlineRule) && key === 'build' && pressed) {
       placeSandboxBlock(controlledPlayer);
@@ -722,6 +722,12 @@ export function OnlinePage() {
     if ((isFreeWorldRule(activeOnlineRule) || canNudgeExtraInOfficial) && pressed && key === 'shoot') {
       fireOnlineShot();
     }
+  }
+
+  function getOnlineControlledPlayer(player: PlayerId, key: keyof PlayerInput): PlayerId {
+    if (role === 'host' && isFreeWorldRule(activeOnlineRule)) return 'blue';
+    if (role === 'guest' && guestSlot === 'red' && player === 'blue' && isMoveKey(key)) return 'red';
+    return player;
   }
 
   function nudgeFreeWorldPlayer() {
