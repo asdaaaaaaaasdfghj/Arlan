@@ -32,8 +32,8 @@ export function HomePage() {
           <p>{t(language, 'heroCopy')}</p>
           <MenuPicker title={t(language, 'mode')}>
             {modeGroups.map((group) => (
-              <div className="mode-picker-group" key={group.id}>
-                <span>{group.label[language]}</span>
+              <section className="mode-picker-group" key={group.id}>
+                <strong className="mode-picker-group-title">{group.label[language]}</strong>
                 <div>
                   {group.modes.map((item) => (
                     <button className={mode === item ? 'selected' : ''} type="button" key={item} onClick={() => setMode(item)}>
@@ -41,7 +41,7 @@ export function HomePage() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </section>
             ))}
           </MenuPicker>
           <MenuPicker title={t(language, 'map')}>

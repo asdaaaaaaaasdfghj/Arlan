@@ -93,6 +93,14 @@
   color: var(--ink);
 }
 
+:root[data-theme='dark'] .mode-picker-group {
+  border-left-color: #6aa9ff;
+}
+
+:root[data-theme='dark'] .mode-picker-group-title {
+  color: #9dcbff;
+}
+
 :root[data-theme='dark'] .showcase-badge span,
 :root[data-theme='dark'] .home-selection span,
 :root[data-theme='dark'] .home-selection p {
