@@ -1279,13 +1279,30 @@ export function OnlinePage() {
             {language === 'ru' ? 'Название сервака' : 'Server name'}
             <input value={serverName} maxLength={28} onChange={(event) => setServerName(event.target.value)} />
           </label>
-          <label>
-            {language === 'ru' ? 'Вид сервера' : 'Server type'}
-            <select value={serverVisibility} onChange={(event) => setServerVisibility(event.target.value as ServerVisibility)}>
-              <option value="public">{language === 'ru' ? 'Публичный - виден всем, код не нужен' : 'Public - visible to everyone, no code needed'}</option>
-              <option value="private">{language === 'ru' ? 'Приватный - только по коду' : 'Private - code only'}</option>
-            </select>
-          </label>
+          <section className="online-visibility-card">
+            <strong>{language === 'ru' ? 'Вид сервера' : 'Server type'}</strong>
+            <div>
+              <button
+                type="button"
+                className={serverVisibility === 'public' ? 'selected' : ''}
+                onClick={() => setServerVisibility('public')}
+              >
+                {language === 'ru' ? 'Публичный' : 'Public'}
+              </button>
+              <button
+                type="button"
+                className={serverVisibility === 'private' ? 'selected' : ''}
+                onClick={() => setServerVisibility('private')}
+              >
+                {language === 'ru' ? 'Приватный' : 'Private'}
+              </button>
+            </div>
+            <span>
+              {serverVisibility === 'public'
+                ? (language === 'ru' ? 'Будет в списке серверов, код вводить не надо.' : 'Shown in the server list, no code needed.')
+                : (language === 'ru' ? 'Не показывается в списке, вход только по коду.' : 'Hidden from the list, code only.')}
+            </span>
+          </section>
           <label>
             {t(language, 'mode')}
             <select value={serverMode} onChange={(event) => setServerMode(event.target.value as typeof serverMode)}>

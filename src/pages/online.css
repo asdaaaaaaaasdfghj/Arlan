@@ -124,6 +124,45 @@
   text-transform: uppercase;
 }
 
+.online-visibility-card {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(46, 111, 149, 0.22);
+  border-radius: 8px;
+  background: #f4f9fc;
+  padding: 8px;
+}
+
+.online-visibility-card strong {
+  color: #2e3a43;
+  font-size: 12px;
+  font-weight: 1000;
+}
+
+.online-visibility-card div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.online-visibility-card button {
+  border: 1px solid #cbd3d8;
+  background: #ffffff;
+  color: #151719;
+}
+
+.online-visibility-card button.selected {
+  border-color: #2e6f95;
+  background: #2e6f95;
+  color: #ffffff;
+}
+
+.online-visibility-card span {
+  color: #59636b;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .online-panel label {
   display: grid;
   gap: 3px;
@@ -862,6 +901,28 @@
 :root[data-theme='dark'] .online-server-card em {
   background: rgba(143, 201, 255, 0.16);
   color: #8fc9ff;
+}
+
+:root[data-theme='dark'] .online-visibility-card {
+  border-color: #34434d;
+  background: #0c1115;
+}
+
+:root[data-theme='dark'] .online-visibility-card strong,
+:root[data-theme='dark'] .online-visibility-card span {
+  color: var(--soft);
+}
+
+:root[data-theme='dark'] .online-visibility-card button {
+  border-color: #34434d;
+  background: #11171b;
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .online-visibility-card button.selected {
+  border-color: #8fc9ff;
+  background: #1e5b86;
+  color: #ffffff;
 }
 
 :root[data-theme='dark'] .online-emote-panel button,
