@@ -100,7 +100,6 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
         <div className="arena-grid" />
         {(game.paintTiles ?? []).map((tile) => <PaintTileSprite tile={tile} key={tile.id} />)}
         {(game.floorHoles ?? []).map((hole) => <FloorHoleSprite hole={hole} key={hole.id} />)}
-        {runDecorations.map((decoration) => <span className={`run-fake-decoration run-fake-decoration-${decoration.kind}`} style={rectStyle(decoration)} key={decoration.id} />)}
         {game.mode === 'kingHill' && <HillZoneSprite mapId={game.mapId} />}
         {water.map((terrain) => <TerrainSprite terrain={terrain} kind="water" key={terrain.id} />)}
         {ice.map((terrain) => <TerrainSprite terrain={terrain} kind="ice" key={terrain.id} />)}
@@ -110,6 +109,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
         {codeBlocks.map((block) => <CodeBlockSprite block={block} key={block.id} />)}
         {vehicles.map((vehicle) => <VehicleSprite vehicle={vehicle} key={vehicle.id} />)}
         {decorations.map((decoration) => <DecorationSprite decoration={decoration} key={decoration.id} />)}
+        {runDecorations.map((decoration) => <span className={`run-fake-decoration run-fake-decoration-${decoration.kind}`} style={rectStyle(decoration)} key={decoration.id} />)}
         {mapObstacles.map((obstacle) => (
           <div className={`map-wall ${getWallClass(obstacle.id)}`} key={obstacle.id} style={rectStyle(obstacle)} />
         ))}
@@ -122,8 +122,8 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
         {game.tnts.map((tnt) => <TntSprite tnt={tnt} key={tnt.id} />)}
         {game.allyCheckpoints.map((checkpoint) => <AllyCheckpointSprite checkpoint={checkpoint} key={checkpoint.id} />)}
         {game.mode === 'captureFlag' && Object.values(game.flags).map((flag) => <FlagSprite flag={flag} key={flag.owner} />)}
-        <PlayerSprite player={game.players.blue} profile={playerProfiles?.blue} showName={showPlayerNames} useProfileColor={useProfileColors} />
-        <PlayerSprite player={game.players.red} profile={playerProfiles?.red} showName={showPlayerNames} useProfileColor={useProfileColors} />
+        <PlayerSprite player={game.players.blue} profile={playerProfiles?.blue} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.blue, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} />
+        <PlayerSprite player={game.players.red} profile={playerProfiles?.red} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.red, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} />
         {playerEmotes?.blue && <PlayerEmoteLabel player={game.players.blue} label={playerEmotes.blue} />}
         {playerEmotes?.red && <PlayerEmoteLabel player={game.players.red} label={playerEmotes.red} />}
         {game.allies.map((ally) => <AllySprite ally={ally} key={ally.id} />)}
@@ -189,7 +189,21 @@ function getRunFakeDecorations(bounds: ArenaBounds) {
     { id: 'fake-rocks-a', kind: 'rocks', x: 62 + wideOffset, y: 12, width: 12, height: 7 },
     { id: 'fake-crate-b', kind: 'crate', x: 38 + wideOffset, y: 45, width: 9, height: 8 },
     { id: 'fake-rocks-b', kind: 'rocks', x: 76 + wideOffset, y: 42, width: 11, height: 8 },
+    { id: 'fake-crate-c', kind: 'crate', x: 12 + wideOffset, y: 33, width: 7, height: 7 },
+    { id: 'fake-rocks-c', kind: 'rocks', x: 51 + wideOffset, y: 30, width: 10, height: 7 },
+    { id: 'fake-crate-d', kind: 'crate', x: 86 + wideOffset, y: 23, width: 7, height: 9 },
   ];
+}
+
+function isHiddenBehindCover(player: GameState['players']['blue'], game: GameState, covers: Array<{ x: number; y: number; width: number; height: number }>): boolean {
+  if (game.mode !== 'hideSeek' || player.hp <= 0) return false;
+
+  return covers.some((cover) => (
+    player.x >= cover.x - 3
+    && player.x <= cover.x + cover.width + 3
+    && player.y >= cover.y + cover.height * 0.35
+    && player.y <= cover.y + cover.height + 7
+  ));
 }
 
 function PlayerEmoteLabel({ player, label }: { player: GameState['players']['blue']; label: string }) {

@@ -17,7 +17,7 @@ const modes: Omit<Record<GameMode, { en: [string, string]; ru: [string, string] 
   miniGames: { en: ['Mini Games', 'Ten mini-games, thirty seconds each. Adapt fast.'], ru: ['Mini Games', '10 мини-игр по 30 секунд. Правила постоянно меняются.'] },
   spleef: { en: ['Spleef', 'Shoot the floor under the enemy and make them fall.'], ru: ['Сплиф', 'Разрушай плиты под врагом и сбрасывай его вниз.'] },
   tileRun: { en: ['Run', 'Tiles break after you step on them. Keep moving.'], ru: ['Ран', 'Плиты ломаются после шага. Остановишься — упадёшь.'] },
-  hideSeek: { en: ['Hide and Seek', 'Use objects and cover to hide, ambush, and survive.'], ru: ['Прятки', 'Прячься за предметами, делай засады и выживай.'] },
+  hideSeek: { en: ['Hide and Seek', 'Stand behind cover to fade out, ambush, and survive.'], ru: ['Прятки', 'Встань за укрытие: игрок потускнеет, ник пропадёт, можно делать засаду.'] },
   hungerGames: { en: ['Hunger Games', 'Scavenge power-ups and lucky blocks. Last fighter wins the trades.'], ru: ['Голодные игры', 'Собирай бонусы и лаки-блоки. Выживает тот, кто лучше лутается.'] },
   grenadeMayhem: { en: ['Grenade Mayhem', 'Fast grenades, loud explosions, first to 5.'], ru: ['Гранатный хаос', 'Быстрые гранаты, громкие взрывы, игра до 5.'] },
   endlessDuel: { en: ['Endless Duel', 'No timer. Fight until someone reaches 7 points.'], ru: ['Бесконечная дуэль', 'Без таймера: бой до 7 очков.'] },
