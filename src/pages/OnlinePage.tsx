@@ -532,8 +532,14 @@ export function OnlinePage() {
     });
     channel.on('broadcast', { event: 'extra-player' }, ({ payload }) => {
       const extra = normalizeExtraPlayer(payload);
+      if (roomPlayersRef.current.some((player) => player.clientId === extra.clientId && player.slot !== 'extra')) return;
       if (!acceptRemoteExtraPlayer(extra, code)) return;
       setExtraPlayers((current) => ({ ...current, [extra.clientId]: extra }));
+    });
+    channel.on('broadcast', { event: 'extra-remove' }, ({ payload }) => {
+      const clientId = normalizeTargetClientId(payload);
+      if (!clientId) return;
+      setExtraPlayers((current) => removeExtraPlayer(current, clientId));
     });
     channel.on('broadcast', { event: 'online-shot' }, ({ payload }) => {
       const bullet = normalizeOnlineBullet(payload);
@@ -625,6 +631,9 @@ export function OnlinePage() {
             ? { ...current, red: loadOnlineProfile() }
             : current
         ));
+        if (assignment.slot === 'red') {
+          setExtraPlayers((current) => removeExtraPlayer(current, clientIdRef.current));
+        }
         if (assignment.slot === 'extra') {
           const extra = createExtraPlayer(clientIdRef.current, loadOnlineProfile(), 48, 34);
           setExtraPlayers((current) => ({ ...current, [clientIdRef.current]: extra }));
@@ -855,6 +864,8 @@ export function OnlinePage() {
       const next = [...current, createParticipant(clientId, profile, slot)];
       if (slot === 'red') {
         setPlayerProfiles((profiles) => ({ ...profiles, red: profile }));
+        setExtraPlayers((extras) => removeExtraPlayer(extras, clientId));
+        void sendBroadcast('extra-remove', clientId);
       }
 
       const nextModeState = syncModeStateForPlayers(modeState, rule, next);
@@ -1441,7 +1452,7 @@ export function OnlinePage() {
                       ))}
                     </div>
                   )}
-                  {isOfficialRoom && <OfficialSecretRoom active={Object.values(extraPlayers).some(isInsideOfficialSecretRoom)} />}
+                  {isOfficialRoom && <OfficialSecretRoom active={getVisibleExtraPlayers(extraPlayers, roomPlayers).some(isInsideOfficialSecretRoom)} />}
                   <SandboxAvatar
                     color={playerProfiles.blue?.color ?? '#3a86ff'}
                     skin={playerProfiles.blue?.skin ?? 'none'}
@@ -1450,7 +1461,7 @@ export function OnlinePage() {
                     x={(game.players.blue.x / ARENA_WIDTH) * 100}
                     y={(game.players.blue.y / ARENA_HEIGHT) * 100}
                   />
-                  {Object.values(extraPlayers).map((player) => (
+                  {getVisibleExtraPlayers(extraPlayers, roomPlayers).map((player) => (
                     <SandboxAvatar
                       color={player.color}
                       skin={player.skin}
@@ -1475,7 +1486,7 @@ export function OnlinePage() {
                     />
                   ))}
                   {Object.values(playerEmotes).map((emote) => {
-                    const position = getEmotePosition(emote, roomPlayers, extraPlayers, game);
+                    const position = getEmotePosition(emote, roomPlayers, filterExtraPlayers(extraPlayers, roomPlayers), game);
                     return position ? <PlayerEmoteBubble emote={emote} position={position} key={emote.clientId} /> : null;
                   })}
                 </div>
@@ -1484,8 +1495,8 @@ export function OnlinePage() {
             ) : (
               <>
                 <GameBoard game={game} language={language} playerProfiles={playerProfiles} playerEmotes={getFighterEmoteLabels(playerEmotes, roomPlayers)} />
-                {isOfficialRoom && <OfficialSecretRoom active={isOfficialSecretActive(game, extraPlayers)} />}
-                {Object.values(extraPlayers).map((player) => (
+                {isOfficialRoom && <OfficialSecretRoom active={isOfficialSecretActive(game, filterExtraPlayers(extraPlayers, roomPlayers))} />}
+                {getVisibleExtraPlayers(extraPlayers, roomPlayers).map((player) => (
                   <SandboxAvatar
                     color={player.color}
                     skin={player.skin}
@@ -1497,7 +1508,7 @@ export function OnlinePage() {
                   />
                 ))}
                 {Object.values(playerEmotes).map((emote) => {
-                  const position = getExtraEmotePosition(emote, roomPlayers, extraPlayers);
+                  const position = getExtraEmotePosition(emote, roomPlayers, filterExtraPlayers(extraPlayers, roomPlayers));
                   return position ? <PlayerEmoteBubble emote={emote} position={position} key={emote.clientId} /> : null;
                 })}
               </>
@@ -1604,6 +1615,21 @@ function createExtraPlayer(clientId: string, profile: PlayerProfile, x: number, 
     facingX: 1,
     facingY: 0,
   };
+}
+
+function removeExtraPlayer(players: Record<string, ExtraPlayer>, clientId: string): Record<string, ExtraPlayer> {
+  if (!players[clientId]) return players;
+  const next = { ...players };
+  delete next[clientId];
+  return next;
+}
+
+function getVisibleExtraPlayers(players: Record<string, ExtraPlayer>, roster: OnlineParticipant[]): ExtraPlayer[] {
+  return Object.values(players).filter((player) => roster.some((item) => item.clientId === player.clientId && item.slot === 'extra'));
+}
+
+function filterExtraPlayers(players: Record<string, ExtraPlayer>, roster: OnlineParticipant[]): Record<string, ExtraPlayer> {
+  return Object.fromEntries(getVisibleExtraPlayers(players, roster).map((player) => [player.clientId, player]));
 }
 
 function moveExtraPlayer(player: ExtraPlayer, input: PlayerInput, blocks: SandboxBlock[], delta: number): ExtraPlayer {
