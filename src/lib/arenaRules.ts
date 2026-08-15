@@ -31,13 +31,17 @@ export function findWinner(
     return timeLeft <= 0 && state ? getPaintBattleWinner(state) : null;
   }
 
+  if (mode === 'miniGames') {
+    return timeLeft <= 0 ? getScoreWinner(players) : null;
+  }
+
   const scoreToWin = getScoreToWin(mode, state);
 
-  if (mode !== 'miniGames' && players.blue.score >= scoreToWin) {
+  if (players.blue.score >= scoreToWin) {
     return 'blue';
   }
 
-  if (mode !== 'miniGames' && players.red.score >= scoreToWin) {
+  if (players.red.score >= scoreToWin) {
     return 'red';
   }
 
@@ -45,11 +49,7 @@ export function findWinner(
     return null;
   }
 
-  if (players.blue.score === players.red.score) {
-    return 'draw';
-  }
-
-  return players.blue.score > players.red.score ? 'blue' : 'red';
+  return getScoreWinner(players);
 }
 
 export function getScoreToWin(mode: GameMode, state?: GameState): number {
@@ -59,4 +59,12 @@ export function getScoreToWin(mode: GameMode, state?: GameState): number {
   }
 
   return baseScore + Math.ceil(countTeamBots(state) / 2);
+}
+
+function getScoreWinner(players: Record<PlayerId, Player>): GameState['winner'] {
+  if (players.blue.score === players.red.score) {
+    return 'draw';
+  }
+
+  return players.blue.score > players.red.score ? 'blue' : 'red';
 }

@@ -28,7 +28,7 @@ export const modeConfigs: Record<GameMode, ModeConfig> = {
   flameDuel: createDuel('flameDuel', 'Flamethrower Fight', 'Only flamethrowers. Get close and melt the arena.', 55, 5, 115, 'flamethrower'),
   paintBattle: createDuel('paintBattle', 'Paint Battle', 'Leave paint trails while moving. Highest map coverage wins.', 60, 0),
   miniGames: {
-    ...createDuel('miniGames', 'Mini Games', 'Ten mini-games, thirty seconds each. Adapt fast.', 300, 999),
+    ...createDuel('miniGames', 'Mini Games', 'Ten mini-games, thirty seconds each. Adapt fast.', 300, 0),
     grenadeCooldown: 1.35,
   },
   spleef: createDuel('spleef', 'Spleef', 'Shoot the floor under the enemy and make them fall.', 75, 5),
