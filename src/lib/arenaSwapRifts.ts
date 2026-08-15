@@ -11,7 +11,6 @@ export function getModeSwapRifts(mode: GameMode, mapId: MapId): Obstacle[] {
   const centerX = bounds.width / 2;
   const centerY = bounds.height / 2;
   return [
-    { id: 'mode-swap-center', x: centerX - 4, y: centerY - 4, width: 8, height: 8 },
     { id: 'mode-swap-left', x: Math.max(10, centerX - 30), y: centerY - 16, width: 7, height: 7 },
     { id: 'mode-swap-right', x: Math.min(bounds.width - 17, centerX + 23), y: centerY + 9, width: 7, height: 7 },
   ];
