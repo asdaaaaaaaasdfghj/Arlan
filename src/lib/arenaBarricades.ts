@@ -39,7 +39,11 @@ export function buildBarricades(
       return;
     }
 
-    const barricade = createBarricade(player, nextBarricadeId);
+    const barricade = createBarricade(player, nextBarricadeId, [...created, ...blockers], mapId);
+    if (!barricade) {
+      return;
+    }
+
     if (!canPlaceBarricade(barricade, [...created, ...blockers], mapId)) {
       return;
     }
@@ -83,21 +87,35 @@ export function buildArenaBlocks(
   return { players: nextPlayers, barricades: created, nextId: nextBlockId };
 }
 
-function createBarricade(player: Player, id: number): Barricade {
+function createBarricade(player: Player, id: number, existing: Barricade[], mapId: MapId): Barricade | null {
   const horizontal = Math.abs(player.facingX) >= Math.abs(player.facingY);
   const width = horizontal ? BARRICADE_HEIGHT : BARRICADE_WIDTH;
   const height = horizontal ? BARRICADE_WIDTH : BARRICADE_HEIGHT;
-  const centerX = player.x + player.facingX * BUILD_DISTANCE;
-  const centerY = player.y + player.facingY * BUILD_DISTANCE;
+  const sideX = -player.facingY;
+  const sideY = player.facingX;
+  const distances = [BUILD_DISTANCE, 6, 10, 4, 12];
+  const offsets = [0, -3, 3, -5, 5];
 
-  return {
-    id,
-    x: centerX - width / 2,
-    y: centerY - height / 2,
-    width,
-    height,
-    hp: BARRICADE_HP,
-  };
+  for (const distance of distances) {
+    for (const offset of offsets) {
+      const centerX = player.x + player.facingX * distance + sideX * offset;
+      const centerY = player.y + player.facingY * distance + sideY * offset;
+      const barricade = {
+        id,
+        x: centerX - width / 2,
+        y: centerY - height / 2,
+        width,
+        height,
+        hp: BARRICADE_HP,
+      };
+
+      if (canPlaceBarricade(barricade, existing, mapId)) {
+        return barricade;
+      }
+    }
+  }
+
+  return null;
 }
 
 function createBuildBlock(player: Player, id: number): Barricade {

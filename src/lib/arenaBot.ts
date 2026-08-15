@@ -5,6 +5,7 @@ import { findBotMoveTarget } from './arenaBotPath';
 import { hillZone } from './arenaKingHill';
 import { addStrafeTarget } from './botTactics';
 import { isZombieMode } from './arenaModes';
+import { isSurvivalGrace } from './arenaSurvivalMode';
 import type { AllyCheckpoint, Barricade, GameInput, GameState, Player, PlayerInput, Zombie } from './arenaTypes';
 import type { BotDifficulty } from './gameSettings';
 import { cannotSeeInGrass, canSeeWhilePoisoned } from './botVision';
@@ -41,6 +42,10 @@ export function withRedBotInput(
 }
 
 function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {
+  if (isSurvivalGrace(game.mode, game.elapsedTime)) {
+    return createSurvivalBuilderInput(game);
+  }
+
   if (game.mode === 'captureFlag' && game.zombies.length === 0) {
     return createCaptureBotInput(game, difficulty);
   }
@@ -84,6 +89,32 @@ function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerIn
     shoot: !lineBlocked && aimedAtTarget && distance < profile.shootRange,
     build: isZombieMode(game.mode) && nearestZombieDistance(red, game.zombies) < 18,
     grenade: !lineBlocked && aimedAtTarget && distance > profile.grenadeMin && distance < 42,
+    enterVehicle: false,
+  };
+}
+
+function createSurvivalBuilderInput(game: GameState): PlayerInput {
+  const red = game.players.red;
+  const center = { x: 72, y: 32 };
+  const phase = Math.floor(game.elapsedTime * 1.7) % 4;
+  const patrol = [
+    { x: center.x + 9, y: center.y - 8 },
+    { x: center.x - 4, y: center.y - 10 },
+    { x: center.x - 8, y: center.y + 7 },
+    { x: center.x + 8, y: center.y + 9 },
+  ][phase];
+  const moveTarget = findBotMoveTarget(game, red, patrol);
+  const dx = moveTarget.x - red.x;
+  const dy = moveTarget.y - red.y;
+
+  return {
+    up: dy < -1.2,
+    down: dy > 1.2,
+    left: dx < -1.2,
+    right: dx > 1.2,
+    shoot: false,
+    build: game.barricades.length < 24,
+    grenade: false,
     enterVehicle: false,
   };
 }
