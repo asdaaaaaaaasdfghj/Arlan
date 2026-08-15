@@ -67,7 +67,7 @@ function getMiniGameText(game: GameState): string {
 
 function getSurvivalGraceText(game: GameState, language: Language): string {
   const remaining = Math.max(0, Math.ceil(survivalGraceSeconds - game.elapsedTime));
-  return language === 'ru' ? `Оружие через ${remaining}s` : `Weapons unlock in ${remaining}s`;
+  return language === 'ru' ? `Мирное время: строй базу. Оружие через ${remaining}s` : `Peace time: build a base. Weapons in ${remaining}s`;
 }
 
 function getClockText(game: GameState): string {

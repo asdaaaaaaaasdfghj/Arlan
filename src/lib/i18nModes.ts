@@ -20,7 +20,7 @@ const modes: Omit<Record<GameMode, { en: [string, string]; ru: [string, string] 
   hideSeek: { en: ['Hide and Seek', 'Stand behind cover to fade out, ambush, and survive.'], ru: ['Прятки', 'Встань за укрытие: игрок потускнеет, ник пропадёт, можно делать засаду.'] },
   hungerGames: { en: ['Hunger Games', 'Scavenge power-ups and lucky blocks. Last fighter wins the trades.'], ru: ['Голодные игры', 'Собирай бонусы и лаки-блоки. Выживает тот, кто лучше лутается.'] },
   swapRift: { en: ['Swap Rift', 'Step into a rift to swap places with the enemy.'], ru: ['Разлом обмена', 'Зайди в разлом, чтобы мгновенно поменяться местами с врагом.'] },
-  craftSurvival: { en: ['Craft Survival', 'Weapons unlock after the peace phase. Loot position first, fight later.'], ru: ['Майн выживание', 'Оружие включается только после мирной фазы: сначала займи позицию, потом дерись.'] },
+  craftSurvival: { en: ['Survival', 'Build a barricade base during peace time. Weapons unlock later.'], ru: ['Выживание', 'В мирное время строй базу из баррикад без перезарядки. Потом включается оружие.'] },
   grenadeMayhem: { en: ['Grenade Mayhem', 'Fast grenades, loud explosions, first to 5.'], ru: ['Гранатный хаос', 'Быстрые гранаты, громкие взрывы, игра до 5.'] },
   endlessDuel: { en: ['Endless Duel', 'No timer. Fight until someone reaches 7 points.'], ru: ['Бесконечная дуэль', 'Без таймера: бой до 7 очков.'] },
   kingHill: { en: ['King of the Hill', 'Hold the center zone alone to score. First to 20.'], ru: ['Царь горы', 'Удерживай центр в одиночку, чтобы получать очки. Первый до 20.'] },

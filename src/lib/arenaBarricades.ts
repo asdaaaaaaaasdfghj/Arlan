@@ -25,14 +25,16 @@ export function buildBarricades(
   blockers: Barricade[],
   mapId: MapId,
   nextId: number,
+  options: { cooldown?: number; maxBuilds?: number } = {},
 ): { players: Record<PlayerId, Player>; barricades: Barricade[]; nextId: number } {
   let created = [...barricades];
   let nextBarricadeId = nextId;
   const nextPlayers = { ...players };
+  const cooldown = options.cooldown ?? BUILD_COOLDOWN;
 
   (Object.keys(players) as PlayerId[]).forEach((id) => {
     const player = nextPlayers[id];
-    const maxBuilds = mapId === 'custom' ? MAX_BARRICADES : MAX_BARRICADES;
+    const maxBuilds = options.maxBuilds ?? (mapId === 'custom' ? MAX_BARRICADES : MAX_BARRICADES);
     if (!input[id].build || player.hp <= 0 || player.buildCooldown > 0 || created.length >= maxBuilds) {
       return;
     }
@@ -44,7 +46,7 @@ export function buildBarricades(
 
     created = [...created, barricade];
     nextBarricadeId += 1;
-    nextPlayers[id] = { ...player, buildCooldown: BUILD_COOLDOWN };
+    nextPlayers[id] = { ...player, buildCooldown: cooldown };
   });
 
   return { players: nextPlayers, barricades: created, nextId: nextBarricadeId };

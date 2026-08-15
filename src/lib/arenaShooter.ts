@@ -56,7 +56,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const blockers = [...pushedBarricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
   const movedPlayers = updatePlayers(state.players, input, delta, state.mapId, blockers, mechanics);
   const players = tickSwapRifts(teleportPlayers(pushPlayersFromMovingBlocks(movedPlayers, movingBlocks), state.portals), mechanics.swapRifts);
-  const movedState = { ...state, barricades: pushedBarricades, mapBoards: pushedMapBoards, movingBlocks };
+  const movedState = { ...state, barricades: pushedBarricades, mapBoards: pushedMapBoards, movingBlocks, elapsedTime };
   const building = buildZombieModeBarricades(movedState, players, input);
   const miniGameRule = getMiniGameRule(state);
   const lockedPlayers = isMiniGamesMode(state) ? lockMiniGameWeapons({ ...state, players: building.players }) : building.players;

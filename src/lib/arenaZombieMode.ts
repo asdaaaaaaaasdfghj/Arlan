@@ -1,6 +1,7 @@
 import type { GameInput, GameState, Player, PlayerId } from './arenaTypes';
 import { buildArenaBlocks, buildBarricades } from './arenaBarricades';
 import { isGlassWarsMode, isZombieMode, modeConfigs } from './arenaModes';
+import { isSurvivalGrace, isSurvivalMode, survivalBuildLimit } from './arenaSurvivalMode';
 import { spawnZombie, tickZombies } from './arenaZombies';
 import { applyZombieHits } from './arenaZombieHits';
 
@@ -11,6 +12,18 @@ export function buildZombieModeBarricades(
 ): { players: Record<PlayerId, Player>; barricades: GameState['barricades']; nextBarricadeId: number } {
   if (isGlassWarsMode(state.mode)) {
     const result = buildArenaBlocks(players, input, state.barricades, state.mapBoards, state.mapId, state.nextBarricadeId);
+    return { players: result.players, barricades: result.barricades, nextBarricadeId: result.nextId };
+  }
+
+  if (isSurvivalMode(state.mode)) {
+    if (!isSurvivalGrace(state.mode, state.elapsedTime)) {
+      return { players, barricades: state.barricades, nextBarricadeId: state.nextBarricadeId };
+    }
+
+    const result = buildBarricades(players, input, state.barricades, state.mapBoards, state.mapId, state.nextBarricadeId, {
+      cooldown: 0,
+      maxBuilds: survivalBuildLimit,
+    });
     return { players: result.players, barricades: result.barricades, nextBarricadeId: result.nextId };
   }
 

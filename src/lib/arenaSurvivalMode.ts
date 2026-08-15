@@ -1,9 +1,14 @@
 import type { GameInput, GameMode } from './arenaTypes';
 
 export const survivalGraceSeconds = 24;
+export const survivalBuildLimit = 24;
 
 export function isSurvivalGrace(mode: GameMode, elapsedTime: number): boolean {
   return mode === 'craftSurvival' && elapsedTime < survivalGraceSeconds;
+}
+
+export function isSurvivalMode(mode: GameMode): boolean {
+  return mode === 'craftSurvival';
 }
 
 export function lockSurvivalWeapons(input: GameInput): GameInput {
