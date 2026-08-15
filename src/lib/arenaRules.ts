@@ -53,8 +53,8 @@ export function findWinner(
 }
 
 export function getScoreToWin(mode: GameMode, state?: GameState): number {
-  const baseScore = modeConfigs[mode].scoreToWin;
-  if (!state || baseScore <= 0 || mode === 'miniGames' || mode === 'kingHill' || mode === 'captureFlag' || mode === 'glassWars') {
+  const baseScore = mode === 'miniGames' ? 5 : modeConfigs[mode].scoreToWin;
+  if (!state || baseScore <= 0 || mode === 'kingHill' || mode === 'captureFlag' || mode === 'glassWars') {
     return baseScore;
   }
 
