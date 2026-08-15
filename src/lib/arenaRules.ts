@@ -33,11 +33,11 @@ export function findWinner(
 
   const scoreToWin = getScoreToWin(mode, state);
 
-  if (players.blue.score >= scoreToWin) {
+  if (mode !== 'miniGames' && players.blue.score >= scoreToWin) {
     return 'blue';
   }
 
-  if (players.red.score >= scoreToWin) {
+  if (mode !== 'miniGames' && players.red.score >= scoreToWin) {
     return 'red';
   }
 
