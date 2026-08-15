@@ -36,6 +36,7 @@ export const modeConfigs: Record<GameMode, ModeConfig> = {
   hideSeek: createDuel('hideSeek', 'Hide and Seek', 'Use objects and cover to hide, ambush, and survive.', 80, 5, 100, 'shotgun'),
   hungerGames: createDuel('hungerGames', 'Hunger Games', 'Scavenge power-ups and lucky blocks. Last fighter wins the trades.', 120, 7),
   swapRift: createDuel('swapRift', 'Swap Rift', 'Step into a rift to swap places with the enemy.', 70, 5),
+  craftSurvival: createDuel('craftSurvival', 'Craft Survival', 'Weapons unlock after the peace phase. Loot position first, fight later.', 95, 5),
   swordDuel: createDuel('swordDuel', 'Sword Fights', 'No guns or grenades. Close in and slash with swords.', 70, 5),
   grenadeMayhem: {
     ...createDuel('grenadeMayhem', 'Grenade Mayhem', 'Fast grenades, loud explosions, first to 5.', 60, 5),
@@ -88,6 +89,7 @@ export const modeOrder: GameMode[] = [
   'grenadeMayhem',
   'kingHill',
   'hungerGames',
+  'craftSurvival',
   'disasters',
 ];
 

@@ -21,6 +21,7 @@ import { updatePlayers } from './arenaPlayers';
 import { findWinner } from './arenaRules';
 import { spawnSecretZombies } from './arenaSecretZombies';
 import { getModeSwapRifts, tickSwapRifts } from './arenaSwapRifts';
+import { isSurvivalGrace, lockSurvivalWeapons } from './arenaSurvivalMode';
 import { explodeReadyTnts, tickTnts, triggerTntChain, triggerTnts } from './arenaTnt';
 import { tickTraps } from './arenaTraps';
 import { isCustomOnlyWeapon } from './arenaWeapons';
@@ -59,16 +60,17 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const building = buildZombieModeBarricades(movedState, players, input);
   const miniGameRule = getMiniGameRule(state);
   const lockedPlayers = isMiniGamesMode(state) ? lockMiniGameWeapons({ ...state, players: building.players }) : building.players;
+  const combatInput = isSurvivalGrace(state.mode, elapsedTime) ? lockSurvivalWeapons(input) : input;
   const swordActive = isSwordMode(state.mode) || (isMiniGamesMode(state) && miniGameRule.sword);
   const swordState = swordActive
-    ? applySwordAttacks(lockedPlayers, input, state.mapId, state.nextEffectId)
+    ? applySwordAttacks(lockedPlayers, combatInput, state.mapId, state.nextEffectId)
     : { players: lockedPlayers, effects: [] };
   const throwing = swordActive
     ? { players: swordState.players, grenades: [] }
-    : spawnGrenades(swordState.players, input, state.mode, state.nextGrenadeId);
+    : spawnGrenades(swordState.players, combatInput, state.mode, state.nextGrenadeId);
   const shooting = swordActive
     ? { players: throwing.players, bullets: [] }
-    : spawnBullets(throwing.players, input, state.nextBulletId, state.mapId);
+    : spawnBullets(throwing.players, combatInput, state.nextBulletId, state.mapId);
   const allyBlockers = [...building.barricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
   const allyState = tickAllies(
     state.allies,

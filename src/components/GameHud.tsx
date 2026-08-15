@@ -1,6 +1,7 @@
 import type { GameState, PlayerId } from '../lib/arenaShooter';
 import { isSwordMode, modeConfigs } from '../lib/arenaModes';
 import { getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arenaMiniGames';
+import { isSurvivalGrace, survivalGraceSeconds } from '../lib/arenaSurvivalMode';
 import { getWeaponConfig } from '../lib/arenaWeapons';
 import type { Language } from '../lib/gameSettings';
 import { modeDescription, modeName, t } from '../lib/i18n';
@@ -22,6 +23,7 @@ export function GameHud({ game, language }: GameHudProps) {
         <p>{game.status === 'playing' ? t(language, 'liveDuel') : t(language, 'multiplayerShooter')}</p>
         <h1>{modeName(game.mode, language)}</h1>
         <p className="mode-description">{modeDescription(game.mode, language)}</p>
+        {isSurvivalGrace(game.mode, game.elapsedTime) && <p className="mode-description">{getSurvivalGraceText(game, language)}</p>}
         {isMiniGamesMode(game) && <p className="mode-description">{getMiniGameText(game)}</p>}
       </div>
       <div className="round-clock">
@@ -61,6 +63,11 @@ function getMiniGameText(game: GameState): string {
   const rule = getMiniGameRule(game);
   const remaining = miniGameDuration - Math.floor(game.elapsedTime % miniGameDuration);
   return `${rule.name}: ${rule.description} · next in ${remaining}s`;
+}
+
+function getSurvivalGraceText(game: GameState, language: Language): string {
+  const remaining = Math.max(0, Math.ceil(survivalGraceSeconds - game.elapsedTime));
+  return language === 'ru' ? `Оружие через ${remaining}s` : `Weapons unlock in ${remaining}s`;
 }
 
 function getClockText(game: GameState): string {
