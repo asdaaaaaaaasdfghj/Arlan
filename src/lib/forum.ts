@@ -47,7 +47,7 @@ export async function createForumPost(board: ForumBoard, body: string): Promise<
 
 function throwForumError(error: { message?: string; code?: string }): never {
   const message = error.message ?? 'Forum request failed.';
-  const hint = error.code === 'PGRST205' || message.includes('forum_posts') || message.includes('schema cache')
+  const hint = error.code === 'PGRST205' || message.includes('schema cache')
     ? ' Run database migrations: npm run db:push -- --yes'
     : '';
   throw new Error(`${message}${hint}`);
