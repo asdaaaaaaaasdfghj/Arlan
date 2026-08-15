@@ -193,6 +193,13 @@
   color: #ffffff;
 }
 
+:root[data-theme='dark'] .settings-panel input[type='number'],
+:root[data-theme='dark'] .settings-panel select {
+  border-color: var(--line);
+  background: #11171b;
+  color: var(--ink);
+}
+
 :root[data-theme='dark'] .stat-card,
 :root[data-theme='dark'] .mode-stats span,
 :root[data-theme='dark'] .achievement-card {

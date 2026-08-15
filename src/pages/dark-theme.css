@@ -47,6 +47,7 @@
 
 :root[data-theme='dark'] .secondary-link,
 :root[data-theme='dark'] .settings-panel select,
+:root[data-theme='dark'] .settings-panel input[type='number'],
 :root[data-theme='dark'] .achievement-card,
 :root[data-theme='dark'] .theme-control select,
 :root[data-theme='dark'] .weapon-editor select,
