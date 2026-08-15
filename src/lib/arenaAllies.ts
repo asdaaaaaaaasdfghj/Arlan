@@ -1,5 +1,6 @@
 import { BULLET_HIT_SIZE, type AllyCheckpoint, type AllyUnit, type Bullet, type GameState, type Player, type PlayerId, type Zombie } from './arenaTypes';
 import { isBlockedPlayerPosition, isPointInsideObstacle, type Blocker } from './arenaMap';
+import { findBotMoveTargetWithBlockers } from './arenaBotPath';
 
 const allyHp = 55;
 const allyRespawnSeconds = 3.5;
@@ -38,7 +39,8 @@ export function tickAllies(
     const length = Math.hypot(dx, dy) || 1;
     const visible = hasLineOfSight(ally, target, blockers, mapId);
     const ready = cooldown <= 0;
-    const moved = moveAlly(ally, target, blockers, mapId, delta);
+    const moveTarget = findBotMoveTargetWithBlockers(mapId, ally, target, blockers);
+    const moved = moveAlly(ally, moveTarget, blockers, mapId, delta);
     if (ready && visible && length <= allyRange) {
       bullets.push(createAllyBullet(moved, dx / length, dy / length, nextBulletId + bullets.length));
     }
@@ -116,7 +118,7 @@ function findTarget(
 
 function moveAlly(
   ally: AllyUnit,
-  target: Target,
+  target: { x: number; y: number },
   blockers: Blocker[],
   mapId: GameState['mapId'],
   delta: number,

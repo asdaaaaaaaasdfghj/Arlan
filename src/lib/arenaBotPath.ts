@@ -1,6 +1,6 @@
-import { isBlockedPlayerPosition } from './arenaMap';
+import { isBlockedPlayerPosition, type Blocker } from './arenaMap';
 import { getArenaBounds } from './arenaBounds';
-import type { GameState } from './arenaTypes';
+import type { GameState, MapId } from './arenaTypes';
 
 type Point = {
   x: number;
@@ -21,7 +21,17 @@ const directions: Cell[] = [
 ];
 
 export function findBotMoveTarget(game: GameState, from: Point, to: Point): Point {
-  const grid = createGrid(game);
+  return findBotMoveTargetWithBlockers(game.mapId, from, to, [
+    ...game.barricades,
+    ...game.mapBoards,
+    ...game.movingBlocks,
+    ...game.tnts.filter((tnt) => tnt.active),
+    ...game.ricochetBlocks,
+  ]);
+}
+
+export function findBotMoveTargetWithBlockers(mapId: MapId, from: Point, to: Point, blockers: Blocker[]): Point {
+  const grid = createGrid(mapId);
   const start = pointToCell(from, grid);
   const goal = pointToCell(to, grid);
   const queue: Cell[] = [start];
@@ -38,7 +48,7 @@ export function findBotMoveTarget(game: GameState, from: Point, to: Point): Poin
       const next = { col: current.col + direction.col, row: current.row + direction.row };
       const key = cellKey(next);
 
-      if (visited.has(key) || isBlockedCell(game, next, grid)) {
+      if (visited.has(key) || isBlockedCell(mapId, next, grid, blockers)) {
         return;
       }
 
@@ -63,19 +73,13 @@ function firstStep(start: Cell, goal: Cell, cameFrom: Map<string, Cell>): Cell {
   return current;
 }
 
-function isBlockedCell(game: GameState, cell: Cell, grid: PathGrid): boolean {
+function isBlockedCell(mapId: MapId, cell: Cell, grid: PathGrid, blockers: Blocker[]): boolean {
   if (cell.col < 0 || cell.col >= grid.cols || cell.row < 0 || cell.row >= grid.rows) {
     return true;
   }
 
   const point = cellToPoint(cell, grid);
-  return isBlockedPlayerPosition(point.x, point.y, game.mapId, [
-    ...game.barricades,
-    ...game.mapBoards,
-    ...game.movingBlocks,
-    ...game.tnts.filter((tnt) => tnt.active),
-    ...game.ricochetBlocks,
-  ]);
+  return isBlockedPlayerPosition(point.x, point.y, mapId, blockers);
 }
 
 function pointToCell(point: Point, grid: PathGrid): Cell {
@@ -99,8 +103,8 @@ type PathGrid = {
   cellHeight: number;
 };
 
-function createGrid(game: GameState): PathGrid {
-  const bounds = getArenaBounds(game.mapId);
+function createGrid(mapId: MapId): PathGrid {
+  const bounds = getArenaBounds(mapId);
   const cols = Math.max(20, Math.ceil(bounds.width / pathCellSize));
   const rows = Math.max(12, Math.ceil(bounds.height / pathCellSize));
   return {

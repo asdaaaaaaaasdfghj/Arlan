@@ -2,6 +2,7 @@ import { type GameMode, type GameState, type Player, type PlayerId } from './are
 import { isGlassCoreDestroyed } from './arenaGlassWars';
 import { isDisasterMode, isZombieMode, modeConfigs } from './arenaModes';
 import { getPaintBattleWinner } from './arenaPaint';
+import { countTeamBots } from './arenaTeamBots';
 
 export function findWinner(
   players: Record<PlayerId, Player>,
@@ -30,7 +31,7 @@ export function findWinner(
     return timeLeft <= 0 && state ? getPaintBattleWinner(state) : null;
   }
 
-  const scoreToWin = modeConfigs[mode].scoreToWin;
+  const scoreToWin = getScoreToWin(mode, state);
 
   if (players.blue.score >= scoreToWin) {
     return 'blue';
@@ -49,4 +50,13 @@ export function findWinner(
   }
 
   return players.blue.score > players.red.score ? 'blue' : 'red';
+}
+
+export function getScoreToWin(mode: GameMode, state?: GameState): number {
+  const baseScore = modeConfigs[mode].scoreToWin;
+  if (!state || baseScore <= 0 || mode === 'miniGames' || mode === 'kingHill' || mode === 'captureFlag' || mode === 'glassWars') {
+    return baseScore;
+  }
+
+  return baseScore + Math.ceil(countTeamBots(state) / 2);
 }

@@ -3,6 +3,7 @@ import { isSwordMode, modeConfigs } from '../lib/arenaModes';
 import { getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arenaMiniGames';
 import { isSurvivalGrace, survivalGraceSeconds } from '../lib/arenaSurvivalMode';
 import { getWeaponConfig } from '../lib/arenaWeapons';
+import { getScoreToWin } from '../lib/arenaRules';
 import type { Language } from '../lib/gameSettings';
 import { modeDescription, modeName, t } from '../lib/i18n';
 
@@ -44,11 +45,15 @@ function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
   const weapon = getWeaponConfig(player.weapon, game.mapId);
   const miniSword = isMiniGamesMode(game) && getMiniGameRule(game).sword;
   const weaponText = isSwordMode(game.mode) || miniSword ? 'Sword - 0.46s' : `${weapon.name} - ${weapon.cooldown}s`;
+  const scoreToWin = getScoreToWin(game.mode, game);
+  const scoreText = game.mode === 'paintBattle'
+    ? `${player.score.toFixed(1)}%`
+    : scoreToWin > 0 ? `${Math.floor(player.score)}/${scoreToWin}` : Math.floor(player.score);
 
   return (
     <section className={`player-stat player-stat-${id}`}>
       <strong>{playerNames[id]}</strong>
-      <span>{game.mode === 'paintBattle' ? `${player.score.toFixed(1)}%` : Math.floor(player.score)}</span>
+      <span>{scoreText}</span>
       <p className="weapon-name">
         {weaponText}
       </p>
