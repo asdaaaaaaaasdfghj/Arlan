@@ -25,12 +25,12 @@ export function buildBarricades(
   blockers: Barricade[],
   mapId: MapId,
   nextId: number,
-  options: { cooldown?: number; maxBuilds?: number } = {},
+  options: { cooldown?: number; cooldownByPlayer?: Partial<Record<PlayerId, number>>; maxBuilds?: number } = {},
 ): { players: Record<PlayerId, Player>; barricades: Barricade[]; nextId: number } {
   let created = [...barricades];
   let nextBarricadeId = nextId;
   const nextPlayers = { ...players };
-  const cooldown = options.cooldown ?? BUILD_COOLDOWN;
+  const defaultCooldown = options.cooldown ?? BUILD_COOLDOWN;
 
   (Object.keys(players) as PlayerId[]).forEach((id) => {
     const player = nextPlayers[id];
@@ -50,6 +50,7 @@ export function buildBarricades(
 
     created = [...created, barricade];
     nextBarricadeId += 1;
+    const cooldown = options.cooldownByPlayer?.[id] ?? defaultCooldown;
     nextPlayers[id] = { ...player, buildCooldown: cooldown };
   });
 
