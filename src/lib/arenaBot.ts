@@ -106,10 +106,11 @@ function createSurvivalBuilderInput(game: GameState): PlayerInput {
   const moveTarget = findBotMoveTarget(game, red, patrol);
   const dx = moveTarget.x - red.x;
   const dy = moveTarget.y - red.y;
-  const buildPulse = game.elapsedTime % 1.15 < 0.18;
+  const buildPulse = game.elapsedTime % 1.8 < 0.14;
   const nearbyWalls = game.barricades.filter((item) => (
-    Math.hypot(item.x + item.width / 2 - red.x, item.y + item.height / 2 - red.y) < 15
+    Math.hypot(item.x + item.width / 2 - red.x, item.y + item.height / 2 - red.y) < 13
   )).length;
+  const redSideWalls = game.barricades.filter((item) => item.x + item.width / 2 > 55).length;
 
   return {
     up: dy < -1.2,
@@ -117,7 +118,7 @@ function createSurvivalBuilderInput(game: GameState): PlayerInput {
     left: dx < -1.2,
     right: dx > 1.2,
     shoot: false,
-    build: buildPulse && nearbyWalls < 5 && game.barricades.length < 18,
+    build: buildPulse && nearbyWalls === 0 && redSideWalls < 7,
     grenade: false,
     enterVehicle: false,
   };

@@ -22,7 +22,7 @@ export function buildZombieModeBarricades(
 
     const result = buildBarricades(players, input, state.barricades, state.mapBoards, state.mapId, state.nextBarricadeId, {
       cooldown: 0,
-      cooldownByPlayer: { red: 0.85 },
+      cooldownByPlayer: { red: 1.45 },
       maxBuilds: survivalBuildLimit,
     });
     return { players: result.players, barricades: result.barricades, nextBarricadeId: result.nextId };
