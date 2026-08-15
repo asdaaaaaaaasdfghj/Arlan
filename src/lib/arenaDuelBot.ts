@@ -10,13 +10,13 @@ export type DuelBotStyle = {
   seed: number;
 };
 
-const profiles: Record<BotDifficulty, { aim: number; distance: number; shootRange: number; grenadeMin: number }> = {
-  easy: { aim: 0.3, distance: 28, shootRange: 32, grenadeMin: 32 },
-  newbie: { aim: 0.44, distance: 23, shootRange: 40, grenadeMin: 25 },
-  normal: { aim: 0.55, distance: 18, shootRange: 48, grenadeMin: 18 },
-  hard: { aim: 0.82, distance: 12, shootRange: 58, grenadeMin: 12 },
-  veryHard: { aim: 0.96, distance: 10, shootRange: 64, grenadeMin: 10 },
-  ultra: { aim: 1.08, distance: 8, shootRange: 72, grenadeMin: 8 },
+const profiles: Record<BotDifficulty, { aim: number; distance: number; shootRange: number; grenadeMin: number; grenadeMax: number; lead: number; strafe: number }> = {
+  easy: { aim: 0.3, distance: 28, shootRange: 32, grenadeMin: 32, grenadeMax: 38, lead: 0, strafe: 6 },
+  newbie: { aim: 0.44, distance: 23, shootRange: 40, grenadeMin: 25, grenadeMax: 42, lead: 0.03, strafe: 7 },
+  normal: { aim: 0.55, distance: 18, shootRange: 48, grenadeMin: 18, grenadeMax: 45, lead: 0.06, strafe: 10 },
+  hard: { aim: 0.82, distance: 12, shootRange: 58, grenadeMin: 12, grenadeMax: 49, lead: 0.1, strafe: 12 },
+  veryHard: { aim: 0.96, distance: 10, shootRange: 66, grenadeMin: 9, grenadeMax: 54, lead: 0.15, strafe: 14 },
+  ultra: { aim: 1.12, distance: 8, shootRange: 76, grenadeMin: 7, grenadeMax: 60, lead: 0.2, strafe: 16 },
 };
 
 const emptyInput: PlayerInput = {
@@ -44,12 +44,14 @@ export function createDuelBotInput(
     return { ...emptyInput };
   }
 
-  const distance = Math.hypot(enemy.x - player.x, enemy.y - player.y);
+  const target = predictEnemy(enemy, profile.lead);
+  const distance = Math.hypot(target.x - player.x, target.y - player.y);
   const lineBlocked = isLineBlocked(player, enemy, game);
-  const aimedAtTarget = isAimedAt(player, enemy, profile.aim);
+  const aimedAtTarget = isAimedAt(player, target, profile.aim);
   const desiredDistance = isSwordMode(game.mode) ? 14 : profile.distance + Math.sin(style.seed) * 7;
-  const shouldMove = distance > desiredDistance || lineBlocked || !aimedAtTarget;
-  const tacticalTarget = isSwordMode(game.mode) ? enemy : addStrafeTarget(player, enemy, game, style.seed, 10);
+  const tooClose = !isSwordMode(game.mode) && distance < desiredDistance * 0.72;
+  const shouldMove = distance > desiredDistance || tooClose || lineBlocked || !aimedAtTarget;
+  const tacticalTarget = tooClose ? retreatFrom(player, target) : isSwordMode(game.mode) ? enemy : addStrafeTarget(player, target, game, style.seed, profile.strafe);
   const moveTarget = shouldMove ? findBotMoveTarget(game, player, tacticalTarget) : enemy;
   const moveDx = moveTarget.x - player.x;
   const moveDy = moveTarget.y - player.y;
@@ -61,7 +63,7 @@ export function createDuelBotInput(
     right: shouldMove && moveDx > 1.5,
     shoot: !lineBlocked && aimedAtTarget && distance < (isSwordMode(game.mode) ? 20 : profile.shootRange),
     build: false,
-    grenade: !isSwordMode(game.mode) && !lineBlocked && aimedAtTarget && distance > profile.grenadeMin && distance < 42,
+    grenade: !isSwordMode(game.mode) && !lineBlocked && aimedAtTarget && distance > profile.grenadeMin && distance < profile.grenadeMax && shouldThrowGrenade(game.elapsedTime, difficulty, style.seed),
     enterVehicle: false,
   };
 }
@@ -81,6 +83,24 @@ function isLineBlocked(from: Player, to: Player, game: GameState): boolean {
 
 function cannotSeeInGrass(from: Player, to: Player, game: GameState): boolean {
   return game.mapId === 'custom' && isHiddenInGrass(to.x, to.y) && Math.hypot(from.x - to.x, from.y - to.y) > 12;
+}
+
+function predictEnemy(enemy: Player, lead: number): Player {
+  return { ...enemy, x: enemy.x + enemy.slideX * lead, y: enemy.y + enemy.slideY * lead };
+}
+
+function retreatFrom(from: Player, target: Player): Player {
+  const dx = from.x - target.x;
+  const dy = from.y - target.y;
+  const length = Math.hypot(dx, dy) || 1;
+  return { ...target, x: from.x + (dx / length) * 18, y: from.y + (dy / length) * 18 };
+}
+
+function shouldThrowGrenade(elapsedTime: number, difficulty: BotDifficulty, seed: number): boolean {
+  if (difficulty === 'ultra') return true;
+  if (difficulty === 'veryHard') return Math.sin(elapsedTime * 8.5 + seed) > -0.35;
+  if (difficulty === 'hard') return Math.sin(elapsedTime * 5.8 + seed) > 0.05;
+  return Math.sin(elapsedTime * 4.2 + seed) > 0.42;
 }
 
 function isAimedAt(from: Player, to: Player, tolerance: number): boolean {

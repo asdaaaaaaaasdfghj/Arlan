@@ -10,13 +10,13 @@ import type { AllyCheckpoint, Barricade, GameInput, GameState, Player, PlayerInp
 import type { BotDifficulty } from './gameSettings';
 import { cannotSeeInGrass, canSeeWhilePoisoned } from './botVision';
 
-const botProfiles: Record<BotDifficulty, { aim: number; duelDistance: number; shootRange: number; grenadeMin: number }> = {
-  easy: { aim: 0.3, duelDistance: 28, shootRange: 32, grenadeMin: 32 },
-  newbie: { aim: 0.44, duelDistance: 23, shootRange: 40, grenadeMin: 25 },
-  normal: { aim: 0.55, duelDistance: 18, shootRange: 48, grenadeMin: 18 },
-  hard: { aim: 0.82, duelDistance: 12, shootRange: 58, grenadeMin: 12 },
-  veryHard: { aim: 0.96, duelDistance: 10, shootRange: 64, grenadeMin: 10 },
-  ultra: { aim: 1.08, duelDistance: 8, shootRange: 72, grenadeMin: 8 },
+const botProfiles: Record<BotDifficulty, { aim: number; duelDistance: number; shootRange: number; grenadeMin: number; grenadeMax: number; lead: number; strafe: number }> = {
+  easy: { aim: 0.3, duelDistance: 28, shootRange: 32, grenadeMin: 32, grenadeMax: 38, lead: 0, strafe: 5 },
+  newbie: { aim: 0.44, duelDistance: 23, shootRange: 40, grenadeMin: 25, grenadeMax: 42, lead: 0.03, strafe: 6 },
+  normal: { aim: 0.55, duelDistance: 18, shootRange: 48, grenadeMin: 18, grenadeMax: 45, lead: 0.06, strafe: 7 },
+  hard: { aim: 0.82, duelDistance: 12, shootRange: 58, grenadeMin: 12, grenadeMax: 49, lead: 0.1, strafe: 9 },
+  veryHard: { aim: 0.96, duelDistance: 10, shootRange: 66, grenadeMin: 9, grenadeMax: 54, lead: 0.15, strafe: 11 },
+  ultra: { aim: 1.12, duelDistance: 8, shootRange: 76, grenadeMin: 7, grenadeMax: 60, lead: 0.2, strafe: 13 },
 };
 
 const emptyBotInput: PlayerInput = {
@@ -66,20 +66,23 @@ function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerIn
   }
 
   const breakable = findBreakableBetween(red, target, game);
-  const actionTarget = breakable ?? target;
+  const actionTarget = breakable ?? predictTarget(target, profile.lead);
   const dx = actionTarget.x - red.x;
   const dy = actionTarget.y - red.y;
   const distance = Math.hypot(dx, dy);
   const wantsDistance = isZombieMode(game.mode) ? 24 : profile.duelDistance;
   const lineBlocked = breakable ? false : isLineBlocked(red, target, game);
+  const tooClose = !isZombieMode(game.mode) && distance < wantsDistance * 0.72;
   const chase = distance > wantsDistance || lineBlocked || Boolean(breakable);
   const dodge = !chase && Math.abs(dy) < 10;
   const aimedAtTarget = isAimedAt(red, actionTarget, profile.aim);
   const needsAimStep = !lineBlocked && !aimedAtTarget;
   const needsHill = game.mode === 'kingHill' && !isInsideHill(red);
-  const shouldMove = chase || needsAimStep || needsHill;
+  const shouldMove = chase || tooClose || needsAimStep || needsHill;
   const hillTarget = needsHill ? hillZone : actionTarget;
-  const tacticalTarget = isZombieMode(game.mode) ? target : addStrafeTarget(red, hillTarget, game, red.score * 1.9 + target.x * 0.13, 7);
+  const tacticalTarget = tooClose
+    ? retreatFrom(red, actionTarget)
+    : isZombieMode(game.mode) ? target : addStrafeTarget(red, hillTarget, game, red.score * 1.9 + target.x * 0.13, profile.strafe);
   const moveTarget = breakable ? actionTarget : shouldMove ? findBotMoveTarget(game, red, tacticalTarget) : actionTarget;
   const moveDx = moveTarget.x - red.x;
   const moveDy = moveTarget.y - red.y;
@@ -91,7 +94,7 @@ function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerIn
     right: shouldMove && moveDx > 1.5,
     shoot: !lineBlocked && aimedAtTarget && distance < profile.shootRange,
     build: isZombieMode(game.mode) && nearestZombieDistance(red, game.zombies) < 18,
-    grenade: !lineBlocked && aimedAtTarget && distance > profile.grenadeMin && distance < 42,
+    grenade: !lineBlocked && aimedAtTarget && distance > profile.grenadeMin && distance < profile.grenadeMax && shouldThrowGrenade(game.elapsedTime, difficulty, red.x),
     enterVehicle: false,
   };
 }
@@ -207,6 +210,26 @@ function findBreakableBetween(from: Player, to: BotTarget, game: GameState): Bre
 
 function pointInRect(x: number, y: number, rect: Barricade | AllyCheckpoint): boolean {
   return x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height;
+}
+
+function predictTarget(target: BotTarget, lead: number): BotTarget {
+  return 'slideX' in target
+    ? { ...target, x: target.x + target.slideX * lead, y: target.y + target.slideY * lead }
+    : target;
+}
+
+function retreatFrom(from: Player, target: BotTarget): BreakableTarget {
+  const dx = from.x - target.x;
+  const dy = from.y - target.y;
+  const length = Math.hypot(dx, dy) || 1;
+  return { x: from.x + (dx / length) * 18, y: from.y + (dy / length) * 18 };
+}
+
+function shouldThrowGrenade(elapsedTime: number, difficulty: BotDifficulty, seed: number): boolean {
+  if (difficulty === 'ultra') return true;
+  if (difficulty === 'veryHard') return Math.sin(elapsedTime * 8.5 + seed) > -0.35;
+  if (difficulty === 'hard') return Math.sin(elapsedTime * 5.8 + seed) > 0.05;
+  return Math.sin(elapsedTime * 4.2 + seed) > 0.42;
 }
 
 function isAimedAt(from: Player, to: BotTarget, tolerance: number): boolean {

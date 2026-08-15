@@ -20,8 +20,8 @@ const searchByDifficulty: Record<BotDifficulty, { radius: number; distancePenalt
   newbie: { radius: 44, distancePenalty: 0.36 },
   normal: { radius: 54, distancePenalty: 0.3 },
   hard: { radius: 74, distancePenalty: 0.22 },
-  veryHard: { radius: 86, distancePenalty: 0.17 },
-  ultra: { radius: 100, distancePenalty: 0.12 },
+  veryHard: { radius: 94, distancePenalty: 0.14 },
+  ultra: { radius: 120, distancePenalty: 0.08 },
 };
 
 export function createPaintBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {
@@ -73,7 +73,7 @@ function choosePaintTarget(game: GameState, difficulty: BotDifficulty): { x: num
       const blueDistance = Math.hypot(x - game.players.blue.x, y - game.players.blue.y);
       const repaintBonus = tile?.owner === 'blue' ? 26 : 12;
       const frontierBonus = countNearbyNonRed(col, row, painted) * 3.5;
-      const contestBonus = blueDistance < 18 ? 8 : 0;
+      const contestBonus = blueDistance < getContestRange(difficulty) ? getContestBonus(difficulty) : 0;
       const stableWander = Math.sin(timeBucket * 2.1 + col * 0.73 + row * 1.11) * 2.5;
       const value = repaintBonus + frontierBonus + contestBonus + stableWander - distance * profile.distancePenalty - tooFarPenalty;
 
@@ -117,4 +117,18 @@ function getShootChance(difficulty: BotDifficulty): number {
   if (difficulty === 'normal') return 0.24;
   if (difficulty === 'newbie') return 0.14;
   return 0.08;
+}
+
+function getContestRange(difficulty: BotDifficulty): number {
+  if (difficulty === 'ultra') return 34;
+  if (difficulty === 'veryHard') return 28;
+  if (difficulty === 'hard') return 22;
+  return 18;
+}
+
+function getContestBonus(difficulty: BotDifficulty): number {
+  if (difficulty === 'ultra') return 24;
+  if (difficulty === 'veryHard') return 18;
+  if (difficulty === 'hard') return 12;
+  return 8;
 }

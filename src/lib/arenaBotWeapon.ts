@@ -1,12 +1,13 @@
 import { isPointInsideObstacle } from './arenaMap';
 import { getMiniGameWeapon, isMiniGamesMode } from './arenaMiniGames';
 import type { GameState, Player, WeaponId, Zombie } from './arenaTypes';
+import type { BotDifficulty } from './gameSettings';
 import { getWeaponOrder } from './arenaWeapons';
 import { cannotSeeInGrass, canSeeWhilePoisoned } from './botVision';
 
 type BotTarget = Player | Zombie;
 
-export function chooseRedBotWeapon(game: GameState, enabled: boolean): WeaponId {
+export function chooseRedBotWeapon(game: GameState, enabled: boolean, difficulty: BotDifficulty = 'normal'): WeaponId {
   if (isMiniGamesMode(game)) {
     return getMiniGameWeapon(game);
   }
@@ -29,11 +30,16 @@ export function chooseRedBotWeapon(game: GameState, enabled: boolean): WeaponId 
   const lineBlocked = isLineBlocked(red, target, game);
   const weapons = getWeaponOrder(game.mapId);
 
-  if (distance < 18 && !lineBlocked) return weapons.includes('shotgun') ? 'shotgun' : 'blaster';
-  if (distance > 38 && !lineBlocked) return weapons.includes('railgun') ? 'railgun' : 'blaster';
+  if (isTopDifficulty(difficulty) && game.mapId === 'custom' && distance <= 28 && weapons.includes('custom5')) return 'custom5';
+  if (distance < (isTopDifficulty(difficulty) ? 22 : 18) && !lineBlocked) return weapons.includes('shotgun') ? 'shotgun' : 'blaster';
+  if (distance > (isTopDifficulty(difficulty) ? 30 : 38) && !lineBlocked) return weapons.includes('railgun') ? 'railgun' : 'blaster';
   if (game.mapId === 'custom' && distance > 24 && weapons.includes('custom4')) return 'custom4';
   if (game.mapId === 'custom' && distance <= 24 && weapons.includes('custom5')) return 'custom5';
   return 'blaster';
+}
+
+function isTopDifficulty(difficulty: BotDifficulty): boolean {
+  return difficulty === 'veryHard' || difficulty === 'ultra';
 }
 
 function chooseTarget(game: GameState): BotTarget | null {

@@ -11,8 +11,8 @@ const ctfProfiles: Record<BotDifficulty, { aim: number; chasePlayer: number; sho
   newbie: { aim: 0.48, chasePlayer: 11, shootRange: 38, defend: false },
   normal: { aim: 0.62, chasePlayer: 13, shootRange: 46, defend: true },
   hard: { aim: 0.9, chasePlayer: 16, shootRange: 56, defend: true },
-  veryHard: { aim: 1.02, chasePlayer: 18, shootRange: 62, defend: true },
-  ultra: { aim: 1.15, chasePlayer: 22, shootRange: 70, defend: true },
+  veryHard: { aim: 1.02, chasePlayer: 20, shootRange: 64, defend: true },
+  ultra: { aim: 1.15, chasePlayer: 24, shootRange: 74, defend: true },
 };
 
 export function createCaptureBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {
@@ -35,7 +35,7 @@ export function createCaptureBotInput(game: GameState, difficulty: BotDifficulty
     left: distance > closeEnough && moveDx < -1,
     right: distance > closeEnough && moveDx > 1,
     shoot: canShoot && distance < profile.shootRange,
-    grenade: canShoot && distance > 20 && distance < 42,
+    grenade: canShoot && distance > 16 && distance < getGrenadeRange(difficulty) && shouldThrowGrenade(game.elapsedTime, difficulty, red.x),
     build: false,
     enterVehicle: false,
   };
@@ -97,4 +97,18 @@ function isAimedAt(from: Player, to: Player, tolerance: number): boolean {
 
 function isPlayerTarget(target: CaptureTarget): target is Player {
   return 'hp' in target;
+}
+
+function getGrenadeRange(difficulty: BotDifficulty): number {
+  if (difficulty === 'ultra') return 60;
+  if (difficulty === 'veryHard') return 54;
+  if (difficulty === 'hard') return 48;
+  return 42;
+}
+
+function shouldThrowGrenade(elapsedTime: number, difficulty: BotDifficulty, seed: number): boolean {
+  if (difficulty === 'ultra') return true;
+  if (difficulty === 'veryHard') return Math.sin(elapsedTime * 8.5 + seed) > -0.35;
+  if (difficulty === 'hard') return Math.sin(elapsedTime * 5.8 + seed) > 0.05;
+  return Math.sin(elapsedTime * 4.2 + seed) > 0.42;
 }
