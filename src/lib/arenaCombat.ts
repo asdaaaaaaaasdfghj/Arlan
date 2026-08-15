@@ -54,6 +54,7 @@ export function moveBullets(
   delta: number,
   mapId: MapId,
   barricades: Blocker[],
+  destructibleBarricades: Barricade[],
   mapBoards: Barricade[],
   checkpoints: AllyCheckpoint[],
   ricochets: RicochetBlock[],
@@ -61,7 +62,8 @@ export function moveBullets(
   nextPowerUpId: number,
   magnets: MagnetBlock[] = [],
   mode: GameMode = 'luckyBlocks',
-): { bullets: Bullet[]; mapBoards: Barricade[]; checkpoints: AllyCheckpoint[]; powerUps: PowerUp[]; nextPowerUpId: number } {
+): { bullets: Bullet[]; barricades: Barricade[]; mapBoards: Barricade[]; checkpoints: AllyCheckpoint[]; powerUps: PowerUp[]; nextPowerUpId: number } {
+  const nextBarricades = destructibleBarricades.map((barricade) => ({ ...barricade }));
   const nextBoards = mapBoards.map((board) => ({ ...board }));
   const nextCheckpoints = checkpoints.map((checkpoint) => ({ ...checkpoint }));
   const luckyPowerUps: PowerUp[] = [];
@@ -74,10 +76,11 @@ export function moveBullets(
     .map((bullet) => teleportBullet(bullet, portals))
     .map((bullet) => bounceOrKeepBullet(bullet, ricochets))
     .filter((bullet): bullet is Bullet => Boolean(bullet))
-    .filter((bullet) => keepBullet(bullet, mapId, barricades, nextBoards, nextCheckpoints, luckyPowerUps, () => powerUpId++, mode));
+    .filter((bullet) => keepBullet(bullet, mapId, barricades, nextBarricades, nextBoards, nextCheckpoints, luckyPowerUps, () => powerUpId++, mode));
 
   return {
     bullets: moved,
+    barricades: nextBarricades.filter((barricade) => barricade.hp > 0),
     mapBoards: nextBoards.filter((board) => board.hp > 0),
     checkpoints: nextCheckpoints.filter((checkpoint) => checkpoint.hp > 0),
     powerUps: luckyPowerUps,
@@ -102,6 +105,7 @@ function keepBullet(
   bullet: Bullet,
   mapId: MapId,
   barricades: Blocker[],
+  destructibleBarricades: Barricade[],
   boards: Barricade[],
   checkpoints: AllyCheckpoint[],
   powerUps: PowerUp[],
@@ -114,6 +118,12 @@ function keepBullet(
   }
 
   if (isPointInsideObstacle(bullet.x, bullet.y, mapId, barricades)) {
+    return false;
+  }
+
+  const barricade = destructibleBarricades.find((item) => item.hp > 0 && pointInRect(bullet.x, bullet.y, item));
+  if (barricade) {
+    barricade.hp -= bullet.damage;
     return false;
   }
 

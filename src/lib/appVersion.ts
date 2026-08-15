@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const appVersion = '2026-08-15-7';
+export const appVersion = '2026-08-15-8';
 
 type VersionFile = {
   version?: string;

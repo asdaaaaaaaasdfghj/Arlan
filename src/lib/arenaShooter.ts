@@ -86,7 +86,8 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     [...state.bullets, ...shooting.bullets, ...allyState.bullets],
     delta,
     state.mapId,
-    [...building.barricades, ...movingBlocks, ...(state.lasers ?? [])],
+    [...movingBlocks, ...(state.lasers ?? [])],
+    building.barricades,
     pushedMapBoards,
     state.allyCheckpoints,
     state.ricochetBlocks,
@@ -101,7 +102,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     bullets: moved.bullets,
     players: shooting.players,
     zombies: state.zombies,
-    barricades: building.barricades,
+    barricades: moved.barricades,
     mapBoards: moved.mapBoards,
   }, state.mode, state.mapId, state.nextEffectId);
   const afterDuelHits = applyBulletHits(
