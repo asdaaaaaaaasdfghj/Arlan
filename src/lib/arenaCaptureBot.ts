@@ -8,8 +8,11 @@ type CaptureTarget = Player | FlagState;
 
 const ctfProfiles: Record<BotDifficulty, { aim: number; chasePlayer: number; shootRange: number; defend: boolean }> = {
   easy: { aim: 0.36, chasePlayer: 9, shootRange: 32, defend: false },
+  newbie: { aim: 0.48, chasePlayer: 11, shootRange: 38, defend: false },
   normal: { aim: 0.62, chasePlayer: 13, shootRange: 46, defend: true },
   hard: { aim: 0.9, chasePlayer: 16, shootRange: 56, defend: true },
+  veryHard: { aim: 1.02, chasePlayer: 18, shootRange: 62, defend: true },
+  ultra: { aim: 1.15, chasePlayer: 22, shootRange: 70, defend: true },
 };
 
 export function createCaptureBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {

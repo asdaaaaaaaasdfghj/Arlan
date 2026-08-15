@@ -1,11 +1,12 @@
 import type { GameMode, MapId } from './arenaTypes';
 import { defaultControlBindings, normalizeControlBindings, type ControlBindings } from './gameKeys';
 
-export type BotDifficulty = 'easy' | 'normal' | 'hard';
+export type BotDifficulty = 'easy' | 'newbie' | 'normal' | 'hard' | 'veryHard' | 'ultra';
 export type Language = 'en' | 'ru';
 export type GameFps = 24 | 30 | 45 | 60;
 
 export const fpsOptions: GameFps[] = [24, 30, 45, 60];
+export const botDifficultyOptions: BotDifficulty[] = ['easy', 'newbie', 'normal', 'hard', 'veryHard', 'ultra'];
 
 export type GameSettings = {
   defaultMode: GameMode;
@@ -53,7 +54,13 @@ export function loadGameSettings(): GameSettings {
 
   try {
     const parsed = JSON.parse(saved) as Partial<GameSettings>;
-    return { ...defaultSettings, ...parsed, controls: normalizeControlBindings(parsed.controls), gameFps: normalizeFps(parsed.gameFps) };
+    return {
+      ...defaultSettings,
+      ...parsed,
+      controls: normalizeControlBindings(parsed.controls),
+      gameFps: normalizeFps(parsed.gameFps),
+      botDifficulty: normalizeBotDifficulty(parsed.botDifficulty),
+    };
   } catch {
     return defaultSettings;
   }
@@ -74,4 +81,8 @@ export function applyVisualSettings(settings: Pick<GameSettings, 'darkMode' | 'l
 
 function normalizeFps(value: unknown): GameFps {
   return fpsOptions.includes(value as GameFps) ? value as GameFps : defaultSettings.gameFps;
+}
+
+function normalizeBotDifficulty(value: unknown): BotDifficulty {
+  return botDifficultyOptions.includes(value as BotDifficulty) ? value as BotDifficulty : defaultSettings.botDifficulty;
 }

@@ -10,7 +10,7 @@ import {
 } from '../lib/achievements';
 import { mapNames, mapOrder } from '../lib/arenaMap';
 import { modeGroups, modeOrder } from '../lib/arenaModes';
-import { applyVisualSettings, fpsOptions, loadGameSettings, saveGameSettings, type GameFps, type GameSettings } from '../lib/gameSettings';
+import { applyVisualSettings, botDifficultyOptions, fpsOptions, loadGameSettings, saveGameSettings, type GameFps, type GameSettings } from '../lib/gameSettings';
 import { clearGameStats, formatPlayTime, loadGameStats, type GameStats } from '../lib/gameStats';
 import { mapName, modeName, t } from '../lib/i18n';
 import './settings.css';
@@ -72,9 +72,9 @@ export function SettingsPage() {
         <Toggle label={t(language, 'botUsesWeapons')} checked={settings.botUsesWeapons} onChange={(checked) => updateSettings({ ...settings, botUsesWeapons: checked })} />
         <Toggle label={t(language, 'secretZombies')} checked={settings.secretZombies} onChange={(checked) => updateSettings({ ...settings, secretZombies: checked })} />
         <SelectField label={t(language, 'botDifficulty')} value={settings.botDifficulty} onChange={(value) => updateSettings({ ...settings, botDifficulty: value as GameSettings['botDifficulty'] })}>
-          <option value="easy">Easy</option>
-          <option value="normal">Normal</option>
-          <option value="hard">Hard</option>
+          {botDifficultyOptions.map((difficulty) => (
+            <option value={difficulty} key={difficulty}>{getBotDifficultyLabel(difficulty, language)}</option>
+          ))}
         </SelectField>
         <Toggle label={t(language, 'touchControls')} checked={settings.touchControls} onChange={(checked) => updateSettings({ ...settings, touchControls: checked })} />
         <Toggle label={t(language, 'achievementPopups')} checked={settings.achievementToasts} onChange={(checked) => updateSettings({ ...settings, achievementToasts: checked })} />
@@ -139,6 +139,19 @@ function StatCard({ label, value }: { label: string; value: number | string }) {
       <strong>{value}</strong>
     </article>
   );
+}
+
+function getBotDifficultyLabel(difficulty: GameSettings['botDifficulty'], language: GameSettings['language']): string {
+  const labels: Record<GameSettings['botDifficulty'], Record<GameSettings['language'], string>> = {
+    easy: { en: 'Easy', ru: 'Изи' },
+    newbie: { en: 'Newbie', ru: 'Новичек' },
+    normal: { en: 'Normal', ru: 'Нормально' },
+    hard: { en: 'Hard', ru: 'Сложно' },
+    veryHard: { en: 'Very hard', ru: 'Очень сложно' },
+    ultra: { en: 'Ultra hard', ru: 'Ультра сложно' },
+  };
+
+  return labels[difficulty][language];
 }
 
 function SelectField({ label, value, onChange, children }: {

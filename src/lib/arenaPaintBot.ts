@@ -17,8 +17,11 @@ const emptyInput: PlayerInput = {
 
 const searchByDifficulty: Record<BotDifficulty, { radius: number; distancePenalty: number }> = {
   easy: { radius: 34, distancePenalty: 0.42 },
+  newbie: { radius: 44, distancePenalty: 0.36 },
   normal: { radius: 54, distancePenalty: 0.3 },
   hard: { radius: 74, distancePenalty: 0.22 },
+  veryHard: { radius: 86, distancePenalty: 0.17 },
+  ultra: { radius: 100, distancePenalty: 0.12 },
 };
 
 export function createPaintBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {
@@ -108,7 +111,10 @@ function countNearbyNonRed(col: number, row: number, painted: Map<string, PaintT
 }
 
 function getShootChance(difficulty: BotDifficulty): number {
+  if (difficulty === 'ultra') return 0.82;
+  if (difficulty === 'veryHard') return 0.66;
   if (difficulty === 'hard') return 0.5;
   if (difficulty === 'normal') return 0.24;
+  if (difficulty === 'newbie') return 0.14;
   return 0.08;
 }

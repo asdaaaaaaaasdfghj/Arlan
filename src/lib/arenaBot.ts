@@ -11,9 +11,12 @@ import type { BotDifficulty } from './gameSettings';
 import { cannotSeeInGrass, canSeeWhilePoisoned } from './botVision';
 
 const botProfiles: Record<BotDifficulty, { aim: number; duelDistance: number; shootRange: number; grenadeMin: number }> = {
-  easy: { aim: 0.34, duelDistance: 26, shootRange: 34, grenadeMin: 30 },
+  easy: { aim: 0.3, duelDistance: 28, shootRange: 32, grenadeMin: 32 },
+  newbie: { aim: 0.44, duelDistance: 23, shootRange: 40, grenadeMin: 25 },
   normal: { aim: 0.55, duelDistance: 18, shootRange: 48, grenadeMin: 18 },
   hard: { aim: 0.82, duelDistance: 12, shootRange: 58, grenadeMin: 12 },
+  veryHard: { aim: 0.96, duelDistance: 10, shootRange: 64, grenadeMin: 10 },
+  ultra: { aim: 1.08, duelDistance: 8, shootRange: 72, grenadeMin: 8 },
 };
 
 const emptyBotInput: PlayerInput = {
