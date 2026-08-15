@@ -4,6 +4,7 @@ import { getArenaBounds, type ArenaBounds } from '../lib/arenaBounds';
 import { getHillZone } from '../lib/arenaKingHill';
 import { getMapObstacles } from '../lib/arenaMap';
 import { getMiniGameIndex, getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arenaMiniGames';
+import { getModeSwapRifts } from '../lib/arenaSwapRifts';
 import { poisonSeconds } from '../lib/arenaTraps';
 import { loadCustomCodeBlocks, loadCustomConveyors, loadCustomDecorations, loadCustomMagnets, loadCustomSolidDecorations, loadCustomSwapRifts, loadCustomTerrain, loadCustomTheme, loadCustomVehicles } from '../lib/customMap';
 import type { Language } from '../lib/gameSettings';
@@ -74,7 +75,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   const grass = game.mapId === 'custom' ? loadCustomTerrain('grass') : [];
   const conveyors = game.mapId === 'custom' ? loadCustomConveyors() : [];
   const magnets = game.mapId === 'custom' ? loadCustomMagnets() : [];
-  const swapRifts = game.mapId === 'custom' ? loadCustomSwapRifts() : [];
+  const swapRifts = game.mapId === 'custom' ? loadCustomSwapRifts() : getModeSwapRifts(game.mode, game.mapId);
   const codeBlocks = game.mapId === 'custom' ? game.codeBlocks ?? loadCustomCodeBlocks() : [];
   const vehicles = game.mapId === 'custom' ? game.vehicles ?? loadCustomVehicles() : [];
   const decorations = game.mapId === 'custom' ? loadCustomDecorations() : [];

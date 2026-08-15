@@ -1,7 +1,7 @@
 export type PlayerId = 'blue' | 'red';
 export type GameStatus = 'ready' | 'playing' | 'finished';
 export type GameMode = 'duel' | 'zombies' | 'quickDraw' | 'blitz' | 'tankDuel' | 'railDuel'
-  | 'grenadeMayhem' | 'flameDuel' | 'paintBattle' | 'miniGames' | 'spleef' | 'tileRun' | 'hideSeek' | 'hungerGames' | 'swordDuel' | 'swarmNight' | 'nightmare' | 'fortress' | 'endlessDuel' | 'disasters' | 'captureFlag' | 'kingHill' | 'glassWars' | 'luckyBlocks';
+  | 'grenadeMayhem' | 'flameDuel' | 'paintBattle' | 'miniGames' | 'spleef' | 'tileRun' | 'hideSeek' | 'hungerGames' | 'swapRift' | 'swordDuel' | 'swarmNight' | 'nightmare' | 'fortress' | 'endlessDuel' | 'disasters' | 'captureFlag' | 'kingHill' | 'glassWars' | 'luckyBlocks';
 export type WeaponId = 'blaster' | 'railgun' | 'shotgun' | 'flamethrower' | 'custom4' | 'custom5' | 'termos';
 export type MapId = 'crossfire' | 'lanes' | 'bunker' | 'open' | 'custom';
 

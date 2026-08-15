@@ -20,7 +20,7 @@ import { tickPowerUps } from './arenaPowerUps';
 import { updatePlayers } from './arenaPlayers';
 import { findWinner } from './arenaRules';
 import { spawnSecretZombies } from './arenaSecretZombies';
-import { tickSwapRifts } from './arenaSwapRifts';
+import { getModeSwapRifts, tickSwapRifts } from './arenaSwapRifts';
 import { explodeReadyTnts, tickTnts, triggerTntChain, triggerTnts } from './arenaTnt';
 import { tickTraps } from './arenaTraps';
 import { isCustomOnlyWeapon } from './arenaWeapons';
@@ -50,11 +50,11 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
       swapRifts: loadCustomSwapRifts(),
       vehicles: state.vehicles ?? loadCustomVehicles(),
     }
-    : { water: [], ice: [], conveyors: [], magnets: [], swapRifts: [], vehicles: [] };
+    : { water: [], ice: [], conveyors: [], magnets: [], swapRifts: getModeSwapRifts(state.mode, state.mapId), vehicles: [] };
   const activeTnts = tnts.filter((tnt) => tnt.active);
   const blockers = [...pushedBarricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
   const movedPlayers = updatePlayers(state.players, input, delta, state.mapId, blockers, mechanics);
-  const players = tickSwapRifts(teleportPlayers(pushPlayersFromMovingBlocks(movedPlayers, movingBlocks), state.portals), state.mapId, mechanics.swapRifts);
+  const players = tickSwapRifts(teleportPlayers(pushPlayersFromMovingBlocks(movedPlayers, movingBlocks), state.portals), mechanics.swapRifts);
   const movedState = { ...state, barricades: pushedBarricades, mapBoards: pushedMapBoards, movingBlocks };
   const building = buildZombieModeBarricades(movedState, players, input);
   const miniGameRule = getMiniGameRule(state);
