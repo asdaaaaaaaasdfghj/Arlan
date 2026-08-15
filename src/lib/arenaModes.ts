@@ -115,7 +115,7 @@ export const modeGroups: ModeGroup[] = [
   {
     id: 'strategy',
     label: { en: 'Strategy', ru: 'Стратегические' },
-    modes: ['glassWars', 'captureFlag'],
+    modes: ['glassWars', 'captureFlag', 'craftSurvival'],
   },
   {
     id: 'arcade',
@@ -138,6 +138,7 @@ export const modeGroups: ModeGroup[] = [
       'fortress',
       'glassWars',
       'captureFlag',
+      'craftSurvival',
       'paintBattle',
       'miniGames',
       'spleef',
