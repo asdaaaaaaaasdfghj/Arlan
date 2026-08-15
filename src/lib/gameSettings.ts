@@ -19,6 +19,8 @@ export type GameSettings = {
   lowSpecMode: boolean;
   music: boolean;
   redBot: boolean;
+  blueTeamBots: number;
+  redTeamBots: number;
   botUsesWeapons: boolean;
   secretZombies: boolean;
   botDifficulty: BotDifficulty;
@@ -39,6 +41,8 @@ export const defaultSettings: GameSettings = {
   lowSpecMode: false,
   music: false,
   redBot: true,
+  blueTeamBots: 0,
+  redTeamBots: 0,
   botUsesWeapons: false,
   secretZombies: true,
   botDifficulty: 'normal',
@@ -60,6 +64,8 @@ export function loadGameSettings(): GameSettings {
       controls: normalizeControlBindings(parsed.controls),
       gameFps: normalizeFps(parsed.gameFps),
       botDifficulty: normalizeBotDifficulty(parsed.botDifficulty),
+      blueTeamBots: normalizeBotCount(parsed.blueTeamBots),
+      redTeamBots: normalizeBotCount(parsed.redTeamBots),
     };
   } catch {
     return defaultSettings;
@@ -85,4 +91,8 @@ function normalizeFps(value: unknown): GameFps {
 
 function normalizeBotDifficulty(value: unknown): BotDifficulty {
   return botDifficultyOptions.includes(value as BotDifficulty) ? value as BotDifficulty : defaultSettings.botDifficulty;
+}
+
+function normalizeBotCount(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? Math.min(12, Math.max(0, Math.round(value))) : 0;
 }

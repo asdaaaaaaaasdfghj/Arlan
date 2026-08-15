@@ -23,6 +23,7 @@ import { useGameMusic } from '../lib/useGameMusic';
 import { mapOrder } from '../lib/arenaMap';
 import { withRedBotInput } from '../lib/arenaBot';
 import { chooseRedBotWeapon } from '../lib/arenaBotWeapon';
+import { addTeamBots } from '../lib/arenaTeamBots';
 import { modeOrder } from '../lib/arenaModes';
 import { saveProgressToAccount } from '../lib/accountProgress';
 import { getAchievementText } from '../lib/achievements';
@@ -38,7 +39,7 @@ export function GamePage() {
   const [settings] = useState(loadGameSettings);
   const language = settings.language;
   const initialChoice = getInitialChoice(settings.defaultMode, settings.defaultMap);
-  const [game, setGame] = useState(() => createInitialGame(initialChoice.mode, initialChoice.mapId));
+  const [game, setGame] = useState(() => createGameWithBots(initialChoice.mode, initialChoice.mapId, settings));
   const [musicOn, setMusicOn] = useState(settings.music);
   const [user, setUser] = useState<User | null>(null);
   const [playerProfile] = useState(loadPlayerProfile);
@@ -63,13 +64,13 @@ export function GamePage() {
   function restartGame() {
     inputRef.current = cloneInput(emptyInput);
     redHumanRef.current = false;
-    setGame((current) => ({ ...createInitialGame(current.mode, current.mapId), status: 'playing' }));
+    setGame((current) => ({ ...createGameWithBots(current.mode, current.mapId, settings), status: 'playing' }));
   }
 
   function handleAction() {
     redHumanRef.current = false;
     setGame((current) => (current.status === 'ready' ? startGame(current) : {
-      ...createInitialGame(current.mode, current.mapId),
+      ...createGameWithBots(current.mode, current.mapId, settings),
       status: 'playing',
     }));
   }
@@ -187,6 +188,13 @@ function getInitialChoice(defaultMode: GameMode, defaultMap: MapId): { mode: Gam
     mode: modeOrder.includes(mode as GameMode) ? mode as GameMode : defaultMode,
     mapId: mapOrder.includes(mapId as MapId) ? mapId as MapId : defaultMap,
   };
+}
+
+function createGameWithBots(mode: GameMode, mapId: MapId, settings: ReturnType<typeof loadGameSettings>) {
+  return addTeamBots(createInitialGame(mode, mapId), {
+    blue: settings.blueTeamBots,
+    red: settings.redTeamBots,
+  });
 }
 
 function cloneInput(input: GameInput): GameInput {

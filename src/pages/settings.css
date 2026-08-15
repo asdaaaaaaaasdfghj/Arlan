@@ -41,7 +41,8 @@
   font-weight: 900;
 }
 
-.settings-panel select {
+.settings-panel select,
+.settings-panel input[type='number'] {
   min-height: 44px;
   border: 1px solid #cbd3d8;
   border-radius: 8px;

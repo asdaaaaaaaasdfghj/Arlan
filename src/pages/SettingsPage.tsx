@@ -69,6 +69,8 @@ export function SettingsPage() {
         <Toggle label={t(language, 'lowSpecMode')} checked={settings.lowSpecMode} onChange={(checked) => updateSettings({ ...settings, lowSpecMode: checked, gameFps: checked ? 24 : settings.gameFps, animations: checked ? false : settings.animations })} />
         <Toggle label={t(language, 'music')} checked={settings.music} onChange={(checked) => updateSettings({ ...settings, music: checked })} />
         <Toggle label={t(language, 'redBot')} checked={settings.redBot} onChange={(checked) => updateSettings({ ...settings, redBot: checked })} />
+        <NumberField label={language === 'ru' ? 'Синих командных ботов' : 'Blue team bots'} value={settings.blueTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, blueTeamBots: value })} />
+        <NumberField label={language === 'ru' ? 'Красных командных ботов' : 'Red team bots'} value={settings.redTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, redTeamBots: value })} />
         <Toggle label={t(language, 'botUsesWeapons')} checked={settings.botUsesWeapons} onChange={(checked) => updateSettings({ ...settings, botUsesWeapons: checked })} />
         <Toggle label={t(language, 'secretZombies')} checked={settings.secretZombies} onChange={(checked) => updateSettings({ ...settings, secretZombies: checked })} />
         <SelectField label={t(language, 'botDifficulty')} value={settings.botDifficulty} onChange={(value) => updateSettings({ ...settings, botDifficulty: value as GameSettings['botDifficulty'] })}>
@@ -166,6 +168,31 @@ function SelectField({ label, value, onChange, children }: {
       <select value={value} onChange={(event) => onChange(event.target.value)}>{children}</select>
     </label>
   );
+}
+
+function NumberField({ label, value, min, max, onChange }: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label>
+      {label}
+      <input
+        type="number"
+        value={value}
+        min={min}
+        max={max}
+        onChange={(event) => onChange(clampNumber(Number(event.target.value), min, max))}
+      />
+    </label>
+  );
+}
+
+function clampNumber(value: number, min: number, max: number): number {
+  return Number.isFinite(value) ? Math.min(max, Math.max(min, Math.round(value))) : min;
 }
 
 function Toggle({ label, checked, onChange }: {
