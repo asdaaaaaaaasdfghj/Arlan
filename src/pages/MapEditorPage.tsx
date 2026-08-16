@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js';
 import { type CSSProperties, useEffect, useState } from 'react';
 import { Link } from 'wouter';
+import { Auth } from '../components/Auth';
 import {
   blockToolGroups,
   defaultMapSize,
@@ -82,8 +83,10 @@ export function MapEditorPage() {
         <section className="editor-locked-panel">
           <p className="eyebrow">{language === 'ru' ? 'Гостевой режим' : 'Guest mode'}</p>
           <h1>{language === 'ru' ? 'Редактор карт закрыт' : 'Map editor is locked'}</h1>
-          <p>{language === 'ru' ? 'Войди или зарегистрируйся в профиле, чтобы создавать custom-карты.' : 'Sign in or register in Profile to create custom maps.'}</p>
-          <Link className="primary-action" href="/profile">{language === 'ru' ? 'Открыть профиль' : 'Open profile'}</Link>
+          <p>{language === 'ru' ? 'Войди или зарегистрируйся прямо тут, чтобы создавать custom-карты.' : 'Sign in or register here to create custom maps.'}</p>
+          <div className="editor-auth-card">
+            {isSupabaseConfigured ? <Auth /> : <Link className="primary-action" href="/profile">{language === 'ru' ? 'Настроить Supabase' : 'Set up Supabase'}</Link>}
+          </div>
         </section>
       </main>
     );
