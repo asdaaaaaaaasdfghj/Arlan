@@ -1,12 +1,12 @@
 import type { GameMode, MapId } from './arenaTypes';
 import { defaultControlBindings, normalizeControlBindings, type ControlBindings } from './gameKeys';
 
-export type BotDifficulty = 'easy' | 'newbie' | 'normal' | 'hard' | 'veryHard' | 'ultra';
+export type BotDifficulty = 'easy' | 'newbie' | 'normal' | 'hard' | 'veryHard' | 'ultra' | 'impossible';
 export type Language = 'en' | 'ru' | 'es' | 'de' | 'fr' | 'kk';
 export type GameFps = 24 | 30 | 45 | 60;
 
 export const fpsOptions: GameFps[] = [24, 30, 45, 60];
-export const botDifficultyOptions: BotDifficulty[] = ['easy', 'newbie', 'normal', 'hard', 'veryHard', 'ultra'];
+export const botDifficultyOptions: BotDifficulty[] = ['easy', 'newbie', 'normal', 'hard', 'veryHard', 'ultra', 'impossible'];
 export const languageOptions: Language[] = ['en', 'ru', 'es', 'de', 'fr', 'kk'];
 
 export type GameSettings = {

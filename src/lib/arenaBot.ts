@@ -17,6 +17,7 @@ const botProfiles: Record<BotDifficulty, { aim: number; duelDistance: number; sh
   hard: { aim: 0.82, duelDistance: 12, shootRange: 58, grenadeMin: 12, grenadeMax: 49, lead: 0.1, strafe: 9 },
   veryHard: { aim: 0.96, duelDistance: 10, shootRange: 66, grenadeMin: 9, grenadeMax: 54, lead: 0.15, strafe: 11 },
   ultra: { aim: 1.12, duelDistance: 8, shootRange: 76, grenadeMin: 7, grenadeMax: 60, lead: 0.2, strafe: 13 },
+  impossible: { aim: 1.48, duelDistance: 6, shootRange: 92, grenadeMin: 5, grenadeMax: 76, lead: 0.32, strafe: 18 },
 };
 
 const emptyBotInput: PlayerInput = {
@@ -226,6 +227,7 @@ function retreatFrom(from: Player, target: BotTarget): BreakableTarget {
 }
 
 function shouldThrowGrenade(elapsedTime: number, difficulty: BotDifficulty, seed: number): boolean {
+  if (difficulty === 'impossible') return true;
   if (difficulty === 'ultra') return true;
   if (difficulty === 'veryHard') return Math.sin(elapsedTime * 8.5 + seed) > -0.35;
   if (difficulty === 'hard') return Math.sin(elapsedTime * 5.8 + seed) > 0.05;

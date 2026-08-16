@@ -13,6 +13,7 @@ const ctfProfiles: Record<BotDifficulty, { aim: number; chasePlayer: number; sho
   hard: { aim: 0.9, chasePlayer: 16, shootRange: 56, defend: true },
   veryHard: { aim: 1.02, chasePlayer: 20, shootRange: 64, defend: true },
   ultra: { aim: 1.15, chasePlayer: 24, shootRange: 74, defend: true },
+  impossible: { aim: 1.46, chasePlayer: 30, shootRange: 92, defend: true },
 };
 
 export function createCaptureBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {
@@ -100,6 +101,7 @@ function isPlayerTarget(target: CaptureTarget): target is Player {
 }
 
 function getGrenadeRange(difficulty: BotDifficulty): number {
+  if (difficulty === 'impossible') return 78;
   if (difficulty === 'ultra') return 60;
   if (difficulty === 'veryHard') return 54;
   if (difficulty === 'hard') return 48;
@@ -107,6 +109,7 @@ function getGrenadeRange(difficulty: BotDifficulty): number {
 }
 
 function shouldThrowGrenade(elapsedTime: number, difficulty: BotDifficulty, seed: number): boolean {
+  if (difficulty === 'impossible') return true;
   if (difficulty === 'ultra') return true;
   if (difficulty === 'veryHard') return Math.sin(elapsedTime * 8.5 + seed) > -0.35;
   if (difficulty === 'hard') return Math.sin(elapsedTime * 5.8 + seed) > 0.05;
