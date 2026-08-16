@@ -3,6 +3,7 @@ import { ARENA_HEIGHT, type Barricade, type GameState, type Player, type PlayerI
 export const lavaMazeWidth = 168;
 const gateHeight = 12;
 const wallWidth = 3.4;
+const mazeWallHp = 48;
 const lavaDelay = 4;
 const lavaSpeed = 2.05;
 const exitX = lavaMazeWidth - 7;
@@ -82,7 +83,7 @@ function addMazeChunks(walls: Barricade[], id: number, minX: number, maxX: numbe
 }
 
 function createMazeWall(id: number, x: number, y: number, width: number, height: number): Barricade {
-  return { id, x, y, width, height, hp: 999, variant: 'board' };
+  return { id, x, y, width, height, hp: mazeWallHp, variant: 'board' };
 }
 
 function createRandom(seed: number): () => number {
