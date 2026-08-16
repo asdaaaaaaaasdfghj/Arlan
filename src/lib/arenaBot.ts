@@ -3,6 +3,7 @@ import { createCaptureBotInput } from './arenaCaptureBot';
 import { createPaintBotInput } from './arenaPaintBot';
 import { findBotMoveTarget } from './arenaBotPath';
 import { hillZone } from './arenaKingHill';
+import { getLavaExitX, isLavaSurvivalMode } from './arenaLavaSurvival';
 import { addStrafeTarget } from './botTactics';
 import { isZombieMode } from './arenaModes';
 import { isSurvivalGrace } from './arenaSurvivalMode';
@@ -59,6 +60,10 @@ function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerIn
     return createPaintBotInput(game, difficulty);
   }
 
+  if (isLavaSurvivalMode(game.mode)) {
+    return createLavaRunnerInput(game);
+  }
+
   const profile = botProfiles[difficulty];
   const red = game.players.red;
   const target = chooseTarget(game);
@@ -97,6 +102,28 @@ function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerIn
     shoot: !lineBlocked && aimedAtTarget && distance < profile.shootRange,
     build: isZombieMode(game.mode) && nearestZombieDistance(red, game.zombies) < 18,
     grenade: !lineBlocked && aimedAtTarget && distance > profile.grenadeMin && distance < profile.grenadeMax && shouldThrowGrenade(game.elapsedTime, difficulty, red.x),
+    enterVehicle: false,
+  };
+}
+
+function createLavaRunnerInput(game: GameState): PlayerInput {
+  const red = game.players.red;
+  const exit = { x: getLavaExitX(), y: red.y };
+  const routeTarget = { x: getLavaExitX(), y: 32 };
+  const breakable = findBreakableBetween(red, exit, game);
+  const moveTarget = breakable ?? findBotMoveTarget(game, red, routeTarget);
+  const dx = moveTarget.x - red.x;
+  const dy = moveTarget.y - red.y;
+  const aimedAtWall = breakable ? isAimedAt(red, breakable, 0.82) : false;
+
+  return {
+    up: dy < -1.2,
+    down: dy > 1.2,
+    left: dx < -1.2,
+    right: dx > 1.2,
+    shoot: Boolean(breakable) && aimedAtWall,
+    build: false,
+    grenade: false,
     enterVehicle: false,
   };
 }

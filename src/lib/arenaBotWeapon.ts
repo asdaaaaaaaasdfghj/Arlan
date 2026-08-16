@@ -1,4 +1,5 @@
 import { isPointInsideObstacle } from './arenaMap';
+import { isLavaSurvivalMode } from './arenaLavaSurvival';
 import { getMiniGameWeapon, isMiniGamesMode } from './arenaMiniGames';
 import type { GameState, Player, WeaponId, Zombie } from './arenaTypes';
 import type { BotDifficulty } from './gameSettings';
@@ -14,6 +15,10 @@ export function chooseRedBotWeapon(game: GameState, enabled: boolean, difficulty
 
   if (game.mode === 'flameDuel') {
     return 'flamethrower';
+  }
+
+  if (isLavaSurvivalMode(game.mode)) {
+    return 'blaster';
   }
 
   if (!enabled || game.mode === 'railDuel' || game.status !== 'playing') {
