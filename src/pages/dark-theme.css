@@ -11,7 +11,8 @@
 :root[data-theme='dark'] .weapon-name,
 :root[data-theme='dark'] .achievement-card span,
 :root[data-theme='dark'] .mode-card span,
-:root[data-theme='dark'] .tutorial-card span,
+:root[data-theme='dark'] .tutorial-card p,
+:root[data-theme='dark'] .tutorial-heading p:last-child,
 :root[data-theme='dark'] .settings-panel label,
 :root[data-theme='dark'] .editor-copy p,
 :root[data-theme='dark'] .map-slots strong,
@@ -99,6 +100,15 @@
 }
 
 :root[data-theme='dark'] .mode-picker-group-title {
+  color: #9dcbff;
+}
+
+:root[data-theme='dark'] .tutorial-group h3 {
+  color: #9dcbff;
+}
+
+:root[data-theme='dark'] .tutorial-card span {
+  background: #19324a;
   color: #9dcbff;
 }
 
