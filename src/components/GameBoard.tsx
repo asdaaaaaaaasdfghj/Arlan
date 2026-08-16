@@ -103,6 +103,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
       <div className="arena-world">
         <div className="arena-grid" />
         {farArenaOpen && <FarArenaLayer game={game} />}
+        {farArenaOpen && <FarArenaThing game={game} />}
         {(game.paintTiles ?? []).map((tile) => <PaintTileSprite tile={tile} key={tile.id} />)}
         {(game.floorHoles ?? []).map((hole) => <FloorHoleSprite hole={hole} key={hole.id} />)}
         {game.mode === 'kingHill' && <HillZoneSprite mapId={game.mapId} />}
@@ -183,6 +184,36 @@ function FarArenaBanner({ language }: { language: Language }) {
       <strong>{language === 'ru' ? 'ДАЛЕКИЕ ЗЕМЛИ АРЕНЫ' : 'THE FAR ARENA'}</strong>
       <span>{language === 'ru' ? 'пространство-время поплыло' : 'space-time lost its grid'}</span>
     </div>
+  );
+}
+
+function FarArenaThing({ game }: { game: GameState }) {
+  const cycle = positiveModulo(game.elapsedTime, 19);
+  if (cycle < 7.5) return null;
+
+  const intensity = cycle < 10
+    ? (cycle - 7.5) / 2.5
+    : cycle > 16
+      ? Math.max(0, (19 - cycle) / 3)
+      : 1;
+  const x = 48 + Math.sin(game.elapsedTime * 0.72) * 22;
+  const y = 34 + Math.cos(game.elapsedTime * 0.58) * 14;
+
+  return (
+    <span
+      className="far-arena-thing"
+      style={{
+        left: xPercent(x),
+        top: yPercent(y),
+        '--far-thing-intensity': intensity,
+        '--far-thing-tilt': `${Math.sin(game.elapsedTime * 1.6) * 7}deg`,
+      } as CSSProperties}
+      aria-hidden="true"
+    >
+      <i className="far-arena-thing-eye far-arena-thing-eye-left" />
+      <i className="far-arena-thing-eye far-arena-thing-eye-right" />
+      <b />
+    </span>
   );
 }
 
