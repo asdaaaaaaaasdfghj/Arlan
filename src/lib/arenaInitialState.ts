@@ -1,6 +1,7 @@
 import { type GameMode, type GameState, type MapId } from './arenaTypes';
 import { createFlags } from './arenaFlags';
 import { createGlassCores } from './arenaGlassWars';
+import { createLavaMaze, createLavaSurvivalPlayers, isLavaSurvivalMode } from './arenaLavaSurvival';
 import { createLuckyBlocks } from './arenaLuckyBlocks';
 import { getMapSpawn } from './arenaMap';
 import { modeConfigs } from './arenaModes';
@@ -22,31 +23,34 @@ import {
 
 export function createInitialGame(mode: GameMode = 'duel', mapId: MapId = 'crossfire'): GameState {
   const config = modeConfigs[mode];
-  const blueSpawn = getMapSpawn(mapId, 'blue');
-  const redSpawn = getMapSpawn(mapId, 'red');
-  const customPowerUps = mapId === 'custom' ? loadCustomPowerUps() : [];
+  const effectiveMapId = isLavaSurvivalMode(mode) ? 'open' : mapId;
+  const blueSpawn = getMapSpawn(effectiveMapId, 'blue');
+  const redSpawn = getMapSpawn(effectiveMapId, 'red');
+  const customPowerUps = effectiveMapId === 'custom' ? loadCustomPowerUps() : [];
+  const players = {
+    blue: createPlayer('blue', blueSpawn.x, blueSpawn.y, 1, config.playerHp, config.defaultWeapon),
+    red: createPlayer('red', redSpawn.x, redSpawn.y, -1, config.playerHp, config.defaultWeapon),
+  };
+  const lavaMaze = isLavaSurvivalMode(mode) ? createLavaMaze() : [];
 
   return {
     mode,
-    mapId,
+    mapId: effectiveMapId,
     status: 'ready',
-    players: {
-      blue: createPlayer('blue', blueSpawn.x, blueSpawn.y, 1, config.playerHp, config.defaultWeapon),
-      red: createPlayer('red', redSpawn.x, redSpawn.y, -1, config.playerHp, config.defaultWeapon),
-    },
-    allies: mapId === 'custom' ? loadCustomAllies() : [],
-    allyCheckpoints: [...(mapId === 'custom' ? loadCustomAllyCheckpoints() : []), ...createGlassCores(mode, mapId)],
+    players: isLavaSurvivalMode(mode) ? createLavaSurvivalPlayers(players) : players,
+    allies: effectiveMapId === 'custom' ? loadCustomAllies() : [],
+    allyCheckpoints: [...(effectiveMapId === 'custom' ? loadCustomAllyCheckpoints() : []), ...createGlassCores(mode, effectiveMapId)],
     zombies: [],
     barricades: [],
-    mapBoards: [...(mapId === 'custom' ? loadCustomBoards() : []), ...createLuckyBlocks(mode, mapId)],
-    movingBlocks: mapId === 'custom' ? loadCustomMovers() : [],
-    lasers: mapId === 'custom' ? loadCustomLasers() : [],
-    codeBlocks: mapId === 'custom' ? loadCustomCodeBlocks() : [],
-    vehicles: mapId === 'custom' ? loadCustomVehicles() : [],
-    tnts: mapId === 'custom' ? loadCustomTnts() : [],
-    ricochetBlocks: mapId === 'custom' ? loadCustomRicochets() : [],
-    portals: mapId === 'custom' ? loadCustomPortals() : [],
-    traps: mapId === 'custom' ? loadCustomTraps() : [],
+    mapBoards: [...lavaMaze, ...(effectiveMapId === 'custom' ? loadCustomBoards() : []), ...createLuckyBlocks(mode, effectiveMapId)],
+    movingBlocks: effectiveMapId === 'custom' ? loadCustomMovers() : [],
+    lasers: effectiveMapId === 'custom' ? loadCustomLasers() : [],
+    codeBlocks: effectiveMapId === 'custom' ? loadCustomCodeBlocks() : [],
+    vehicles: effectiveMapId === 'custom' ? loadCustomVehicles() : [],
+    tnts: effectiveMapId === 'custom' ? loadCustomTnts() : [],
+    ricochetBlocks: effectiveMapId === 'custom' ? loadCustomRicochets() : [],
+    portals: effectiveMapId === 'custom' ? loadCustomPortals() : [],
+    traps: effectiveMapId === 'custom' ? loadCustomTraps() : [],
     paintTiles: [],
     floorHoles: [],
     timeEchoes: [],
@@ -55,7 +59,7 @@ export function createInitialGame(mode: GameMode = 'duel', mapId: MapId = 'cross
     grenades: [],
     powerUps: customPowerUps,
     disasters: [],
-    flags: createFlags(mapId),
+    flags: createFlags(effectiveMapId),
     hitEffects: [],
     timeLeft: config.roundSeconds,
     elapsedTime: 0,

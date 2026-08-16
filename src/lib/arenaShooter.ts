@@ -8,6 +8,7 @@ import { tickFlags } from './arenaFlags';
 import { spawnGrenades, tickGrenades } from './arenaGrenades';
 export { createInitialGame } from './arenaInitialState';
 import { tickKingHill } from './arenaKingHill';
+import { tickLavaSurvival } from './arenaLavaSurvival';
 import { tickLasers } from './arenaLasers';
 import { tickLuckyBlocks } from './arenaLuckyBlocks';
 import { applySwordAttacks } from './arenaMelee';
@@ -176,7 +177,8 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const timeLeft = config.noTimer ? state.timeLeft : Math.max(0, state.timeLeft - delta);
   const flagState = tickFlags({ ...state, players: floorState.players });
   const scoredPlayers = tickKingHill(flagState.players, state.mode, state.mapId, delta);
-  const paintState = tickPaintBattle({ ...state, players: scoredPlayers, paintTiles: state.paintTiles ?? [] });
+  const lavaPlayers = tickLavaSurvival({ ...state, elapsedTime }, scoredPlayers, delta);
+  const paintState = tickPaintBattle({ ...state, players: lavaPlayers, paintTiles: state.paintTiles ?? [] });
   const secretState = spawnSecretZombies(state.players, paintState.players, trapState.zombies, codeState.nextZombieId, secretZombies);
   const secretHappened = secretState.nextZombieId > codeState.nextZombieId;
   const winner = secretHappened ? null : findWinner(paintState.players, timeLeft, state.mode, { ...state, paintTiles: paintState.paintTiles });

@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { ARENA_HEIGHT, ARENA_WIDTH, type GameState } from '../lib/arenaShooter';
 import { getArenaBounds, type ArenaBounds } from '../lib/arenaBounds';
 import { getHillZone } from '../lib/arenaKingHill';
+import { getLavaExitX, getLavaFront, isLavaSurvivalMode } from '../lib/arenaLavaSurvival';
 import { getMapObstacles } from '../lib/arenaMap';
 import { getMiniGameIndex, getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arenaMiniGames';
 import { getModeSwapRifts } from '../lib/arenaSwapRifts';
@@ -104,6 +105,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
         <div className="arena-grid" />
         {farArenaOpen && <FarArenaLayer game={game} />}
         {farArenaOpen && <FarArenaThing game={game} />}
+        {isLavaSurvivalMode(game.mode) && <LavaSurvivalLayer game={game} />}
         {(game.paintTiles ?? []).map((tile) => <PaintTileSprite tile={tile} key={tile.id} />)}
         {(game.floorHoles ?? []).map((hole) => <FloorHoleSprite hole={hole} key={hole.id} />)}
         {game.mode === 'kingHill' && <HillZoneSprite mapId={game.mapId} />}
@@ -228,6 +230,19 @@ function MiniGameBanner({ game }: { game: GameState }) {
       <strong>{rule.name}</strong>
       <small>{rule.description}</small>
     </div>
+  );
+}
+
+function LavaSurvivalLayer({ game }: { game: GameState }) {
+  const front = getLavaFront(game.elapsedTime);
+
+  return (
+    <>
+      <span className="lava-exit-zone" style={{ left: xPercent(getLavaExitX()) }} />
+      <span className="lava-wave" style={{ width: xPercent(Math.max(0, front)) }}>
+        <i />
+      </span>
+    </>
   );
 }
 

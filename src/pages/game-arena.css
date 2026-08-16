@@ -171,6 +171,60 @@
     linear-gradient(135deg, #d8f3ff 0%, #f8f9ff 46%, #fff1c2 100%);
 }
 
+.arena-mode-lavaSurvival {
+  background:
+    radial-gradient(circle at 92% 50%, rgba(80, 210, 120, 0.22), transparent 16%),
+    radial-gradient(circle at 4% 50%, rgba(255, 107, 53, 0.32), transparent 18%),
+    linear-gradient(135deg, #1b2430 0%, #243447 48%, #2f1f27 100%);
+}
+
+.lava-wave {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 12;
+  height: 100%;
+  min-width: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 28% 30%, rgba(255, 243, 191, 0.42) 0 2%, transparent 3% 100%),
+    radial-gradient(circle at 62% 72%, rgba(255, 212, 59, 0.36) 0 2%, transparent 3% 100%),
+    repeating-linear-gradient(18deg, rgba(255, 212, 59, 0.32) 0 9px, rgba(224, 49, 49, 0.18) 9px 20px),
+    linear-gradient(90deg, rgba(255, 107, 53, 0.86), rgba(224, 49, 49, 0.78));
+  box-shadow: inset -18px 0 24px rgba(255, 212, 59, 0.42);
+  opacity: 0.88;
+  animation: lava-wave-boil 0.72s linear infinite;
+}
+
+.lava-wave i {
+  position: absolute;
+  right: -14px;
+  top: 0;
+  width: 24px;
+  height: 100%;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 243, 191, 0.9), transparent 18%),
+    radial-gradient(circle at 50% 52%, rgba(255, 212, 59, 0.78), transparent 22%),
+    radial-gradient(circle at 50% 82%, rgba(255, 243, 191, 0.86), transparent 18%);
+  filter: blur(1px);
+}
+
+.lava-exit-zone {
+  position: absolute;
+  top: 7%;
+  z-index: 13;
+  width: 4%;
+  height: 86%;
+  border: 2px solid rgba(81, 207, 102, 0.82);
+  border-radius: 999px;
+  background: rgba(81, 207, 102, 0.16);
+  box-shadow:
+    0 0 18px rgba(81, 207, 102, 0.35),
+    inset 0 0 12px rgba(81, 207, 102, 0.32);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
 .arena-far-open {
   background:
     radial-gradient(circle at 18% 22%, rgba(116, 192, 252, 0.38), transparent 24%),
@@ -850,6 +904,11 @@
   0%,
   100% { filter: saturate(1.05) contrast(1); }
   50% { filter: saturate(1.32) contrast(1.08); }
+}
+
+@keyframes lava-wave-boil {
+  0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 18px -24px, -16px 20px, 28px 0, 0 0; }
 }
 
 @keyframes far-arena-wobble {

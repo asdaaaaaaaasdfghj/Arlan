@@ -1,5 +1,6 @@
 import { type GameMode, type GameState, type Player, type PlayerId } from './arenaTypes';
 import { isGlassCoreDestroyed } from './arenaGlassWars';
+import { isLavaSurvivalMode } from './arenaLavaSurvival';
 import { isDisasterMode, isZombieMode, modeConfigs } from './arenaModes';
 import { getPaintBattleWinner } from './arenaPaint';
 import { countTeamBots } from './arenaTeamBots';
@@ -29,6 +30,15 @@ export function findWinner(
 
   if (mode === 'paintBattle') {
     return timeLeft <= 0 && state ? getPaintBattleWinner(state) : null;
+  }
+
+  if (isLavaSurvivalMode(mode)) {
+    if (players.blue.score >= 1 && players.red.score >= 1) return 'draw';
+    if (players.blue.score >= 1) return 'blue';
+    if (players.red.score >= 1) return 'red';
+    if (players.blue.hp <= 0 && players.red.hp <= 0) return 'draw';
+    if (timeLeft <= 0) return getFarthestRunner(players);
+    return null;
   }
 
   if (mode === 'miniGames') {
@@ -67,4 +77,12 @@ function getScoreWinner(players: Record<PlayerId, Player>): GameState['winner'] 
   }
 
   return players.blue.score > players.red.score ? 'blue' : 'red';
+}
+
+function getFarthestRunner(players: Record<PlayerId, Player>): GameState['winner'] {
+  if (Math.abs(players.blue.x - players.red.x) < 2) {
+    return 'draw';
+  }
+
+  return players.blue.x > players.red.x ? 'blue' : 'red';
 }

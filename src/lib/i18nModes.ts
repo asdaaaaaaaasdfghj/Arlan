@@ -133,6 +133,14 @@ const modes: Record<GameMode, ModeText> = {
     ['Survie', 'Construis une base pendant la paix. Les armes arrivent plus tard.'],
     ['Аман қалу', 'Бейбіт кезде баррикададан база құр. Қару кейін қосылады.'],
   ),
+  lavaSurvival: makeMode(
+    ['Lava Survival', 'Escape a random maze while a lava tsunami chases everyone.'],
+    ['Выживание лавы', 'Выберись из случайного лабиринта, пока сзади идёт цунами из лавы.'],
+    ['Supervivencia de lava', 'Escapa de un laberinto aleatorio mientras te persigue un tsunami de lava.'],
+    ['Lava-Überleben', 'Entkomme einem zufälligen Labyrinth, während eine Lavawelle euch jagt.'],
+    ['Survie lave', 'Échappe à un labyrinthe aléatoire pendant qu’un tsunami de lave avance.'],
+    ['Лавадан аман қалу', 'Лава толқыны қуып келе жатқанда кездейсоқ лабиринттен шық.'],
+  ),
   swordDuel: makeMode(
     ['Sword Fights', 'No guns or grenades. Close in and slash with swords.'],
     ['Бои на мечах', 'Без пушек и гранат: подойди ближе и бей мечом.'],
