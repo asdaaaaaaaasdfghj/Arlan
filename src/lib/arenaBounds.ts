@@ -8,6 +8,10 @@ export type ArenaBounds = {
 };
 
 export function getArenaBounds(mapId: MapId): ArenaBounds {
+  if (mapId === 'lavaMaze') {
+    return { width: 168, height: ARENA_HEIGHT };
+  }
+
   if (mapId !== 'custom') {
     return { width: ARENA_WIDTH, height: ARENA_HEIGHT };
   }

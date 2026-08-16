@@ -337,9 +337,10 @@ function getCameras(game: GameState, bounds: ArenaBounds): CameraView[] {
   const blue = game.players.blue;
   const red = game.players.red;
   const distance = Math.hypot(blue.x - red.x, blue.y - red.y);
-  const zoom = game.mapId === 'custom' && (bounds.width > ARENA_WIDTH || bounds.height > ARENA_HEIGHT) ? 1.85 : 1.18;
+  const largeMap = bounds.width > ARENA_WIDTH || bounds.height > ARENA_HEIGHT;
+  const zoom = largeMap ? 1.85 : 1.18;
 
-  if (game.status === 'playing' && distance > 52 && game.mapId === 'custom') {
+  if (game.status === 'playing' && distance > 52 && largeMap) {
     return [
       createCamera('blue', blue.x, blue.y, zoom, blue, red),
       createCamera('red', red.x, red.y, zoom, red, blue),

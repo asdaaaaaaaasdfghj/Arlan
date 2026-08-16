@@ -10,6 +10,7 @@ export const mapNames: Record<MapId, string> = {
   lanes: 'Lanes',
   bunker: 'Bunker',
   open: 'Open Field',
+  lavaMaze: 'Lava Maze',
   custom: 'Custom Map',
 };
 
@@ -38,6 +39,7 @@ export const arenaMaps: Record<MapId, Obstacle[]> = {
     { id: 'small-top', x: 47, y: 16, width: 6, height: 6 },
     { id: 'small-bottom', x: 47, y: 42, width: 6, height: 6 },
   ],
+  lavaMaze: [],
   custom: [],
 };
 
@@ -57,6 +59,10 @@ export const mapSpawns: Record<MapId, Record<'blue' | 'red', SpawnPoint>> = {
   open: {
     blue: { x: 18, y: ARENA_HEIGHT / 2 },
     red: { x: 82, y: ARENA_HEIGHT / 2 },
+  },
+  lavaMaze: {
+    blue: { x: 8, y: 20 },
+    red: { x: 8, y: 44 },
   },
   custom: {
     blue: { x: 12, y: ARENA_HEIGHT / 2 },

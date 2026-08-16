@@ -1,10 +1,11 @@
-import { ARENA_HEIGHT, ARENA_WIDTH, type Barricade, type GameState, type Player, type PlayerId } from './arenaTypes';
+import { ARENA_HEIGHT, type Barricade, type GameState, type Player, type PlayerId } from './arenaTypes';
 
-const gateHeight = 14;
+export const lavaMazeWidth = 168;
+const gateHeight = 12;
 const wallWidth = 3.4;
 const lavaDelay = 4;
-const lavaSpeed = 2.55;
-const exitX = ARENA_WIDTH - 6;
+const lavaSpeed = 2.05;
+const exitX = lavaMazeWidth - 7;
 
 export function isLavaSurvivalMode(mode: GameState['mode']): boolean {
   return mode === 'lavaSurvival';
@@ -13,7 +14,7 @@ export function isLavaSurvivalMode(mode: GameState['mode']): boolean {
 export function createLavaMaze(seed = Math.random()): Barricade[] {
   const random = createRandom(seed);
   const walls: Barricade[] = [];
-  const wallXs = [18, 30, 42, 54, 66, 78, 88];
+  const wallXs = [18, 30, 42, 54, 66, 78, 90, 102, 114, 126, 138, 150, 158];
   let previousGate = 28 + random() * 12;
 
   wallXs.forEach((x, index) => {
@@ -47,7 +48,7 @@ export function tickLavaSurvival(state: GameState, players: Record<PlayerId, Pla
 }
 
 export function getLavaFront(elapsedTime: number): number {
-  return Math.min(ARENA_WIDTH + 8, -7 + Math.max(0, elapsedTime - lavaDelay) * lavaSpeed);
+  return Math.min(lavaMazeWidth + 8, -7 + Math.max(0, elapsedTime - lavaDelay) * lavaSpeed);
 }
 
 export function getLavaExitX(): number {

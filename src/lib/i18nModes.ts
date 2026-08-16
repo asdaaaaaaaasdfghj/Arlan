@@ -236,6 +236,7 @@ const mapNames: Record<MapId, MapText> = {
   lanes: makeMap('Lanes', 'Линии', 'Líneas', 'Bahnen', 'Couloirs', 'Жолақтар'),
   bunker: makeMap('Bunker', 'Бункер', 'Búnker', 'Bunker', 'Bunker', 'Бункер'),
   open: makeMap('Open Field', 'Открытое поле', 'Campo abierto', 'Offenes Feld', 'Champ ouvert', 'Ашық алаң'),
+  lavaMaze: makeMap('Lava Maze', 'Лавовый лабиринт', 'Laberinto de lava', 'Lavalabyrinth', 'Labyrinthe de lave', 'Лава лабиринті'),
   custom: makeMap('Custom Map', 'Своя карта', 'Mapa propio', 'Eigene Karte', 'Carte perso', 'Өз картаң'),
 };
 

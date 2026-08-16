@@ -23,7 +23,7 @@ import {
 
 export function createInitialGame(mode: GameMode = 'duel', mapId: MapId = 'crossfire'): GameState {
   const config = modeConfigs[mode];
-  const effectiveMapId = isLavaSurvivalMode(mode) ? 'open' : mapId;
+  const effectiveMapId = isLavaSurvivalMode(mode) ? 'lavaMaze' : mapId;
   const blueSpawn = getMapSpawn(effectiveMapId, 'blue');
   const redSpawn = getMapSpawn(effectiveMapId, 'red');
   const customPowerUps = effectiveMapId === 'custom' ? loadCustomPowerUps() : [];

@@ -39,7 +39,7 @@ export const modeConfigs: Record<GameMode, ModeConfig> = {
   swapRift: createDuel('swapRift', 'Swap Rift', 'Step into a rift to swap places with the enemy.', 70, 5),
   timeDuel: createDuel('timeDuel', '5D Duel', 'Past and future echoes exist on the arena. Do not shoot your own timeline.', 75, 5),
   craftSurvival: createDuel('craftSurvival', 'Survival', 'Build a barricade base during peace time. Weapons unlock later.', 95, 5),
-  lavaSurvival: createDuel('lavaSurvival', 'Lava Survival', 'Escape a random maze while a lava tsunami chases everyone.', 58, 1),
+  lavaSurvival: createDuel('lavaSurvival', 'Lava Survival', 'Escape a huge random maze while a lava tsunami chases everyone.', 86, 1),
   swordDuel: createDuel('swordDuel', 'Sword Fights', 'No guns or grenades. Close in and slash with swords.', 70, 5),
   grenadeMayhem: {
     ...createDuel('grenadeMayhem', 'Grenade Mayhem', 'Fast grenades, loud explosions, first to 5.', 60, 5),
