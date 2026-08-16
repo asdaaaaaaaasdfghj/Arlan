@@ -49,6 +49,7 @@ export function createInitialGame(mode: GameMode = 'duel', mapId: MapId = 'cross
     traps: mapId === 'custom' ? loadCustomTraps() : [],
     paintTiles: [],
     floorHoles: [],
+    timeEchoes: [],
     bullets: [],
     grenades: [],
     powerUps: customPowerUps,

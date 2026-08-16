@@ -11,6 +11,7 @@ import {
   type HitEffect,
   type Player,
   type PowerUp,
+  type TimeEcho,
   type Zombie,
 } from '../lib/arenaShooter';
 import type { PlayerProfile } from '../lib/playerProfile';
@@ -112,6 +113,23 @@ export function ZombieSprite({ zombie }: { zombie: Zombie }) {
       <span className="zombie-arm zombie-arm-left" />
       <span className="zombie-face" />
       <span className="zombie-arm zombie-arm-right" />
+    </div>
+  );
+}
+
+export function TimeEchoSprite({ echo }: { echo: TimeEcho }) {
+  return (
+    <div
+      className={`time-echo time-echo-${echo.owner} time-echo-${echo.phase}`}
+      style={{
+        left: xPercent(echo.x),
+        top: yPercent(echo.y),
+        '--aim-angle': `${Math.atan2(echo.facingY, echo.facingX)}rad`,
+        '--echo-opacity': Math.max(0.18, Math.min(0.72, echo.age / 1.8)),
+      } as CSSProperties}
+    >
+      <span className="time-echo-cannon" />
+      <span className="time-echo-core" />
     </div>
   );
 }

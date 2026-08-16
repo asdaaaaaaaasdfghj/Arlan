@@ -22,6 +22,7 @@ import {
   HitEffectSprite,
   PlayerSprite,
   PowerUpSprite,
+  TimeEchoSprite,
   ZombieSprite,
 } from './GameSprites';
 
@@ -123,6 +124,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
         {game.tnts.map((tnt) => <TntSprite tnt={tnt} key={tnt.id} />)}
         {game.allyCheckpoints.map((checkpoint) => <AllyCheckpointSprite checkpoint={checkpoint} key={checkpoint.id} />)}
         {game.mode === 'captureFlag' && Object.values(game.flags).map((flag) => <FlagSprite flag={flag} key={flag.owner} />)}
+        {(game.timeEchoes ?? []).map((echo) => <TimeEchoSprite echo={echo} key={echo.id} />)}
         <PlayerSprite player={game.players.blue} profile={playerProfiles?.blue} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.blue, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} />
         <PlayerSprite player={game.players.red} profile={playerProfiles?.red} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.red, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} />
         {playerEmotes?.blue && <PlayerEmoteLabel player={game.players.blue} label={playerEmotes.blue} />}

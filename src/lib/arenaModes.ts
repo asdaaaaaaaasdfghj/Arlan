@@ -37,6 +37,7 @@ export const modeConfigs: Record<GameMode, ModeConfig> = {
   hideSeek: createDuel('hideSeek', 'Hide and Seek', 'Use objects and cover to hide, ambush, and survive.', 80, 5, 100, 'shotgun'),
   hungerGames: createDuel('hungerGames', 'Hunger Games', 'Scavenge power-ups and lucky blocks. Last fighter wins the trades.', 120, 7),
   swapRift: createDuel('swapRift', 'Swap Rift', 'Step into a rift to swap places with the enemy.', 70, 5),
+  timeDuel: createDuel('timeDuel', '5D Duel', 'Past and future echoes exist on the arena. Do not shoot your own timeline.', 75, 5),
   craftSurvival: createDuel('craftSurvival', 'Survival', 'Build a barricade base during peace time. Weapons unlock later.', 95, 5),
   swordDuel: createDuel('swordDuel', 'Sword Fights', 'No guns or grenades. Close in and slash with swords.', 70, 5),
   grenadeMayhem: {
@@ -85,6 +86,7 @@ export const modeOrder: GameMode[] = [
   'hideSeek',
   'luckyBlocks',
   'swapRift',
+  'timeDuel',
   'flameDuel',
   'swordDuel',
   'grenadeMayhem',
@@ -121,7 +123,7 @@ export const modeGroups: ModeGroup[] = [
   {
     id: 'arcade',
     label: { en: 'Arcade', ru: 'Аркады', es: 'Arcade', de: 'Arcade', fr: 'Arcade', kk: 'Аркада' },
-    modes: ['paintBattle', 'miniGames', 'spleef', 'tileRun', 'hideSeek', 'luckyBlocks', 'swapRift'],
+    modes: ['paintBattle', 'miniGames', 'spleef', 'tileRun', 'hideSeek', 'luckyBlocks', 'swapRift', 'timeDuel'],
   },
   {
     id: 'other',
@@ -147,6 +149,7 @@ export const modeGroups: ModeGroup[] = [
       'hideSeek',
       'luckyBlocks',
       'swapRift',
+      'timeDuel',
     ].includes(mode)),
   },
 ];

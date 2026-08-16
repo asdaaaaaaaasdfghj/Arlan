@@ -164,6 +164,13 @@
   color: #dbe4ea;
 }
 
+.arena-mode-timeDuel {
+  background:
+    radial-gradient(circle at 24% 28%, rgba(116, 192, 252, 0.32), transparent 24%),
+    radial-gradient(circle at 74% 64%, rgba(255, 212, 59, 0.28), transparent 26%),
+    linear-gradient(135deg, #d8f3ff 0%, #f8f9ff 46%, #fff1c2 100%);
+}
+
 .hill-zone {
   position: absolute;
   border: 3px solid rgba(255, 212, 59, 0.95);
@@ -217,7 +224,8 @@
 .ally,
 .zombie,
 .bullet,
-.hit-effect {
+.hit-effect,
+.time-echo {
   position: absolute;
   transform: translate(-50%, -50%);
 }
@@ -468,6 +476,51 @@
 .zombie-arm-left { left: -7px; }
 .zombie-arm-right { right: -7px; }
 
+.time-echo {
+  z-index: 16;
+  width: 38px;
+  height: 38px;
+  border: 2px dashed rgba(21, 23, 25, 0.72);
+  border-radius: 50%;
+  opacity: var(--echo-opacity);
+  pointer-events: none;
+  animation: time-echo-pulse 1.1s ease-in-out infinite;
+}
+
+.time-echo-blue {
+  background: rgba(58, 134, 255, 0.22);
+  box-shadow: 0 0 18px rgba(58, 134, 255, 0.34);
+}
+
+.time-echo-red {
+  background: rgba(239, 71, 111, 0.22);
+  box-shadow: 0 0 18px rgba(239, 71, 111, 0.34);
+}
+
+.time-echo-future {
+  border-style: solid;
+  filter: sepia(0.45) saturate(1.4);
+}
+
+.time-echo-cannon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(21, 23, 25, 0.74);
+  transform: translate(-4px, -50%) rotate(var(--aim-angle));
+  transform-origin: 4px 50%;
+}
+
+.time-echo-core {
+  position: absolute;
+  inset: 11px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.84);
+}
+
 .bullet {
   border-radius: 50%;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.74);
@@ -596,6 +649,12 @@
   100% {
     transform: translate(-3px, -50%) rotate(var(--aim-angle)) translateX(10px) rotate(38deg);
   }
+}
+
+@keyframes time-echo-pulse {
+  0%,
+  100% { transform: translate(-50%, -50%) scale(0.94); }
+  50% { transform: translate(-50%, -50%) scale(1.08); }
 }
 
 .game-overlay {

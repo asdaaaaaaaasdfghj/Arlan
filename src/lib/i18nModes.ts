@@ -117,6 +117,14 @@ const modes: Record<GameMode, ModeText> = {
     ['Faille d’échange', 'Entre dans la faille pour échanger ta place avec l’ennemi.'],
     ['Алмасу жарығы', 'Жарыққа кіріп, жаумен орын ауыстыр.'],
   ),
+  timeDuel: makeMode(
+    ['5D Duel', 'Past and future echoes exist on the arena. Do not shoot your own timeline.'],
+    ['5D дуэль', 'На арене есть эхо прошлого и будущего. Не стреляй в свою временную линию.'],
+    ['Duelo 5D', 'Hay ecos del pasado y futuro en la arena. No dispares a tu propia línea temporal.'],
+    ['5D-Duell', 'Vergangenheits- und Zukunftsechos sind in der Arena. Schieße nicht auf deine eigene Zeitlinie.'],
+    ['Duel 5D', 'Des échos du passé et du futur sont dans l’arène. Ne tire pas sur ta propre ligne temporelle.'],
+    ['5D дуэль', 'Аренада өткен және болашақ жаңғырықтары бар. Өз уақыт сызығыңа атпа.'],
+  ),
   craftSurvival: makeMode(
     ['Survival', 'Build a barricade base during peace time. Weapons unlock later.'],
     ['Выживание', 'В мирное время строй базу из баррикад без перезарядки. Потом включается оружие.'],

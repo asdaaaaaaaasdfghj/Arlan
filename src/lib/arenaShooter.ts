@@ -22,6 +22,7 @@ import { findWinner } from './arenaRules';
 import { spawnSecretZombies } from './arenaSecretZombies';
 import { getModeSwapRifts, tickSwapRifts } from './arenaSwapRifts';
 import { isSurvivalGrace, lockSurvivalWeapons } from './arenaSurvivalMode';
+import { applyTimeParadoxHits, tickTimeEchoes } from './arenaTimeDuel';
 import { explodeReadyTnts, tickTnts, triggerTntChain, triggerTnts } from './arenaTnt';
 import { tickTraps } from './arenaTraps';
 import { isCustomOnlyWeapon } from './arenaWeapons';
@@ -96,11 +97,13 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     mechanics.magnets,
     state.mode,
   );
+  const timeEchoes = tickTimeEchoes(state, shooting.players, elapsedTime, delta);
+  const paradoxState = applyTimeParadoxHits(shooting.players, moved.bullets, timeEchoes, state.nextEffectId + swordState.effects.length);
   const oldEffects = ageHitEffects(state.hitEffects, delta);
   const tntState = triggerTnts({
     tnts,
-    bullets: moved.bullets,
-    players: shooting.players,
+    bullets: paradoxState.bullets,
+    players: paradoxState.players,
     zombies: state.zombies,
     barricades: moved.barricades,
     mapBoards: moved.mapBoards,
@@ -111,14 +114,14 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     tntState.bullets,
     state.mode,
     state.mapId,
-    state.nextEffectId + swordState.effects.length + tntState.effects.length,
+    state.nextEffectId + swordState.effects.length + paradoxState.effects.length + tntState.effects.length,
   );
   const zombieState = updateZombieMode(
     { ...movedState, zombies: tntState.zombies, mapBoards: tntState.mapBoards, tnts: tntState.tnts },
     afterDuelHits.players,
     afterDuelHits.bullets,
     tntState.barricades,
-    state.nextEffectId + swordState.effects.length + tntState.effects.length + afterDuelHits.effects.length,
+    state.nextEffectId + swordState.effects.length + paradoxState.effects.length + tntState.effects.length + afterDuelHits.effects.length,
     delta,
   );
   const grenadeState = tickGrenades(
@@ -128,7 +131,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     zombieState.barricades,
     state.mode,
     state.mapId,
-    state.nextEffectId + swordState.effects.length + tntState.effects.length + afterDuelHits.effects.length + zombieState.effects.length,
+    state.nextEffectId + swordState.effects.length + paradoxState.effects.length + tntState.effects.length + afterDuelHits.effects.length + zombieState.effects.length,
     delta,
     mechanics.magnets,
   );
@@ -141,7 +144,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     mapBoards: tntState.mapBoards,
     effects: [],
   }, grenadeState.blasts);
-  const fuseEffectId = state.nextEffectId + swordState.effects.length + tntState.effects.length + afterDuelHits.effects.length + zombieState.effects.length + grenadeState.effects.length;
+  const fuseEffectId = state.nextEffectId + swordState.effects.length + paradoxState.effects.length + tntState.effects.length + afterDuelHits.effects.length + zombieState.effects.length + grenadeState.effects.length;
   const fuseState = explodeReadyTnts(chainState, state.mode, state.mapId, fuseEffectId);
   const laserBlockers = [
     ...getMapObstacles(state.mapId),
@@ -183,7 +186,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     state.powerUpTimer,
     delta,
   );
-  const hitEffects = [...oldEffects, ...swordState.effects, ...tntState.effects, ...afterDuelHits.effects, ...zombieState.effects, ...grenadeState.effects, ...fuseState.effects, ...codeState.hitEffects, ...trapState.effects];
+  const hitEffects = [...oldEffects, ...swordState.effects, ...paradoxState.effects, ...tntState.effects, ...afterDuelHits.effects, ...zombieState.effects, ...grenadeState.effects, ...fuseState.effects, ...codeState.hitEffects, ...trapState.effects];
   return {
     ...state,
     players: powerUps.players,
@@ -202,6 +205,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     traps: trapState.traps,
     paintTiles: paintState.paintTiles,
     floorHoles: floorState.floorHoles,
+    timeEchoes,
     bullets: fuseState.bullets,
     grenades: grenadeState.grenades,
     powerUps: powerUps.powerUps,
