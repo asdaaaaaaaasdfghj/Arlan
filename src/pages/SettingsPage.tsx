@@ -151,6 +151,7 @@ function getBotDifficultyLabel(difficulty: GameSettings['botDifficulty'], langua
     veryHard: { en: 'Very hard', ru: 'Очень сложно', es: 'Muy difícil', de: 'Sehr schwer', fr: 'Très difficile', kk: 'Өте қиын' },
     ultra: { en: 'Ultra hard', ru: 'Ультра сложно', es: 'Ultra difícil', de: 'Ultra schwer', fr: 'Ultra difficile', kk: 'Ультра қиын' },
     impossible: { en: 'Impossible', ru: 'Невозможный', es: 'Imposible', de: 'Unmöglich', fr: 'Impossible', kk: 'Мүмкін емес' },
+    thermonuclear: { en: 'Thermonuclear', ru: 'Термоядерный', es: 'Termonuclear', de: 'Thermonuklear', fr: 'Thermonucleaire', kk: 'Термоядролық' },
   };
 
   return labels[difficulty][language] ?? labels[difficulty].en;

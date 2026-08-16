@@ -39,7 +39,7 @@ export function chooseRedBotWeapon(game: GameState, enabled: boolean, difficulty
 }
 
 function isTopDifficulty(difficulty: BotDifficulty): boolean {
-  return difficulty === 'veryHard' || difficulty === 'ultra' || difficulty === 'impossible';
+  return difficulty === 'veryHard' || difficulty === 'ultra' || difficulty === 'impossible' || difficulty === 'thermonuclear';
 }
 
 function chooseTarget(game: GameState): BotTarget | null {

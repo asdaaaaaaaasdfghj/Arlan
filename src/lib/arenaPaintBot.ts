@@ -23,6 +23,7 @@ const searchByDifficulty: Record<BotDifficulty, { radius: number; distancePenalt
   veryHard: { radius: 94, distancePenalty: 0.14 },
   ultra: { radius: 120, distancePenalty: 0.08 },
   impossible: { radius: 180, distancePenalty: 0.02 },
+  thermonuclear: { radius: 260, distancePenalty: 0 },
 };
 
 export function createPaintBotInput(game: GameState, difficulty: BotDifficulty): PlayerInput {
@@ -112,6 +113,7 @@ function countNearbyNonRed(col: number, row: number, painted: Map<string, PaintT
 }
 
 function getShootChance(difficulty: BotDifficulty): number {
+  if (difficulty === 'thermonuclear') return 1;
   if (difficulty === 'impossible') return 1;
   if (difficulty === 'ultra') return 0.82;
   if (difficulty === 'veryHard') return 0.66;
@@ -122,6 +124,7 @@ function getShootChance(difficulty: BotDifficulty): number {
 }
 
 function getContestRange(difficulty: BotDifficulty): number {
+  if (difficulty === 'thermonuclear') return 70;
   if (difficulty === 'impossible') return 48;
   if (difficulty === 'ultra') return 34;
   if (difficulty === 'veryHard') return 28;
@@ -130,6 +133,7 @@ function getContestRange(difficulty: BotDifficulty): number {
 }
 
 function getContestBonus(difficulty: BotDifficulty): number {
+  if (difficulty === 'thermonuclear') return 72;
   if (difficulty === 'impossible') return 42;
   if (difficulty === 'ultra') return 24;
   if (difficulty === 'veryHard') return 18;

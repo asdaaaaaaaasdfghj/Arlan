@@ -21,7 +21,7 @@ const enCards: TutorialCard[] = [
   { group: 'Online', title: 'Servers', tag: 'Multiplayer', text: 'Private rooms use a code. Public rooms appear in the list. Official servers are restricted for guests and support larger lobbies.' },
   { group: 'Online', title: 'Account', tag: 'Save', text: 'Sign in to save progress across browsers, publish maps, use normal chat and keep stats. Guests get a gray guest profile with limits.' },
   { group: 'Progress', title: 'Achievements', tag: 'Goals', text: 'Achievements unlock for wins, survival challenges, weird losses, map progress, self-grenade death and more. Toasts slide in smoothly.' },
-  { group: 'Progress', title: 'Settings', tag: 'Options', text: 'Change language, FPS, low-spec mode, controls, bot difficulty up to Impossible, bot weapons, music, dark mode, secret zombies and achievement popups.' },
+  { group: 'Progress', title: 'Settings', tag: 'Options', text: 'Change language, FPS, low-spec mode, controls, bot difficulty up to Thermonuclear, bot weapons, music, dark mode, secret zombies and achievement popups.' },
 ];
 
 const ruCards: TutorialCard[] = [
@@ -38,7 +38,7 @@ const ruCards: TutorialCard[] = [
   { group: 'Онлайн', title: 'Серверы', tag: 'Мультиплеер', text: 'В приватные комнаты заходят по коду. Публичные видны в списке. Официальные серверы ограничены для гостей и поддерживают большие лобби.' },
   { group: 'Онлайн', title: 'Аккаунт', tag: 'Сейв', text: 'Войди в профиль, чтобы сохранять прогресс между браузерами, выкладывать карты, писать в обычный чат и копить статистику. Гость серый и с ограничениями.' },
   { group: 'Прогресс', title: 'Ачивки', tag: 'Цели', text: 'Ачивки дают за победы, выживание, странные поражения, карты, смерть от своей гранаты и другое. Уведомления появляются плавно.' },
-  { group: 'Прогресс', title: 'Настройки', tag: 'Опции', text: 'Можно менять язык, FPS, режим для слабых ПК, управление, сложность ботов до Невозможной, оружие ботов, музыку, тёмный режим, секретных зомби и ачивки.' },
+  { group: 'Прогресс', title: 'Настройки', tag: 'Опции', text: 'Можно менять язык, FPS, режим для слабых ПК, управление, сложность ботов до Термоядерной, оружие ботов, музыку, тёмный режим, секретных зомби и ачивки.' },
 ];
 
 export function HomeTutorial({ language }: { language: Language }) {

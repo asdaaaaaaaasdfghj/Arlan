@@ -131,7 +131,7 @@ export function GamePage() {
     const timerId = window.setInterval(() => {
       setGame((current) => {
         const botEnabled = settings.redBot && !redHumanRef.current;
-        const topBot = settings.botDifficulty === 'veryHard' || settings.botDifficulty === 'ultra' || settings.botDifficulty === 'impossible';
+        const topBot = settings.botDifficulty === 'veryHard' || settings.botDifficulty === 'ultra' || settings.botDifficulty === 'impossible' || settings.botDifficulty === 'thermonuclear';
         const botWeapon = chooseRedBotWeapon(current, botEnabled && (settings.botUsesWeapons || topBot), settings.botDifficulty);
         const armedGame = current.players.red.weapon === botWeapon ? current : changeWeapon(current, 'red', botWeapon);
         return tickGame(
