@@ -180,7 +180,7 @@
 }
 
 .arena-far-open .arena-world {
-  animation: far-arena-wobble 1.5s ease-in-out infinite;
+  animation: far-arena-wobble 0.8s steps(2, end) infinite;
 }
 
 .arena-far-open .arena-grid {
@@ -209,6 +209,19 @@
   position: absolute;
   border-radius: 999px;
   opacity: 0.76;
+}
+
+.far-arena-glitch {
+  position: absolute;
+  height: 3%;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.82), rgba(58, 134, 255, 0.28), rgba(239, 71, 111, 0.38));
+  box-shadow:
+    0 0 12px rgba(116, 192, 252, 0.42),
+    0 0 24px rgba(239, 71, 111, 0.24);
+  transform: rotate(var(--far-glitch-tilt));
+  animation: far-glitch-blink 0.34s steps(2, end) infinite;
 }
 
 .far-arena-layer i:nth-child(1) {
@@ -260,6 +273,13 @@
 .far-arena-banner strong {
   color: #ffd43b;
   font-size: 15px;
+}
+
+.arena-far-open .fighter,
+.arena-far-open .bullet,
+.arena-far-open .grenade,
+.arena-far-open .time-echo {
+  filter: saturate(1.32) drop-shadow(0 0 8px rgba(116, 192, 252, 0.38));
 }
 
 .far-arena-banner span {
@@ -764,11 +784,19 @@
 @keyframes far-arena-wobble {
   0%,
   100% {
-    transform: translate(var(--camera-shift-x, 0%), var(--camera-shift-y, 0%)) scale(var(--camera-zoom, 1)) skew(0deg, 0deg);
+    transform:
+      translate(calc(var(--camera-shift-x, 0%) + var(--far-shift-x, 0%)), calc(var(--camera-shift-y, 0%) + var(--far-shift-y, 0%)))
+      scale(var(--camera-zoom, 1))
+      scale(var(--far-scale-x, 1), var(--far-scale-y, 1))
+      skew(var(--far-skew-x, 0deg), var(--far-skew-y, 0deg));
   }
 
   50% {
-    transform: translate(var(--camera-shift-x, 0%), var(--camera-shift-y, 0%)) scale(var(--camera-zoom, 1)) skew(0.8deg, -0.45deg);
+    transform:
+      translate(calc(var(--camera-shift-x, 0%) - var(--far-shift-y, 0%)), calc(var(--camera-shift-y, 0%) - var(--far-shift-x, 0%)))
+      scale(var(--camera-zoom, 1))
+      scale(var(--far-scale-y, 1), var(--far-scale-x, 1))
+      skew(var(--far-skew-y-neg, 0deg), var(--far-skew-x, 0deg));
   }
 }
 
@@ -799,6 +827,12 @@
     opacity: 0;
     transform: translate(-50%, -6px) scale(0.98);
   }
+}
+
+@keyframes far-glitch-blink {
+  0% { opacity: 0.16; }
+  50% { opacity: 0.92; }
+  100% { opacity: 0.4; }
 }
 
 .game-overlay {

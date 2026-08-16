@@ -13,6 +13,12 @@ export function isTimeDuelMode(mode: GameState['mode']): boolean {
 export function isFarArenaOpen(state: GameState, bounds: ArenaBounds): boolean {
   if (!isTimeDuelMode(state.mode)) return false;
 
+  return state.farArenaActive || hasFarArenaBreach(state, bounds);
+}
+
+export function hasFarArenaBreach(state: GameState, bounds: ArenaBounds): boolean {
+  if (!isTimeDuelMode(state.mode)) return false;
+
   return Object.values(state.players).some((player) => isOutsideArena(player.x, player.y, bounds))
     || state.timeEchoes.some((echo) => isOutsideArena(echo.x, echo.y, bounds));
 }

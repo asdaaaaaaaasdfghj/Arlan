@@ -206,6 +206,7 @@ export type GameState = {
   paintTiles: PaintTile[];
   floorHoles: FloorHole[];
   timeEchoes: TimeEcho[];
+  farArenaActive: boolean;
   bullets: Bullet[];
   grenades: Grenade[];
   powerUps: PowerUp[];

@@ -22,12 +22,13 @@ import { findWinner } from './arenaRules';
 import { spawnSecretZombies } from './arenaSecretZombies';
 import { getModeSwapRifts, tickSwapRifts } from './arenaSwapRifts';
 import { isSurvivalGrace, lockSurvivalWeapons } from './arenaSurvivalMode';
-import { applyTimeParadoxHits, tickTimeEchoes } from './arenaTimeDuel';
+import { applyTimeParadoxHits, hasFarArenaBreach, tickTimeEchoes } from './arenaTimeDuel';
 import { explodeReadyTnts, tickTnts, triggerTntChain, triggerTnts } from './arenaTnt';
 import { tickTraps } from './arenaTraps';
 import { isCustomOnlyWeapon } from './arenaWeapons';
 import { buildZombieModeBarricades, updateZombieMode } from './arenaZombieMode';
 import { loadCustomConveyors, loadCustomMagnets, loadCustomSolidDecorations, loadCustomSwapRifts, loadCustomTerrain, loadCustomVehicles } from './customMap';
+import { getArenaBounds } from './arenaBounds';
 import { getMapObstacles } from './arenaMap';
 export * from './arenaTypes';
 
@@ -98,6 +99,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     state.mode,
   );
   const timeEchoes = tickTimeEchoes(state, shooting.players, elapsedTime, delta, state.portals);
+  const farArenaActive = state.farArenaActive || hasFarArenaBreach({ ...state, players: shooting.players, timeEchoes }, getArenaBounds(state.mapId));
   const paradoxState = applyTimeParadoxHits(shooting.players, moved.bullets, timeEchoes, state.nextEffectId + swordState.effects.length);
   const oldEffects = ageHitEffects(state.hitEffects, delta);
   const tntState = triggerTnts({
@@ -206,6 +208,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     paintTiles: paintState.paintTiles,
     floorHoles: floorState.floorHoles,
     timeEchoes,
+    farArenaActive,
     bullets: fuseState.bullets,
     grenades: grenadeState.grenades,
     powerUps: powerUps.powerUps,

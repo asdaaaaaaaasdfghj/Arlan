@@ -99,10 +99,10 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   ];
 
   return (
-    <section className={`arena arena-theme-${theme} arena-mode-${game.mode} ${farArenaOpen ? 'arena-far-open' : ''} ${isMiniGamesMode(game) && getMiniGameRule(game).sword ? 'arena-mode-swordDuel' : ''}`} aria-label="Battle arena" style={cameraVars(camera, bounds)}>
+    <section className={`arena arena-theme-${theme} arena-mode-${game.mode} ${farArenaOpen ? 'arena-far-open' : ''} ${isMiniGamesMode(game) && getMiniGameRule(game).sword ? 'arena-mode-swordDuel' : ''}`} aria-label="Battle arena" style={{ ...cameraVars(camera, bounds), ...farArenaVars(game, farArenaOpen) }}>
       <div className="arena-world">
         <div className="arena-grid" />
-        {farArenaOpen && <FarArenaLayer />}
+        {farArenaOpen && <FarArenaLayer game={game} />}
         {(game.paintTiles ?? []).map((tile) => <PaintTileSprite tile={tile} key={tile.id} />)}
         {(game.floorHoles ?? []).map((hole) => <FloorHoleSprite hole={hole} key={hole.id} />)}
         {game.mode === 'kingHill' && <HillZoneSprite mapId={game.mapId} />}
@@ -153,12 +153,26 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   );
 }
 
-function FarArenaLayer() {
+function FarArenaLayer({ game }: { game: GameState }) {
+  const glitchCount = 8;
+
   return (
     <span className="far-arena-layer" aria-hidden="true">
       <i />
       <i />
       <i />
+      {Array.from({ length: glitchCount }, (_, index) => (
+        <b
+          className="far-arena-glitch"
+          style={{
+            left: `${positiveModulo(Math.sin(game.elapsedTime * 1.7 + index * 2.31) * 45 + 50, 100)}%`,
+            top: `${positiveModulo(Math.cos(game.elapsedTime * 1.3 + index * 1.77) * 42 + 50, 100)}%`,
+            width: `${7 + positiveModulo(index * 5 + Math.floor(game.elapsedTime * 4), 12)}%`,
+            '--far-glitch-tilt': `${Math.sin(index + game.elapsedTime) * 16}deg`,
+          } as CSSProperties}
+          key={index}
+        />
+      ))}
     </span>
   );
 }
@@ -244,6 +258,25 @@ function PlayerEmoteLabel({ player, label }: { player: GameState['players']['blu
       {label}
     </span>
   );
+}
+
+function farArenaVars(game: GameState, active: boolean): CSSProperties {
+  if (!active) return {};
+
+  const time = game.elapsedTime;
+  return {
+    '--far-scale-x': 1 + Math.sin(time * 2.7) * 0.1,
+    '--far-scale-y': 1 + Math.cos(time * 2.15) * 0.12,
+    '--far-skew-x': `${Math.sin(time * 3.3) * 1.8}deg`,
+    '--far-skew-y': `${Math.cos(time * 2.9) * 1.2}deg`,
+    '--far-skew-y-neg': `${Math.cos(time * 2.9) * -1.2}deg`,
+    '--far-shift-x': `${Math.sin(time * 5.2) * 1.2}%`,
+    '--far-shift-y': `${Math.cos(time * 4.7) * 1.1}%`,
+  } as CSSProperties;
+}
+
+function positiveModulo(value: number, modulo: number): number {
+  return ((value % modulo) + modulo) % modulo;
 }
 
 type CameraView = {
