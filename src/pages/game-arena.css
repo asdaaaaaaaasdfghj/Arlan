@@ -171,6 +171,104 @@
     linear-gradient(135deg, #d8f3ff 0%, #f8f9ff 46%, #fff1c2 100%);
 }
 
+.arena-far-open {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(116, 192, 252, 0.38), transparent 24%),
+    radial-gradient(circle at 86% 28%, rgba(255, 212, 59, 0.28), transparent 20%),
+    linear-gradient(118deg, #102a43 0%, #14213d 46%, #3d1423 100%);
+  animation: far-arena-breathe 1.8s ease-in-out infinite;
+}
+
+.arena-far-open .arena-world {
+  animation: far-arena-wobble 1.5s ease-in-out infinite;
+}
+
+.arena-far-open .arena-grid {
+  opacity: 0.68;
+  background-image:
+    linear-gradient(rgba(116, 192, 252, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 212, 59, 0.16) 1px, transparent 1px);
+  animation: far-grid-warp 0.55s steps(2, end) infinite;
+}
+
+.far-arena-layer {
+  position: absolute;
+  inset: -24%;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.58;
+  background:
+    repeating-linear-gradient(88deg, rgba(116, 192, 252, 0.24) 0 2px, transparent 2px 18px),
+    repeating-linear-gradient(5deg, rgba(239, 71, 111, 0.16) 0 3px, transparent 3px 26px);
+  filter: blur(0.2px);
+  animation: far-arena-drift 3.2s linear infinite;
+}
+
+.far-arena-layer i {
+  position: absolute;
+  border-radius: 999px;
+  opacity: 0.76;
+}
+
+.far-arena-layer i:nth-child(1) {
+  left: 12%;
+  top: 16%;
+  width: 26%;
+  height: 5%;
+  background: rgba(58, 134, 255, 0.42);
+  box-shadow: 0 0 22px rgba(58, 134, 255, 0.48);
+}
+
+.far-arena-layer i:nth-child(2) {
+  right: 8%;
+  top: 48%;
+  width: 32%;
+  height: 6%;
+  background: rgba(255, 212, 59, 0.34);
+  box-shadow: 0 0 26px rgba(255, 212, 59, 0.36);
+}
+
+.far-arena-layer i:nth-child(3) {
+  left: 36%;
+  bottom: 14%;
+  width: 22%;
+  height: 5%;
+  background: rgba(239, 71, 111, 0.36);
+  box-shadow: 0 0 24px rgba(239, 71, 111, 0.42);
+}
+
+.far-arena-banner {
+  position: absolute;
+  z-index: 58;
+  left: 50%;
+  top: 16px;
+  display: grid;
+  gap: 1px;
+  min-width: min(330px, calc(100% - 32px));
+  transform: translateX(-50%);
+  border: 2px solid rgba(255, 255, 255, 0.76);
+  border-radius: 8px;
+  background: rgba(17, 24, 32, 0.84);
+  color: #ffffff;
+  box-shadow: 0 18px 32px rgba(21, 23, 25, 0.32);
+  padding: 10px 14px;
+  text-align: center;
+  animation: far-arena-warning 2.8s ease forwards;
+}
+
+.far-arena-banner strong {
+  color: #ffd43b;
+  font-size: 15px;
+}
+
+.far-arena-banner span {
+  color: #dbe4ea;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 .hill-zone {
   position: absolute;
   border: 3px solid rgba(255, 212, 59, 0.95);
@@ -655,6 +753,52 @@
   0%,
   100% { transform: translate(-50%, -50%) scale(0.94); }
   50% { transform: translate(-50%, -50%) scale(1.08); }
+}
+
+@keyframes far-arena-breathe {
+  0%,
+  100% { filter: saturate(1.05) contrast(1); }
+  50% { filter: saturate(1.32) contrast(1.08); }
+}
+
+@keyframes far-arena-wobble {
+  0%,
+  100% {
+    transform: translate(var(--camera-shift-x, 0%), var(--camera-shift-y, 0%)) scale(var(--camera-zoom, 1)) skew(0deg, 0deg);
+  }
+
+  50% {
+    transform: translate(var(--camera-shift-x, 0%), var(--camera-shift-y, 0%)) scale(var(--camera-zoom, 1)) skew(0.8deg, -0.45deg);
+  }
+}
+
+@keyframes far-grid-warp {
+  0% { background-size: 44px 44px; }
+  50% { background-size: 38px 50px; }
+  100% { background-size: 50px 40px; }
+}
+
+@keyframes far-arena-drift {
+  from { transform: translate3d(-2%, -1%, 0) rotate(0deg); }
+  to { transform: translate3d(3%, 2%, 0) rotate(2deg); }
+}
+
+@keyframes far-arena-warning {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -12px) scale(0.96);
+  }
+
+  14%,
+  76% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -6px) scale(0.98);
+  }
 }
 
 .game-overlay {

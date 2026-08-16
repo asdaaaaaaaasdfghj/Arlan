@@ -1,4 +1,5 @@
 import { BULLET_HIT_SIZE, type Bullet, type GameState, type HitEffect, type Player, type PlayerId, type PortalBlock, type TimeEcho } from './arenaTypes';
+import type { ArenaBounds } from './arenaBounds';
 
 const pastEchoLifetime = 1.8;
 const futureEchoLifetime = 0.9;
@@ -7,6 +8,13 @@ const paradoxDamage = 28;
 
 export function isTimeDuelMode(mode: GameState['mode']): boolean {
   return mode === 'timeDuel';
+}
+
+export function isFarArenaOpen(state: GameState, bounds: ArenaBounds): boolean {
+  if (!isTimeDuelMode(state.mode)) return false;
+
+  return Object.values(state.players).some((player) => isOutsideArena(player.x, player.y, bounds))
+    || state.timeEchoes.some((echo) => isOutsideArena(echo.x, echo.y, bounds));
 }
 
 export function tickTimeEchoes(state: GameState, players: Record<PlayerId, Player>, elapsedTime: number, delta: number, portals: PortalBlock[]): TimeEcho[] {
@@ -101,4 +109,8 @@ function canCreateEcho(player: Player, portals: PortalBlock[]): boolean {
 
 function isInsidePortal(x: number, y: number, portals: PortalBlock[]): boolean {
   return portals.some((portal) => x >= portal.x - 1 && x <= portal.x + portal.width + 1 && y >= portal.y - 1 && y <= portal.y + portal.height + 1);
+}
+
+function isOutsideArena(x: number, y: number, bounds: ArenaBounds): boolean {
+  return x < -1 || y < -1 || x > bounds.width + 1 || y > bounds.height + 1;
 }

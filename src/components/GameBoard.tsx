@@ -5,6 +5,7 @@ import { getHillZone } from '../lib/arenaKingHill';
 import { getMapObstacles } from '../lib/arenaMap';
 import { getMiniGameIndex, getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arenaMiniGames';
 import { getModeSwapRifts } from '../lib/arenaSwapRifts';
+import { isFarArenaOpen } from '../lib/arenaTimeDuel';
 import { poisonSeconds } from '../lib/arenaTraps';
 import { loadCustomCodeBlocks, loadCustomConveyors, loadCustomDecorations, loadCustomMagnets, loadCustomSolidDecorations, loadCustomSwapRifts, loadCustomTerrain, loadCustomTheme, loadCustomVehicles } from '../lib/customMap';
 import type { Language } from '../lib/gameSettings';
@@ -85,6 +86,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   const poisonedPlayer = getPoisonedPlayerForCamera(camera, game);
   const mapObstacles = getMapObstacles(game.mapId);
   const runDecorations = game.mode === 'tileRun' ? getRunFakeDecorations(bounds) : [];
+  const farArenaOpen = isFarArenaOpen(game, bounds);
   const laserBlockers = [
     ...mapObstacles,
     ...game.mapBoards,
@@ -97,9 +99,10 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   ];
 
   return (
-    <section className={`arena arena-theme-${theme} arena-mode-${game.mode} ${isMiniGamesMode(game) && getMiniGameRule(game).sword ? 'arena-mode-swordDuel' : ''}`} aria-label="Battle arena" style={cameraVars(camera, bounds)}>
+    <section className={`arena arena-theme-${theme} arena-mode-${game.mode} ${farArenaOpen ? 'arena-far-open' : ''} ${isMiniGamesMode(game) && getMiniGameRule(game).sword ? 'arena-mode-swordDuel' : ''}`} aria-label="Battle arena" style={cameraVars(camera, bounds)}>
       <div className="arena-world">
         <div className="arena-grid" />
+        {farArenaOpen && <FarArenaLayer />}
         {(game.paintTiles ?? []).map((tile) => <PaintTileSprite tile={tile} key={tile.id} />)}
         {(game.floorHoles ?? []).map((hole) => <FloorHoleSprite hole={hole} key={hole.id} />)}
         {game.mode === 'kingHill' && <HillZoneSprite mapId={game.mapId} />}
@@ -143,9 +146,29 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
       {poisonedPlayer && (
         <PoisonFog timer={poisonedPlayer.poisonTimer} x={poisonedPlayer.x} y={poisonedPlayer.y} />
       )}
+      {farArenaOpen && <FarArenaBanner language={language} />}
       {isMiniGamesMode(game) && <MiniGameBanner game={game} />}
       {game.status !== 'playing' && <GameOverlay game={game} language={language} />}
     </section>
+  );
+}
+
+function FarArenaLayer() {
+  return (
+    <span className="far-arena-layer" aria-hidden="true">
+      <i />
+      <i />
+      <i />
+    </span>
+  );
+}
+
+function FarArenaBanner({ language }: { language: Language }) {
+  return (
+    <div className="far-arena-banner">
+      <strong>{language === 'ru' ? 'ДАЛЕКИЕ ЗЕМЛИ АРЕНЫ' : 'THE FAR ARENA'}</strong>
+      <span>{language === 'ru' ? 'пространство-время поплыло' : 'space-time lost its grid'}</span>
+    </div>
   );
 }
 
