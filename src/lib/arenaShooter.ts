@@ -97,7 +97,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     mechanics.magnets,
     state.mode,
   );
-  const timeEchoes = tickTimeEchoes(state, shooting.players, elapsedTime, delta);
+  const timeEchoes = tickTimeEchoes(state, shooting.players, elapsedTime, delta, state.portals);
   const paradoxState = applyTimeParadoxHits(shooting.players, moved.bullets, timeEchoes, state.nextEffectId + swordState.effects.length);
   const oldEffects = ageHitEffects(state.hitEffects, delta);
   const tntState = triggerTnts({
