@@ -1,7 +1,7 @@
 import { mapOrder } from './arenaMap';
 import { isZombieMode, modeOrder } from './arenaModes';
 import type { GameMode, GameState, MapId } from './arenaTypes';
-import { achievementRu, achievements, type Achievement, type AchievementId } from './achievementCatalog';
+import { achievementRu, achievementTranslations, achievements, type Achievement, type AchievementId } from './achievementCatalog';
 import type { BotDifficulty, Language } from './gameSettings';
 export { achievements, type Achievement, type AchievementId } from './achievementCatalog';
 
@@ -59,14 +59,23 @@ export function getAchievement(id: AchievementId): Achievement {
 
 export function getAchievementText(id: AchievementId, language: Language): Achievement {
   const achievement = getAchievement(id);
-  if (language === 'en') {
+  if (language === 'ru') {
+    return {
+      id,
+      title: achievementRu[id][0],
+      description: achievementRu[id][1],
+    };
+  }
+
+  const translation = achievementTranslations[language]?.[id];
+  if (!translation) {
     return achievement;
   }
 
   return {
     id,
-    title: achievementRu[id][0],
-    description: achievementRu[id][1],
+    title: translation[0],
+    description: translation[1],
   };
 }
 

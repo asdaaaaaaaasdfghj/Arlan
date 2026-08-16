@@ -68,8 +68,8 @@ export function SettingsPage() {
         <Toggle label={t(language, 'lowSpecMode')} checked={settings.lowSpecMode} onChange={(checked) => updateSettings({ ...settings, lowSpecMode: checked, gameFps: checked ? 24 : settings.gameFps, animations: checked ? false : settings.animations })} />
         <Toggle label={t(language, 'music')} checked={settings.music} onChange={(checked) => updateSettings({ ...settings, music: checked })} />
         <Toggle label={t(language, 'redBot')} checked={settings.redBot} onChange={(checked) => updateSettings({ ...settings, redBot: checked })} />
-        <NumberField label={language === 'ru' ? 'Синих командных ботов' : 'Blue team bots'} value={settings.blueTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, blueTeamBots: value })} />
-        <NumberField label={language === 'ru' ? 'Красных командных ботов' : 'Red team bots'} value={settings.redTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, redTeamBots: value })} />
+        <NumberField label={t(language, 'blueTeamBots')} value={settings.blueTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, blueTeamBots: value })} />
+        <NumberField label={t(language, 'redTeamBots')} value={settings.redTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, redTeamBots: value })} />
         <Toggle label={t(language, 'botUsesWeapons')} checked={settings.botUsesWeapons} onChange={(checked) => updateSettings({ ...settings, botUsesWeapons: checked })} />
         <Toggle label={t(language, 'secretZombies')} checked={settings.secretZombies} onChange={(checked) => updateSettings({ ...settings, secretZombies: checked })} />
         <SelectField label={t(language, 'botDifficulty')} value={settings.botDifficulty} onChange={(value) => updateSettings({ ...settings, botDifficulty: value as GameSettings['botDifficulty'] })}>
@@ -88,20 +88,20 @@ export function SettingsPage() {
       <section className="settings-panel">
         <div className="settings-heading-row">
           <div>
-            <p className="eyebrow">{language === 'ru' ? 'Статистика' : 'Statistics'}</p>
-            <h2>{language === 'ru' ? 'Игровая статистика' : 'Game stats'}</h2>
+            <p className="eyebrow">{t(language, 'statistics')}</p>
+            <h2>{t(language, 'gameStats')}</h2>
           </div>
           <button type="button" className="danger-button" onClick={resetStats}>{t(language, 'reset')}</button>
         </div>
         <div className="stats-grid">
-          <StatCard label={language === 'ru' ? 'Матчи' : 'Matches'} value={stats.matches} />
-          <StatCard label={language === 'ru' ? 'Время' : 'Time played'} value={formatPlayTime(stats.secondsPlayed)} />
-          <StatCard label={language === 'ru' ? 'Смерти' : 'Deaths'} value={stats.deaths} />
-          <StatCard label={language === 'ru' ? 'Выстрелы' : 'Shots'} value={stats.shots} />
-          <StatCard label={language === 'ru' ? 'Победы синего' : 'Blue wins'} value={stats.blueWins} />
-          <StatCard label={language === 'ru' ? 'Победы красного' : 'Red wins'} value={stats.redWins} />
-          <StatCard label={language === 'ru' ? 'Выживания' : 'Survival wins'} value={stats.survivalWins} />
-          <StatCard label={language === 'ru' ? 'Ничьи' : 'Draws'} value={stats.draws} />
+          <StatCard label={t(language, 'matches')} value={stats.matches} />
+          <StatCard label={t(language, 'timePlayed')} value={formatPlayTime(stats.secondsPlayed)} />
+          <StatCard label={t(language, 'deaths')} value={stats.deaths} />
+          <StatCard label={t(language, 'shots')} value={stats.shots} />
+          <StatCard label={t(language, 'blueWins')} value={stats.blueWins} />
+          <StatCard label={t(language, 'redWins')} value={stats.redWins} />
+          <StatCard label={t(language, 'survivalWins')} value={stats.survivalWins} />
+          <StatCard label={t(language, 'draws')} value={stats.draws} />
         </div>
         <div className="mode-stats">
           {modeOrder.map((mode) => (

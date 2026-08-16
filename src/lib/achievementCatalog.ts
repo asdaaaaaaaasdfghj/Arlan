@@ -7,6 +7,61 @@ export type Achievement = {
   description: string;
 };
 
+export const achievementTranslations: Partial<Record<string, Record<AchievementId, [string, string]>>> = {
+  es: {
+    firstScore: ['Primera sangre', 'Consigue tu primer punto.'],
+    duelWin: ['Ganador de arena', 'Gana cualquier ronda PvP.'],
+    survivor: ['Sigue en pie', 'Sobrevive a un modo zombi.'],
+    builder: ['Pequeño arquitecto', 'Coloca 3 barricadas en una ronda.'],
+    grenadier: ['Amigo boom', 'Consigue un punto en Grenade Mayhem.'],
+    zombieHunter: ['Equipo de limpieza', 'Derrota 10 zombis en una ronda.'],
+    silentSurvivor: ['Leyenda silenciosa', 'Sobrevive una ronda sin disparar.'],
+    selfDestruct: ['Autodestrucción', 'Muere por tu propia granada.'],
+    easyBotOops: ['¿Cómo pasó esto?', 'Pierde contra el bot en Easy.'],
+    modeMaster: ['Campeón total', 'Gana en todos los modos de juego.'],
+    mapTour: ['Turista armado', 'Juega en todos los mapas normales.'],
+  },
+  de: {
+    firstScore: ['Erstes Blut', 'Erziele deinen ersten Punkt.'],
+    duelWin: ['Arena-Sieger', 'Gewinne eine PvP-Runde.'],
+    survivor: ['Immer noch da', 'Überlebe einen Zombie-Modus.'],
+    builder: ['Kleiner Architekt', 'Platziere 3 Barrikaden in einer Runde.'],
+    grenadier: ['Boom-Freund', 'Erziele einen Punkt in Grenade Mayhem.'],
+    zombieHunter: ['Aufräumtrupp', 'Besiege 10 Zombies in einer Runde.'],
+    silentSurvivor: ['Stille Legende', 'Überlebe eine Runde ohne Schuss.'],
+    selfDestruct: ['Selbstzerstörung', 'Stirb durch deine eigene Granate.'],
+    easyBotOops: ['Wie ist das passiert?', 'Verliere gegen den Bot auf Easy.'],
+    modeMaster: ['Allround-Champion', 'Gewinne in jedem Spielmodus.'],
+    mapTour: ['Tourist mit Waffe', 'Spiele jede normale Karte.'],
+  },
+  fr: {
+    firstScore: ['Premier sang', 'Marque ton premier point.'],
+    duelWin: ['Vainqueur de l’arène', 'Gagne une manche PvP.'],
+    survivor: ['Toujours debout', 'Survis à un mode zombie.'],
+    builder: ['Petit architecte', 'Place 3 barricades en une manche.'],
+    grenadier: ['Ami boom', 'Marque un point en Grenade Mayhem.'],
+    zombieHunter: ['Équipe nettoyage', 'Bats 10 zombies en une manche.'],
+    silentSurvivor: ['Légende silencieuse', 'Survis sans tirer une seule fois.'],
+    selfDestruct: ['Autodestruction', 'Meurs avec ta propre grenade.'],
+    easyBotOops: ['Comment c’est arrivé ?', 'Perds contre le bot en Easy.'],
+    modeMaster: ['Champion complet', 'Gagne dans tous les modes.'],
+    mapTour: ['Touriste armé', 'Joue toutes les cartes normales.'],
+  },
+  kk: {
+    firstScore: ['Алғашқы қан', 'Бірінші ұпайыңды ал.'],
+    duelWin: ['Арена жеңімпазы', 'Кез келген PvP раундта жең.'],
+    survivor: ['Әлі тірі', 'Зомби режимінде аман қал.'],
+    builder: ['Кішкентай сәулетші', 'Бір раундта 3 баррикада қой.'],
+    grenadier: ['Бум дос', 'Grenade Mayhem режимінде ұпай ал.'],
+    zombieHunter: ['Тазалау тобы', 'Бір раундта 10 зомбиді жең.'],
+    silentSurvivor: ['Тыныш аңыз', 'Бірде-бір оқ атпай раундтан аман қал.'],
+    selfDestruct: ['Өзін-өзі жою', 'Өз гранатаңнан өл.'],
+    easyBotOops: ['Бұл қалай болды?', 'Easy ботқа жеңіл.'],
+    modeMaster: ['Барлық режим чемпионы', 'Барлық ойын режимінде жең.'],
+    mapTour: ['Мылтықты турист', 'Барлық кәдімгі карталарда ойна.'],
+  },
+};
+
 export const achievements: Achievement[] = [
   { id: 'firstScore', title: 'First Blood', description: 'Score your first point.' },
   { id: 'duelWin', title: 'Arena Winner', description: 'Win any PvP round.' },
