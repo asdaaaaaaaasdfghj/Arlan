@@ -98,34 +98,34 @@ export type ModeGroupId = 'classic' | 'zombies' | 'strategy' | 'arcade' | 'other
 
 export type ModeGroup = {
   id: ModeGroupId;
-  label: { en: string; ru: string } & Partial<Record<Language, string>>;
+  label: Record<Language, string>;
   modes: GameMode[];
 };
 
 export const modeGroups: ModeGroup[] = [
   {
     id: 'classic',
-    label: { en: 'Classic', ru: 'Классические' },
+    label: { en: 'Classic', ru: 'Классические', es: 'Clásicos', de: 'Klassisch', fr: 'Classiques', kk: 'Классика' },
     modes: ['duel', 'quickDraw', 'blitz', 'tankDuel', 'railDuel', 'endlessDuel'],
   },
   {
     id: 'zombies',
-    label: { en: 'Zombies', ru: 'Зомби' },
+    label: { en: 'Zombies', ru: 'Зомби', es: 'Zombis', de: 'Zombies', fr: 'Zombies', kk: 'Зомби' },
     modes: ['zombies', 'swarmNight', 'nightmare', 'fortress'],
   },
   {
     id: 'strategy',
-    label: { en: 'Strategy', ru: 'Стратегические' },
+    label: { en: 'Strategy', ru: 'Стратегические', es: 'Estrategia', de: 'Strategie', fr: 'Stratégie', kk: 'Стратегия' },
     modes: ['glassWars', 'captureFlag', 'craftSurvival'],
   },
   {
     id: 'arcade',
-    label: { en: 'Arcade', ru: 'Аркады' },
+    label: { en: 'Arcade', ru: 'Аркады', es: 'Arcade', de: 'Arcade', fr: 'Arcade', kk: 'Аркада' },
     modes: ['paintBattle', 'miniGames', 'spleef', 'tileRun', 'hideSeek', 'luckyBlocks', 'swapRift'],
   },
   {
     id: 'other',
-    label: { en: 'Other', ru: 'Другое' },
+    label: { en: 'Other', ru: 'Другое', es: 'Otros', de: 'Andere', fr: 'Autres', kk: 'Басқа' },
     modes: modeOrder.filter((mode) => ![
       'duel',
       'quickDraw',
