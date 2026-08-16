@@ -3,7 +3,7 @@ import { Link } from 'wouter';
 import { MenuShowcase } from '../components/MenuShowcase';
 import { mapNames, mapOrder } from '../lib/arenaMap';
 import { modeGroups } from '../lib/arenaModes';
-import { loadGameSettings } from '../lib/gameSettings';
+import { loadGameSettings, type Language } from '../lib/gameSettings';
 import { mapName, modeDescription, modeName, t } from '../lib/i18n';
 import { pickSplashText } from '../lib/splashTexts';
 import type { GameMode, MapId } from '../lib/arenaShooter';
@@ -33,7 +33,7 @@ export function HomePage() {
           <MenuPicker title={t(language, 'mode')}>
             {modeGroups.map((group) => (
               <section className="mode-picker-group" key={group.id}>
-                <strong className="mode-picker-group-title">{group.label[language]}</strong>
+                <strong className="mode-picker-group-title">{group.label[language] ?? group.label.en}</strong>
                 <div>
                   {group.modes.map((item) => (
                     <button className={mode === item ? 'selected' : ''} type="button" key={item} onClick={() => setMode(item)}>
@@ -80,7 +80,7 @@ export function HomePage() {
   );
 }
 
-function UpdateNotice({ language }: { language: 'ru' | 'en' }) {
+function UpdateNotice({ language }: { language: Language }) {
   return (
     <section className="update-notice">
       <strong>{language === 'ru' ? 'Обновите игру' : 'Update the game'}</strong>

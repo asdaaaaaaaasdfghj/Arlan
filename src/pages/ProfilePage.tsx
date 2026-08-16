@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { Auth } from '../components/Auth';
-import { loadGameSettings } from '../lib/gameSettings';
+import { loadGameSettings, type Language } from '../lib/gameSettings';
 import { t } from '../lib/i18n';
 import { loadGuestProfile, loadPlayerProfile, playerSkins, savePlayerProfile, type PlayerProfile, type PlayerSkinId } from '../lib/playerProfile';
 import { isSupabaseConfigured, supabase, supabaseProjectRef } from '../lib/supabase';
@@ -89,7 +89,7 @@ const skinNames: Record<'ru' | 'en', Record<PlayerSkinId, string>> = {
 export function ProfilePage() {
   const [settings] = useState(loadGameSettings);
   const language = settings.language;
-  const text = labels[language];
+  const text = getProfileLabels(language);
   const [user, setUser] = useState<User | null>(null);
   const [message, setMessage] = useState('');
   const [playerProfile, setPlayerProfile] = useState(loadPlayerProfile);
@@ -156,7 +156,7 @@ export function ProfilePage() {
                   key={skin}
                 >
                   <span className={`profile-skin-icon skin-${skin}`} style={{ '--profile-color': playerProfile.color } as CSSProperties} />
-                  <b>{skinNames[language][skin]}</b>
+                  <b>{getSkinName(skin, language)}</b>
                 </button>
               ))}
             </div>
@@ -184,7 +184,15 @@ export function ProfilePage() {
   );
 }
 
-function getErrorMessage(error: unknown, language: 'ru' | 'en'): string {
+function getProfileLabels(language: Language) {
+  return language === 'ru' ? labels.ru : labels.en;
+}
+
+function getSkinName(skin: PlayerSkinId, language: Language): string {
+  return skinNames[language === 'ru' ? 'ru' : 'en'][skin];
+}
+
+function getErrorMessage(error: unknown, language: Language): string {
   if (error instanceof Error) {
     return error.message;
   }

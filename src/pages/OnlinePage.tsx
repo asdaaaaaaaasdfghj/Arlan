@@ -23,7 +23,7 @@ import {
   type WeaponId,
 } from '../lib/arenaShooter';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
-import { loadGameSettings } from '../lib/gameSettings';
+import { loadGameSettings, type Language } from '../lib/gameSettings';
 import { useGameKeyboard } from '../lib/useGameKeyboard';
 import { mapName, modeName, t } from '../lib/i18n';
 import { modeGroups, modeOrder } from '../lib/arenaModes';
@@ -1307,7 +1307,7 @@ export function OnlinePage() {
             {t(language, 'mode')}
             <select value={serverMode} onChange={(event) => setServerMode(event.target.value as typeof serverMode)}>
               {modeGroups.map((group) => (
-                <optgroup label={group.label[language]} key={group.id}>
+                <optgroup label={group.label[language] ?? group.label.en} key={group.id}>
                   {group.modes.map((mode) => (
                     <option value={mode} key={mode}>{modeName(mode, language)}</option>
                   ))}
@@ -1403,7 +1403,7 @@ export function OnlinePage() {
                 {t(language, 'mode')}
                 <select value={serverMode} onChange={(event) => setServerMode(event.target.value as typeof serverMode)}>
                   {modeGroups.map((group) => (
-                    <optgroup label={group.label[language]} key={group.id}>
+                    <optgroup label={group.label[language] ?? group.label.en} key={group.id}>
                       {group.modes.map((mode) => (
                         <option value={mode} key={mode}>{modeName(mode, language)}</option>
                       ))}
@@ -2098,13 +2098,13 @@ function normalizeParticipants(value: unknown): OnlineParticipant[] {
     : [];
 }
 
-function getSlotLabel(slot: OnlineParticipant['slot'], language: 'ru' | 'en'): string {
+function getSlotLabel(slot: OnlineParticipant['slot'], language: Language): string {
   if (slot === 'host') return language === 'ru' ? 'хост' : 'host';
   if (slot === 'red') return language === 'ru' ? 'игрок' : 'player';
   return language === 'ru' ? 'extra' : 'extra';
 }
 
-function getOnlineRuleLabel(rule: OnlineRule, language: 'ru' | 'en'): string {
+function getOnlineRuleLabel(rule: OnlineRule, language: Language): string {
   const labels: Record<OnlineRule, { ru: string; en: string }> = {
     classic: { ru: 'Классика 2 игрока', en: 'Classic 2 players' },
     ffa: { ru: 'Все против всех', en: 'Free for all' },
@@ -2114,10 +2114,10 @@ function getOnlineRuleLabel(rule: OnlineRule, language: 'ru' | 'en'): string {
     zombieInfection: { ru: 'Зомби заражение', en: 'Zombie Infection' },
   };
 
-  return labels[rule][language];
+  return pickOnlineText(labels[rule], language);
 }
 
-function getOnlineRuleHint(rule: OnlineRule, language: 'ru' | 'en'): string {
+function getOnlineRuleHint(rule: OnlineRule, language: Language): string {
   const hints: Partial<Record<OnlineRule, { ru: string; en: string }>> = {
     ffa: {
       ru: 'Открытая онлайн-арена без таймера. Игроки заходят как бойцы или extra-участники.',
@@ -2133,10 +2133,10 @@ function getOnlineRuleHint(rule: OnlineRule, language: 'ru' | 'en'): string {
     },
   };
 
-  return hints[rule]?.[language] ?? '';
+  return hints[rule] ? pickOnlineText(hints[rule], language) : '';
 }
 
-function getGuestRestrictionText(kind: 'official' | 'chat' | 'customMap', language: 'ru' | 'en'): string {
+function getGuestRestrictionText(kind: 'official' | 'chat' | 'customMap', language: Language): string {
   const text: Record<typeof kind, { ru: string; en: string }> = {
     official: {
       ru: 'Официальные серверы доступны только после входа в аккаунт.',
@@ -2151,7 +2151,7 @@ function getGuestRestrictionText(kind: 'official' | 'chat' | 'customMap', langua
       en: 'Guests cannot create or choose custom maps.',
     },
   };
-  return text[kind][language];
+  return pickOnlineText(text[kind], language);
 }
 
 function createModeState(rule: OnlineRule): OnlineModeState {
@@ -2276,7 +2276,7 @@ function isNearPoint(point: { x: number; y: number }, x: number, y: number, radi
   return Math.hypot(point.x - x, point.y - y) <= radius;
 }
 
-function getModeStatusText(rule: OnlineRule, state: OnlineModeState, players: OnlineParticipant[], selfId: string, language: 'ru' | 'en'): string {
+function getModeStatusText(rule: OnlineRule, state: OnlineModeState, players: OnlineParticipant[], selfId: string, language: Language): string {
   if (rule === 'murderMystery') {
     const badge = getParticipantBadge(selfId, players, state, rule);
     return language === 'ru' ? `Твоя роль: ${badge || 'ожидание игроков'}` : `Your role: ${badge || 'waiting for players'}`;
@@ -2289,13 +2289,17 @@ function getModeStatusText(rule: OnlineRule, state: OnlineModeState, players: On
   return getOnlineRuleHint(rule, language);
 }
 
-function getBuilderPhaseText(phase: BuilderPhase, language: 'ru' | 'en'): string {
+function getBuilderPhaseText(phase: BuilderPhase, language: Language): string {
   const labels: Record<BuilderPhase, { ru: string; en: string }> = {
     build: { ru: 'Фаза строительства: стройте постройку на тему.', en: 'Build phase: create something for the theme.' },
     vote: { ru: 'Фаза оценки: голосуйте за постройки.', en: 'Voting phase: rate the builds.' },
     results: { ru: 'Результаты. Хост может начать новую тему.', en: 'Results. Host can start a new theme.' },
   };
-  return labels[phase][language];
+  return pickOnlineText(labels[phase], language);
+}
+
+function pickOnlineText(text: { ru: string; en: string }, language: Language): string {
+  return language === 'ru' ? text.ru : text.en;
 }
 
 function getNextBuilderPhase(phase: BuilderPhase): BuilderPhase {
@@ -2370,7 +2374,7 @@ function cloneInput(input: GameInput): GameInput {
   return { blue: { ...input.blue }, red: { ...input.red } };
 }
 
-function getHostKickNotice(profile: PlayerProfile | undefined, kick: KickPayload, language: 'ru' | 'en'): string {
+function getHostKickNotice(profile: PlayerProfile | undefined, kick: KickPayload, language: Language): string {
   const nickname = profile?.nickname ?? (language === 'ru' ? 'игрок' : 'player');
   if (kick.banned) {
     return language === 'ru'

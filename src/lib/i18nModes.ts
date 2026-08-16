@@ -1,12 +1,14 @@
 import type { GameMode, MapId } from './arenaTypes';
 import type { Language } from './gameSettings';
 
-const swordModeText: Record<Language, [string, string]> = {
+type LocalizedTuple = { en: [string, string]; ru: [string, string] } & Partial<Record<Language, [string, string]>>;
+
+const swordModeText: LocalizedTuple = {
   en: ['Sword Fights', 'No guns or grenades. Close in and slash with swords.'],
   ru: ['Бои на мечах', 'Без пушек и гранат: подойди ближе и бей мечом.'],
 };
 
-const modes: Omit<Record<GameMode, { en: [string, string]; ru: [string, string] }>, 'swordDuel'> = {
+const modes: Omit<Record<GameMode, LocalizedTuple>, 'swordDuel'> = {
   duel: { en: ['Duel', 'Classic two-player fight to 5 points.'], ru: ['Дуэль', 'Классический бой двух игроков до 5 очков.'] },
   quickDraw: { en: ['Quick Draw', 'Fast round. Every hit is lethal, first to 3.'], ru: ['Быстрый выстрел', 'Короткий раунд: любое попадание смертельно, игра до 3.'] },
   blitz: { en: ['Blitz', 'Twenty-five seconds, first to 3. No warmup.'], ru: ['Блиц', '25 секунд, первый до 3. Без разогрева.'] },
@@ -43,15 +45,19 @@ const mapRu: Record<MapId, string> = {
 };
 
 export function modeName(mode: GameMode, language: Language): string {
-  if (mode === 'swordDuel') return swordModeText[language][0];
-  return modes[mode][language][0];
+  if (mode === 'swordDuel') return getTuple(swordModeText, language)[0];
+  return getTuple(modes[mode], language)[0];
 }
 
 export function modeDescription(mode: GameMode, language: Language): string {
-  if (mode === 'swordDuel') return swordModeText[language][1];
-  return modes[mode][language][1];
+  if (mode === 'swordDuel') return getTuple(swordModeText, language)[1];
+  return getTuple(modes[mode], language)[1];
 }
 
 export function mapName(mapId: MapId, englishName: string, language: Language): string {
   return language === 'ru' ? mapRu[mapId] : englishName;
+}
+
+function getTuple(text: LocalizedTuple, language: Language): [string, string] {
+  return text[language] ?? text.en;
 }

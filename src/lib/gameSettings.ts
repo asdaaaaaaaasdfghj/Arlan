@@ -2,11 +2,12 @@ import type { GameMode, MapId } from './arenaTypes';
 import { defaultControlBindings, normalizeControlBindings, type ControlBindings } from './gameKeys';
 
 export type BotDifficulty = 'easy' | 'newbie' | 'normal' | 'hard' | 'veryHard' | 'ultra';
-export type Language = 'en' | 'ru';
+export type Language = 'en' | 'ru' | 'es' | 'de' | 'fr' | 'kk';
 export type GameFps = 24 | 30 | 45 | 60;
 
 export const fpsOptions: GameFps[] = [24, 30, 45, 60];
 export const botDifficultyOptions: BotDifficulty[] = ['easy', 'newbie', 'normal', 'hard', 'veryHard', 'ultra'];
+export const languageOptions: Language[] = ['en', 'ru', 'es', 'de', 'fr', 'kk'];
 
 export type GameSettings = {
   defaultMode: GameMode;
@@ -64,6 +65,7 @@ export function loadGameSettings(): GameSettings {
       controls: normalizeControlBindings(parsed.controls),
       gameFps: normalizeFps(parsed.gameFps),
       botDifficulty: normalizeBotDifficulty(parsed.botDifficulty),
+      language: normalizeLanguage(parsed.language),
       blueTeamBots: normalizeBotCount(parsed.blueTeamBots),
       redTeamBots: normalizeBotCount(parsed.redTeamBots),
     };
@@ -91,6 +93,10 @@ function normalizeFps(value: unknown): GameFps {
 
 function normalizeBotDifficulty(value: unknown): BotDifficulty {
   return botDifficultyOptions.includes(value as BotDifficulty) ? value as BotDifficulty : defaultSettings.botDifficulty;
+}
+
+function normalizeLanguage(value: unknown): Language {
+  return languageOptions.includes(value as Language) ? value as Language : defaultSettings.language;
 }
 
 function normalizeBotCount(value: unknown): number {

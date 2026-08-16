@@ -1,4 +1,5 @@
 import type { GameMode, WeaponId } from './arenaTypes';
+import type { Language } from './gameSettings';
 
 export type ModeConfig = {
   id: GameMode;
@@ -97,7 +98,7 @@ export type ModeGroupId = 'classic' | 'zombies' | 'strategy' | 'arcade' | 'other
 
 export type ModeGroup = {
   id: ModeGroupId;
-  label: Record<'en' | 'ru', string>;
+  label: { en: string; ru: string } & Partial<Record<Language, string>>;
   modes: GameMode[];
 };
 

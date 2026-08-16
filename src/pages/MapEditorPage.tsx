@@ -23,7 +23,7 @@ import {
   type EditableWeaponId,
   type EditorCell,
 } from '../lib/customMap';
-import { loadGameSettings } from '../lib/gameSettings';
+import { loadGameSettings, type Language } from '../lib/gameSettings';
 import { t } from '../lib/i18n';
 import { publishActiveCustomMap } from '../lib/publishedMaps';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
@@ -618,7 +618,7 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-function getPublishErrorMessage(error: unknown, language: 'ru' | 'en'): string {
+function getPublishErrorMessage(error: unknown, language: Language): string {
   if (error instanceof Error) {
     return error.message;
   }

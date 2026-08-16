@@ -1,4 +1,5 @@
 import type { PlayerProfile } from './playerProfile';
+import type { Language } from './gameSettings';
 
 const banKey = 'arena-online-ban-list';
 const banThreshold = 3;
@@ -47,7 +48,7 @@ export function recordKick(profile: PlayerProfile | undefined, reason: KickReaso
   return { reason, banned: next.banned };
 }
 
-export function getKickReasonLabel(reason: KickReason, language: 'ru' | 'en'): string {
+export function getKickReasonLabel(reason: KickReason, language: Language): string {
   const labels: Record<KickReason, { ru: string; en: string }> = {
     cheats: { ru: 'читы', en: 'cheats' },
     bugAbuse: { ru: 'багаюз', en: 'bug abuse' },
@@ -57,7 +58,7 @@ export function getKickReasonLabel(reason: KickReason, language: 'ru' | 'en'): s
     banned: { ru: 'бан', en: 'ban' },
   };
 
-  return labels[reason][language];
+  return labels[reason][language === 'ru' ? 'ru' : 'en'];
 }
 
 function loadBanRecords(): Record<string, BanRecord> {

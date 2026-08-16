@@ -10,7 +10,7 @@ import {
 } from '../lib/achievements';
 import { mapNames, mapOrder } from '../lib/arenaMap';
 import { modeGroups, modeOrder } from '../lib/arenaModes';
-import { applyVisualSettings, botDifficultyOptions, fpsOptions, loadGameSettings, saveGameSettings, type GameFps, type GameSettings } from '../lib/gameSettings';
+import { applyVisualSettings, botDifficultyOptions, fpsOptions, languageOptions, loadGameSettings, saveGameSettings, type GameFps, type GameSettings } from '../lib/gameSettings';
 import { clearGameStats, formatPlayTime, loadGameStats, type GameStats } from '../lib/gameStats';
 import { mapName, modeName, t } from '../lib/i18n';
 import './settings.css';
@@ -48,12 +48,11 @@ export function SettingsPage() {
         <p className="eyebrow">{t(language, 'gameSetup')}</p>
         <h1>{t(language, 'settings')}</h1>
         <SelectField label={t(language, 'language')} value={settings.language} onChange={(value) => updateSettings({ ...settings, language: value as GameSettings['language'] })}>
-          <option value="en">English</option>
-          <option value="ru">Русский</option>
+          {languageOptions.map((item) => <option value={item} key={item}>{getLanguageLabel(item)}</option>)}
         </SelectField>
         <SelectField label={t(language, 'defaultMode')} value={settings.defaultMode} onChange={(value) => updateSettings({ ...settings, defaultMode: value as GameSettings['defaultMode'] })}>
           {modeGroups.map((group) => (
-            <optgroup label={group.label[language]} key={group.id}>
+            <optgroup label={group.label[language] ?? group.label.en} key={group.id}>
               {group.modes.map((mode) => <option value={mode} key={mode}>{modeName(mode, language)}</option>)}
             </optgroup>
           ))}
@@ -144,16 +143,29 @@ function StatCard({ label, value }: { label: string; value: number | string }) {
 }
 
 function getBotDifficultyLabel(difficulty: GameSettings['botDifficulty'], language: GameSettings['language']): string {
-  const labels: Record<GameSettings['botDifficulty'], Record<GameSettings['language'], string>> = {
-    easy: { en: 'Easy', ru: 'Изи' },
-    newbie: { en: 'Newbie', ru: 'Новичек' },
-    normal: { en: 'Normal', ru: 'Нормально' },
-    hard: { en: 'Hard', ru: 'Сложно' },
-    veryHard: { en: 'Very hard', ru: 'Очень сложно' },
-    ultra: { en: 'Ultra hard', ru: 'Ультра сложно' },
+  const labels: Record<GameSettings['botDifficulty'], { en: string; ru: string } & Partial<Record<GameSettings['language'], string>>> = {
+    easy: { en: 'Easy', ru: 'Изи', es: 'Fácil', de: 'Leicht', fr: 'Facile', kk: 'Оңай' },
+    newbie: { en: 'Newbie', ru: 'Новичек', es: 'Novato', de: 'Neuling', fr: 'Débutant', kk: 'Жаңадан' },
+    normal: { en: 'Normal', ru: 'Нормально', es: 'Normal', de: 'Normal', fr: 'Normal', kk: 'Қалыпты' },
+    hard: { en: 'Hard', ru: 'Сложно', es: 'Difícil', de: 'Schwer', fr: 'Difficile', kk: 'Қиын' },
+    veryHard: { en: 'Very hard', ru: 'Очень сложно', es: 'Muy difícil', de: 'Sehr schwer', fr: 'Très difficile', kk: 'Өте қиын' },
+    ultra: { en: 'Ultra hard', ru: 'Ультра сложно', es: 'Ultra difícil', de: 'Ultra schwer', fr: 'Ultra difficile', kk: 'Ультра қиын' },
   };
 
-  return labels[difficulty][language];
+  return labels[difficulty][language] ?? labels[difficulty].en;
+}
+
+function getLanguageLabel(language: GameSettings['language']): string {
+  const labels: Record<GameSettings['language'], string> = {
+    en: 'English',
+    ru: 'Русский',
+    es: 'Español',
+    de: 'Deutsch',
+    fr: 'Français',
+    kk: 'Қазақша',
+  };
+
+  return labels[language];
 }
 
 function SelectField({ label, value, onChange, children }: {

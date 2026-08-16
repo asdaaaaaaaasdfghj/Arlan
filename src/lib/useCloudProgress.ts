@@ -6,8 +6,7 @@ import {
   loadProgressFromAccount,
   saveProgressToAccount,
 } from './accountProgress';
-
-type Language = 'ru' | 'en';
+import type { Language } from './gameSettings';
 
 type CloudProgressState = {
   busy: boolean;
