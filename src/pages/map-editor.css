@@ -1012,30 +1012,50 @@
 
 :root[data-theme='dark'] .editor-locked-panel {
   border-color: #2a3440;
-  background: #111820;
+  background: #111820 !important;
   color: #f4f7fb;
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
 }
 
+:root[data-theme='dark'] .editor-locked-panel h1,
 :root[data-theme='dark'] .editor-locked-panel p {
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .editor-locked-panel .eyebrow,
+:root[data-theme='dark'] .editor-auth-card .message {
   color: #c9d3de;
 }
 
 :root[data-theme='dark'] .editor-auth-card .card {
-  background: #0d131a;
+  border: 1px solid #2a3440;
+  background: #0d131a !important;
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .editor-auth-card .card h2 {
+  color: #f4f7fb;
 }
 
 :root[data-theme='dark'] .editor-auth-card input {
   border-color: #334253;
-  background: #111820;
+  background: #111820 !important;
   color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .editor-auth-card input::placeholder {
+  color: #8f9baa;
 }
 
 :root[data-theme='dark'] .editor-auth-card button,
 :root[data-theme='dark'] .editor-auth-card .ghost {
   border: 1px solid #334253;
-  background: #17212b;
+  background: #17212b !important;
   color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .editor-auth-card button[type='submit'] {
+  background: #26323b !important;
 }
 
 :root[data-theme='dark'] .editor-board button[class*='-cell']:not(.spawn-cell) {
