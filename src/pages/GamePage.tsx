@@ -11,6 +11,7 @@ import {
   tickGame,
   type GameInput,
   type GameMode,
+  type GameState,
   type MapId,
   type PlayerId,
   type PlayerInput,
@@ -134,7 +135,8 @@ export function GamePage() {
         const botEnabled = settings.redBot && !redHumanRef.current;
         const topBot = settings.botDifficulty === 'veryHard' || settings.botDifficulty === 'ultra' || settings.botDifficulty === 'impossible' || settings.botDifficulty === 'thermonuclear';
         const botWeapon = chooseRedBotWeapon(current, botEnabled && (settings.botUsesWeapons || topBot), settings.botDifficulty);
-        const armedGame = current.players.red.weapon === botWeapon ? current : changeWeapon(current, 'red', botWeapon);
+        const weaponGame = current.players.red.weapon === botWeapon ? current : changeWeapon(current, 'red', botWeapon);
+        const armedGame = botEnabled && settings.botDifficulty === 'thermonuclear' ? overclockThermonuclearBot(weaponGame) : weaponGame;
         return tickGame(
           armedGame,
           withRedBotInput(armedGame, inputRef.current, botEnabled, settings.botDifficulty),
@@ -202,4 +204,28 @@ function createGameWithBots(mode: GameMode, mapId: MapId, settings: ReturnType<t
 
 function cloneInput(input: GameInput): GameInput {
   return { blue: { ...input.blue }, red: { ...input.red } };
+}
+
+function overclockThermonuclearBot(game: GameState): GameState {
+  const red = game.players.red;
+  const blue = game.players.blue;
+  if (game.status !== 'playing' || red.hp <= 0 || blue.hp <= 0) return game;
+
+  const dx = blue.x + blue.slideX * 0.18 - red.x;
+  const dy = blue.y + blue.slideY * 0.18 - red.y;
+  const length = Math.hypot(dx, dy) || 1;
+
+  return {
+    ...game,
+    players: {
+      ...game.players,
+      red: {
+        ...red,
+        facingX: dx / length,
+        facingY: dy / length,
+        cooldown: Math.min(red.cooldown, 0.08),
+        hp: Math.min(100, red.hp + 0.45),
+      },
+    },
+  };
 }

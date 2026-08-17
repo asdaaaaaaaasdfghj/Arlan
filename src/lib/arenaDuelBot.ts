@@ -17,8 +17,8 @@ const profiles: Record<BotDifficulty, { aim: number; distance: number; shootRang
   hard: { aim: 0.82, distance: 12, shootRange: 58, grenadeMin: 12, grenadeMax: 49, lead: 0.1, strafe: 12 },
   veryHard: { aim: 0.96, distance: 10, shootRange: 66, grenadeMin: 9, grenadeMax: 54, lead: 0.15, strafe: 14 },
   ultra: { aim: 1.12, distance: 8, shootRange: 76, grenadeMin: 7, grenadeMax: 60, lead: 0.2, strafe: 16 },
-  impossible: { aim: 1.48, distance: 6, shootRange: 92, grenadeMin: 5, grenadeMax: 76, lead: 0.32, strafe: 22 },
-  thermonuclear: { aim: Math.PI, distance: 4, shootRange: 130, grenadeMin: 0, grenadeMax: 120, lead: 0.52, strafe: 32 },
+  impossible: { aim: 0.22, distance: 6, shootRange: 92, grenadeMin: 5, grenadeMax: 76, lead: 0.32, strafe: 22 },
+  thermonuclear: { aim: 0.08, distance: 4, shootRange: 130, grenadeMin: 0, grenadeMax: 120, lead: 0.62, strafe: 8 },
 };
 
 const emptyInput: PlayerInput = {
@@ -53,7 +53,9 @@ export function createDuelBotInput(
   const desiredDistance = isSwordMode(game.mode) ? 14 : profile.distance + Math.sin(style.seed) * 7;
   const tooClose = !isSwordMode(game.mode) && distance < desiredDistance * 0.72;
   const shouldMove = distance > desiredDistance || tooClose || lineBlocked || !aimedAtTarget;
-  const tacticalTarget = tooClose ? retreatFrom(player, target) : isSwordMode(game.mode) ? enemy : addStrafeTarget(player, target, game, style.seed, profile.strafe);
+  const tacticalTarget = difficulty === 'thermonuclear'
+    ? target
+    : tooClose ? retreatFrom(player, target) : isSwordMode(game.mode) ? enemy : addStrafeTarget(player, target, game, style.seed, profile.strafe);
   const moveTarget = shouldMove ? findBotMoveTarget(game, player, tacticalTarget) : enemy;
   const moveDx = moveTarget.x - player.x;
   const moveDy = moveTarget.y - player.y;

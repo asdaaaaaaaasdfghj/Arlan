@@ -18,8 +18,8 @@ const botProfiles: Record<BotDifficulty, { aim: number; duelDistance: number; sh
   hard: { aim: 0.82, duelDistance: 12, shootRange: 58, grenadeMin: 12, grenadeMax: 49, lead: 0.1, strafe: 9 },
   veryHard: { aim: 0.96, duelDistance: 10, shootRange: 66, grenadeMin: 9, grenadeMax: 54, lead: 0.15, strafe: 11 },
   ultra: { aim: 1.12, duelDistance: 8, shootRange: 76, grenadeMin: 7, grenadeMax: 60, lead: 0.2, strafe: 13 },
-  impossible: { aim: 1.48, duelDistance: 6, shootRange: 92, grenadeMin: 5, grenadeMax: 76, lead: 0.32, strafe: 18 },
-  thermonuclear: { aim: Math.PI, duelDistance: 4, shootRange: 130, grenadeMin: 0, grenadeMax: 120, lead: 0.52, strafe: 28 },
+  impossible: { aim: 0.22, duelDistance: 6, shootRange: 92, grenadeMin: 5, grenadeMax: 76, lead: 0.32, strafe: 18 },
+  thermonuclear: { aim: 0.08, duelDistance: 4, shootRange: 130, grenadeMin: 0, grenadeMax: 120, lead: 0.62, strafe: 8 },
 };
 
 const emptyBotInput: PlayerInput = {
@@ -87,7 +87,9 @@ function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerIn
   const needsHill = game.mode === 'kingHill' && !isInsideHill(red);
   const shouldMove = chase || tooClose || needsAimStep || needsHill;
   const hillTarget = needsHill ? hillZone : actionTarget;
-  const tacticalTarget = tooClose
+  const tacticalTarget = difficulty === 'thermonuclear'
+    ? actionTarget
+    : tooClose
     ? retreatFrom(red, actionTarget)
     : isZombieMode(game.mode) ? target : addStrafeTarget(red, hillTarget, game, red.score * 1.9 + target.x * 0.13, profile.strafe);
   const moveTarget = breakable ? actionTarget : shouldMove ? findBotMoveTarget(game, red, tacticalTarget) : actionTarget;
