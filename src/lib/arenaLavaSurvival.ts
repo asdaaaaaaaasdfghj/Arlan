@@ -1,13 +1,13 @@
 import { ARENA_HEIGHT, type Barricade, type GameState, type Player, type PlayerId } from './arenaTypes';
 
 export const lavaMazeWidth = 168;
-const mazeCols = 20;
+const mazeCols = 16;
 const mazeRows = 5;
 const mazeOriginX = 8;
 const mazeOriginY = 5;
 const mazeWidth = lavaMazeWidth - 16;
 const mazeHeight = ARENA_HEIGHT - 10;
-const wallWidth = 1.8;
+const wallWidth = 1.2;
 const mazeWallHp = 48;
 const lavaDelay = 4;
 const lavaSpeed = 2.05;
@@ -20,7 +20,7 @@ export function isLavaSurvivalMode(mode: GameState['mode']): boolean {
 export function createLavaMaze(seed = Math.random()): Barricade[] {
   const random = createRandom(seed);
   const cells = carveMaze(random);
-  return mazeToWalls(cells, random);
+  return mazeToWalls(cells);
 }
 
 export function createLavaSurvivalPlayers(players: Record<PlayerId, Player>): Record<PlayerId, Player> {
@@ -103,7 +103,7 @@ function carveMaze(random: () => number): MazeCell[][] {
   return cells;
 }
 
-function mazeToWalls(cells: MazeCell[][], random: () => number): Barricade[] {
+function mazeToWalls(cells: MazeCell[][]): Barricade[] {
   const cellW = mazeWidth / mazeCols;
   const cellH = mazeHeight / mazeRows;
   const walls: Barricade[] = [];
@@ -123,15 +123,7 @@ function mazeToWalls(cells: MazeCell[][], random: () => number): Barricade[] {
     }
   });
 
-  return walls.concat(createBrokenColumns(id, random));
-}
-
-function createBrokenColumns(startId: number, random: () => number): Barricade[] {
-  return Array.from({ length: 8 }, (_, index) => {
-    const x = mazeOriginX + 18 + random() * (mazeWidth - 36);
-    const y = mazeOriginY + 5 + random() * (mazeHeight - 10);
-    return createMazeWall(startId + index, x, y, 2.6 + random() * 2.4, 2 + random() * 4);
-  });
+  return walls;
 }
 
 function neighbors(cell: MazeCell, cells: MazeCell[][]): MazeCell[] {
