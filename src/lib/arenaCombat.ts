@@ -26,6 +26,17 @@ import { teleportBullet } from './arenaPortals';
 import { bounceBullet, pointInRicochet } from './arenaRicochet';
 import { getWeaponConfig } from './arenaWeapons';
 
+type TrackedBullet = Bullet & {
+  previousX: number;
+  previousY: number;
+};
+
+type BulletHit =
+  | { kind: 'solid' }
+  | { kind: 'barricade'; item: Barricade }
+  | { kind: 'board'; item: Barricade }
+  | { kind: 'checkpoint'; item: AllyCheckpoint };
+
 export function spawnBullets(
   players: Record<PlayerId, Player>,
   input: GameInput,
@@ -69,13 +80,10 @@ export function moveBullets(
   const luckyPowerUps: PowerUp[] = [];
   let powerUpId = nextPowerUpId;
   const moved = bullets
-    .map((bullet) => ({
-      ...moveBulletByPhysics(bullet, mapId, delta, magnets),
-      portalCooldown: Math.max(0, bullet.portalCooldown - delta),
-    }))
-    .map((bullet) => teleportBullet(bullet, portals))
-    .map((bullet) => bounceOrKeepBullet(bullet, ricochets))
-    .filter((bullet): bullet is Bullet => Boolean(bullet))
+    .map((bullet) => trackBulletMove(bullet, mapId, delta, magnets))
+    .map((bullet) => trackPortalMove(bullet, portals))
+    .map((bullet) => trackRicochetMove(bullet, ricochets))
+    .filter((bullet): bullet is TrackedBullet => Boolean(bullet))
     .filter((bullet) => keepBullet(bullet, mapId, barricades, nextBarricades, nextBoards, nextCheckpoints, luckyPowerUps, () => powerUpId++, mode));
 
   return {
@@ -88,6 +96,16 @@ export function moveBullets(
   };
 }
 
+function trackBulletMove(bullet: Bullet, mapId: MapId, delta: number, magnets: MagnetBlock[]): TrackedBullet {
+  const moved = moveBulletByPhysics(bullet, mapId, delta, magnets);
+  return {
+    ...moved,
+    portalCooldown: Math.max(0, bullet.portalCooldown - delta),
+    previousX: bullet.x,
+    previousY: bullet.y,
+  };
+}
+
 function moveBulletByPhysics(bullet: Bullet, mapId: MapId, delta: number, magnets: MagnetBlock[]): Bullet {
   const weapon = getWeaponConfig(bullet.weapon, mapId);
   const x = bullet.x + bullet.dx * weapon.speed * delta;
@@ -96,13 +114,27 @@ function moveBulletByPhysics(bullet: Bullet, mapId: MapId, delta: number, magnet
   return { ...bullet, x: x + magnet.x, y: y + magnet.y };
 }
 
+function trackPortalMove(bullet: TrackedBullet, portals: PortalBlock[]): TrackedBullet {
+  const teleported = teleportBullet(bullet, portals);
+  if (teleported.x !== bullet.x || teleported.y !== bullet.y) {
+    return { ...teleported, previousX: teleported.x, previousY: teleported.y };
+  }
+
+  return { ...teleported, previousX: bullet.previousX, previousY: bullet.previousY };
+}
+
+function trackRicochetMove(bullet: TrackedBullet, ricochets: RicochetBlock[]): TrackedBullet | null {
+  const bounced = bounceOrKeepBullet(bullet, ricochets);
+  return bounced ? { ...bounced, previousX: bounced.x, previousY: bounced.y } : null;
+}
+
 function bounceOrKeepBullet(bullet: Bullet, ricochets: RicochetBlock[]): Bullet | null {
   const ricochet = pointInRicochet(bullet.x, bullet.y, ricochets);
   return ricochet ? bounceBullet(bullet, ricochet) : bullet;
 }
 
 function keepBullet(
-  bullet: Bullet,
+  bullet: TrackedBullet,
   mapId: MapId,
   barricades: Blocker[],
   destructibleBarricades: Barricade[],
@@ -112,37 +144,50 @@ function keepBullet(
   takePowerUpId: () => number,
   mode: GameMode,
 ): boolean {
-  const bounds = getArenaBounds(mapId);
-  if (bullet.x <= 0 || bullet.x >= bounds.width || bullet.y <= 0 || bullet.y >= bounds.height) {
-    return false;
-  }
+  const hit = findBulletHit(bullet, mapId, barricades, destructibleBarricades, boards, checkpoints);
+  if (!hit) return true;
 
-  if (isPointInsideObstacle(bullet.x, bullet.y, mapId, barricades)) {
-    return false;
-  }
-
-  const barricade = destructibleBarricades.find((item) => item.hp > 0 && pointInRect(bullet.x, bullet.y, item));
-  if (barricade) {
-    barricade.hp -= bullet.damage;
-    return false;
-  }
-
-  const board = boards.find((item) => item.hp > 0 && pointInRect(bullet.x, bullet.y, item));
-  if (board) {
-    board.hp -= bullet.damage;
-    if (board.hp <= 0 && board.variant === 'lucky') {
-      powerUps.push(...createLuckyDrops(board, takePowerUpId, mode));
+  if (hit.kind === 'barricade' || hit.kind === 'board' || hit.kind === 'checkpoint') {
+    hit.item.hp -= bullet.damage;
+    if (hit.kind === 'board' && hit.item.hp <= 0 && hit.item.variant === 'lucky') {
+      powerUps.push(...createLuckyDrops(hit.item, takePowerUpId, mode));
     }
-    return false;
   }
 
-  const checkpoint = checkpoints.find((item) => pointInRect(bullet.x, bullet.y, item));
-  if (checkpoint) {
-    checkpoint.hp -= bullet.damage;
-    return false;
+  return false;
+}
+
+function findBulletHit(
+  bullet: TrackedBullet,
+  mapId: MapId,
+  barricades: Blocker[],
+  destructibleBarricades: Barricade[],
+  boards: Barricade[],
+  checkpoints: AllyCheckpoint[],
+): BulletHit | null {
+  const bounds = getArenaBounds(mapId);
+  const distance = Math.hypot(bullet.x - bullet.previousX, bullet.y - bullet.previousY);
+  const steps = Math.max(1, Math.ceil(distance / 1.2));
+
+  for (let step = 0; step <= steps; step += 1) {
+    const progress = step / steps;
+    const x = bullet.previousX + (bullet.x - bullet.previousX) * progress;
+    const y = bullet.previousY + (bullet.y - bullet.previousY) * progress;
+
+    if (x <= 0 || x >= bounds.width || y <= 0 || y >= bounds.height) return { kind: 'solid' };
+    if (isPointInsideObstacle(x, y, mapId, barricades)) return { kind: 'solid' };
+
+    const barricade = destructibleBarricades.find((item) => item.hp > 0 && pointInRect(x, y, item));
+    if (barricade) return { kind: 'barricade', item: barricade };
+
+    const board = boards.find((item) => item.hp > 0 && pointInRect(x, y, item));
+    if (board) return { kind: 'board', item: board };
+
+    const checkpoint = checkpoints.find((item) => pointInRect(x, y, item));
+    if (checkpoint) return { kind: 'checkpoint', item: checkpoint };
   }
 
-  return true;
+  return null;
 }
 
 function createLuckyDrops(board: Barricade, takePowerUpId: () => number, mode: GameMode): PowerUp[] {
