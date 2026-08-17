@@ -145,6 +145,8 @@ const emotes: Array<{ id: EmoteId; label: string }> = [
   { id: 'wow', label: 'WOW' },
 ];
 const emoteLifeMs = 2400;
+const qChatAchievementKey = 'duel-arena-q-chat-count';
+const qChatAchievementGoal = 10;
 const builderThemes = ['Castle', 'Space base', 'Monster', 'Secret bunker', 'Parkour tower', 'Volcano lab'];
 const defaultModeState: OnlineModeState = {
   infectedIds: [],
@@ -1021,6 +1023,7 @@ export function OnlinePage() {
     };
 
     addChatMessage(message);
+    trackQChatAchievement(text);
     setChatDraft('');
     void sendBroadcast('chat', message);
   }
@@ -1245,6 +1248,15 @@ export function OnlinePage() {
   function unlockGuestOfficialAchievement() {
     if (unlockAchievement('disappointment3')) {
       setAchievementToast('disappointment3');
+    }
+  }
+
+  function trackQChatAchievement(text: string) {
+    if (text !== ':Q') return;
+    const count = Math.min(qChatAchievementGoal, loadQChatCount() + 1);
+    saveQChatCount(count);
+    if (count >= qChatAchievementGoal && unlockAchievement('qSpam')) {
+      setAchievementToast('qSpam');
     }
   }
 
@@ -1637,6 +1649,16 @@ export function OnlinePage() {
 
 function makeRoomCode(): string {
   return Math.random().toString(36).slice(2, 8).toUpperCase();
+}
+
+function loadQChatCount(): number {
+  const saved = window.localStorage.getItem(qChatAchievementKey);
+  const count = saved ? Number(saved) : 0;
+  return Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0;
+}
+
+function saveQChatCount(count: number) {
+  window.localStorage.setItem(qChatAchievementKey, String(count));
 }
 
 function makeClientId(): string {

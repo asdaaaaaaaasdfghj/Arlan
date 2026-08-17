@@ -1,5 +1,5 @@
 export type AchievementId = 'firstScore' | 'duelWin' | 'survivor' | 'builder' | 'grenadier' | 'zombieHunter'
-  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'modeMaster' | 'mapTour';
+  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'qSpam' | 'modeMaster' | 'mapTour';
 
 export type Achievement = {
   id: AchievementId;
@@ -7,7 +7,7 @@ export type Achievement = {
   description: string;
 };
 
-export const achievementTranslations: Partial<Record<string, Record<AchievementId, [string, string]>>> = {
+export const achievementTranslations: Partial<Record<string, Partial<Record<AchievementId, [string, string]>>>> = {
   es: {
     firstScore: ['Primera sangre', 'Consigue tu primer punto.'],
     duelWin: ['Ganador de arena', 'Gana cualquier ronda PvP.'],
@@ -82,6 +82,7 @@ export const achievements: Achievement[] = [
   { id: 'easyBotOops', title: 'How Did This Happen?', description: 'Lose to the bot on Easy.' },
   { id: 'painSpeedrun', title: 'Pain Speedrun', description: 'Score against the bot on Thermonuclear.' },
   { id: 'disappointment3', title: 'Disappointment III', description: 'Try to join the official server as a guest.' },
+  { id: 'qSpam', title: 'QQQQQQQQQQQ', description: 'QQQQQQQQQQQQQ' },
   { id: 'modeMaster', title: 'All-Round Champion', description: 'Win in every game mode.' },
   { id: 'mapTour', title: 'Tourist With A Gun', description: 'Play every built-in map.' },
 ];
@@ -98,6 +99,7 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   easyBotOops: ['Как так вышло?', 'Проиграй боту на Easy.'],
   painSpeedrun: ['Спидран боли', 'Набери хотя бы 1 очко против термоядерного бота.'],
   disappointment3: ['Разочарование III', 'Попытайся зайти на официальный сервер за гостя.'],
+  qSpam: ['QQQQQQQQQQQ', 'QQQQQQQQQQQQQ'],
   modeMaster: ['Чемпион всех режимов', 'Победи во всех режимах игры.'],
   mapTour: ['Турист с пушкой', 'Сыграй на всех обычных картах.'],
 };
