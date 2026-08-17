@@ -69,6 +69,8 @@ export function HomePage() {
       ['WL1', 'https://minecraft-inside.ru/user/WL1/'],
       ['LOOOL', 'https://znanija.com/task/2189051'],
       ['CHINA', 'https://www.biligame.com/#/'],
+      ['TMYV', 'https://roblox.qq.com'],
+      ['TMYV金钱有限公司', 'https://roblox.qq.com'],
       ['NETBLYADDISCKORD', 'https://web.whatsapp.com'],
     ] as const;
     const linkCodeLength = Math.max(...secretLinks.map(([code]) => code.length));
