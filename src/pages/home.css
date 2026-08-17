@@ -98,6 +98,24 @@
   line-height: 0.98;
 }
 
+.out-water-secret {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: grid;
+  place-items: center;
+  background: #050607;
+  cursor: pointer;
+}
+
+.out-water-secret img {
+  width: min(100vw, 1280px);
+  height: min(100vh, 720px);
+  object-fit: cover;
+  image-rendering: auto;
+  filter: saturate(1.1) contrast(1.05);
+}
+
 .eyebrow {
   color: #2e6f95;
   font-size: 12px;

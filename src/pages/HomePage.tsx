@@ -20,6 +20,7 @@ export function HomePage() {
   const [splash, setSplash] = useState(pickSplashText);
   const [achievementToast, setAchievementToast] = useState<AchievementId | null>(null);
   const [secretCreditsOpen, setSecretCreditsOpen] = useState(false);
+  const [outTheWaterOpen, setOutTheWaterOpen] = useState(false);
   const versionStatus = useVersionStatus();
   const playHref = `/game?mode=${mode}&map=${mapId}`;
 
@@ -42,12 +43,17 @@ export function HomePage() {
 
   useEffect(() => {
     let buffer = '';
-    const code = 'ABSOLUTEZERO';
+    const creditsCode = 'ABSOLUTEZERO';
+    const waterCode = 'OUTTHEWATER';
+    const maxCodeLength = Math.max(creditsCode.length, waterCode.length);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
-      buffer = `${buffer}${event.key.toUpperCase()}`.slice(-code.length);
-      if (buffer === code) {
+      buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
+      if (buffer.endsWith(creditsCode)) {
         setSecretCreditsOpen(true);
+      }
+      if (buffer.endsWith(waterCode)) {
+        setOutTheWaterOpen(true);
       }
     };
 
@@ -123,6 +129,7 @@ export function HomePage() {
         setSecretCreditsOpen(false);
         setSplash('I have no idea who this is; I made the game alone.');
       }} />}
+      {outTheWaterOpen && <OutTheWaterSecret onClose={() => setOutTheWaterOpen(false)} />}
     </main>
   );
 }
@@ -141,6 +148,14 @@ function SecretCredits({ onClose }: { onClose: () => void }) {
         <p>Zuel122</p>
         <p>Rudy2006</p>
       </div>
+    </section>
+  );
+}
+
+function OutTheWaterSecret({ onClose }: { onClose: () => void }) {
+  return (
+    <section className="out-water-secret" onClick={onClose} role="presentation">
+      <img src={`${import.meta.env.BASE_URL}secrets/out-the-water.png`} alt="Out the water secret" />
     </section>
   );
 }
