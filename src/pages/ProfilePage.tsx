@@ -6,6 +6,7 @@ import { Auth } from '../components/Auth';
 import { loadGameSettings, type Language } from '../lib/gameSettings';
 import { t } from '../lib/i18n';
 import { getAchievementText, unlockAchievement, type AchievementId } from '../lib/achievements';
+import { syncFriendProfile } from '../lib/friends';
 import { loadGuestProfile, loadPlayerProfile, playerSkins, savePlayerProfile, type PlayerProfile, type PlayerSkinId } from '../lib/playerProfile';
 import { isSupabaseConfigured, supabase, supabaseProjectRef } from '../lib/supabase';
 import { useCloudProgress } from '../lib/useCloudProgress';
@@ -123,13 +124,20 @@ export function ProfilePage() {
     setPlayerProfile((current) => ({ ...current, ...next }));
   }
 
-  function saveLook() {
+  async function saveLook() {
     savePlayerProfile(playerProfile);
     if (isGuestLook(playerProfile, guestProfile) && unlockAchievement('guestSkinCopy')) {
       setAchievementToast('guestSkinCopy');
     }
     cloudProgress.clearMessage();
-    setMessage(text.lookSaved);
+    try {
+      if (user && isSupabaseConfigured) {
+        await syncFriendProfile(user, playerProfile);
+      }
+      setMessage(text.lookSaved);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : text.lookSaved);
+    }
   }
 
   return (
@@ -179,7 +187,7 @@ export function ProfilePage() {
               <span className={`profile-preview-icon skin-${playerProfile.skin}`} />
               {playerProfile.nickname || 'Player'}
             </span>
-            <button type="button" onClick={saveLook}>{text.saveLook}</button>
+            <button type="button" onClick={() => void saveLook()}>{text.saveLook}</button>
             <p>{text.onlineOnly}</p>
           </section>
         )}
