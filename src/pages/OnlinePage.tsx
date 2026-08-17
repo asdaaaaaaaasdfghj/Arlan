@@ -31,6 +31,7 @@ import { getMapObstacles, mapNames, mapOrder } from '../lib/arenaMap';
 import { getKickReasonLabel, isProfileBanned, recordKick, type KickPayload, type KickReason } from '../lib/onlineBans';
 import { loadGuestProfile, loadPlayerProfile, normalizePlayerProfile, type PlayerProfile, type PlayerSkinId } from '../lib/playerProfile';
 import { getWeaponConfig } from '../lib/arenaWeapons';
+import { getAchievementText, unlockAchievement, type AchievementId } from '../lib/achievements';
 import type { CustomBlockKind } from '../lib/customMap';
 import './game.css';
 import './online.css';
@@ -181,6 +182,7 @@ export function OnlinePage() {
   const [sandboxBlockKind, setSandboxBlockKind] = useState<SandboxBlockKind>('wall');
   const [sandboxBlocks, setSandboxBlocks] = useState<SandboxBlock[]>([]);
   const [notice, setNotice] = useState('');
+  const [achievementToast, setAchievementToast] = useState<AchievementId | null>(null);
   const [guestSlot, setGuestSlot] = useState<GuestSlot>('extra');
   const [roomPlayers, setRoomPlayers] = useState<OnlineParticipant[]>([]);
   const [extraPlayers, setExtraPlayers] = useState<Record<string, ExtraPlayer>>({});
@@ -315,6 +317,15 @@ export function OnlinePage() {
     const timerId = window.setTimeout(() => setAdminAnnouncement(null), 3200);
     return () => window.clearTimeout(timerId);
   }, [adminAnnouncement]);
+
+  useEffect(() => {
+    if (!achievementToast) {
+      return undefined;
+    }
+
+    const timerId = window.setTimeout(() => setAchievementToast(null), 2800);
+    return () => window.clearTimeout(timerId);
+  }, [achievementToast]);
 
   useEffect(() => {
     const timerId = window.setInterval(() => {
@@ -462,6 +473,7 @@ export function OnlinePage() {
   function createOfficialDuelArena() {
     if (isGuestAccount) {
       setNotice(getGuestRestrictionText('official', language));
+      unlockGuestOfficialAchievement();
       return;
     }
 
@@ -498,6 +510,7 @@ export function OnlinePage() {
     if (!code) return;
     if (isGuestAccount && code === officialDuelArena.code) {
       setNotice(getGuestRestrictionText('official', language));
+      unlockGuestOfficialAchievement();
       return;
     }
 
@@ -1229,6 +1242,12 @@ export function OnlinePage() {
     return isGuestAccount ? loadGuestProfile() : loadPlayerProfile();
   }
 
+  function unlockGuestOfficialAchievement() {
+    if (unlockAchievement('disappointment3')) {
+      setAchievementToast('disappointment3');
+    }
+  }
+
   return (
     <main className="game-page online-page">
       <nav className="game-nav">
@@ -1253,7 +1272,7 @@ export function OnlinePage() {
             <span>{language === 'ru' ? 'Duel Arena · Crossfire · Crossfire arena · 32 игрока' : 'Duel Arena · Crossfire · Crossfire arena · 32 players'}</span>
           </div>
           <b className="online-official-count">{officialPlayerCount}/{officialDuelArena.maxPlayers}</b>
-          <button type="button" disabled={isGuestAccount} onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V5' : 'Join DA32V5'}</button>
+          <button type="button" onClick={enterOfficialDuelArena}>{language === 'ru' ? 'Зайти на DA32V5' : 'Join DA32V5'}</button>
         </section>
         <section className="online-panel online-server-list">
           <strong>{language === 'ru' ? 'Публичные серверы' : 'Public servers'}</strong>
@@ -1262,7 +1281,7 @@ export function OnlinePage() {
           ) : (
             <div>
               {serverListings.map((server) => (
-                <button type="button" className="online-server-card" disabled={isGuestAccount && server.official} onClick={() => joinRoomByCode(server.code)} key={server.code}>
+                <button type="button" className="online-server-card" onClick={() => joinRoomByCode(server.code)} key={server.code}>
                   <b>{server.name}</b>
                   <span>
                     <em>{server.official ? 'Official' : 'Public'}</em>
@@ -1349,6 +1368,12 @@ export function OnlinePage() {
         </>
       )}
       {notice && <p className="online-panel">{notice}</p>}
+      {achievementToast && (
+        <div className="achievement-toast">
+          <strong>{getAchievementText(achievementToast, language).title}</strong>
+          <span>{getAchievementText(achievementToast, language).description}</span>
+        </div>
+      )}
       {role && (
         <>
           <section className="online-status">

@@ -40,6 +40,13 @@ export function clearUnlockedAchievements() {
   window.localStorage.removeItem(progressKey);
 }
 
+export function unlockAchievement(id: AchievementId): boolean {
+  const unlocked = loadUnlockedAchievements();
+  if (unlocked.includes(id)) return false;
+  saveUnlockedAchievements([...unlocked, id]);
+  return true;
+}
+
 export function findNewAchievements(
   game: GameState,
   unlocked: AchievementId[],

@@ -1,5 +1,5 @@
 export type AchievementId = 'firstScore' | 'duelWin' | 'survivor' | 'builder' | 'grenadier' | 'zombieHunter'
-  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'modeMaster' | 'mapTour';
+  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'modeMaster' | 'mapTour';
 
 export type Achievement = {
   id: AchievementId;
@@ -19,6 +19,7 @@ export const achievementTranslations: Partial<Record<string, Record<AchievementI
     selfDestruct: ['Autodestrucción', 'Muere por tu propia granada.'],
     easyBotOops: ['¿Cómo pasó esto?', 'Pierde contra el bot en Easy.'],
     painSpeedrun: ['Speedrun del dolor', 'Consigue un punto contra el bot termonuclear.'],
+    disappointment3: ['Decepción III', 'Intenta entrar al servidor oficial como invitado.'],
     modeMaster: ['Campeón total', 'Gana en todos los modos de juego.'],
     mapTour: ['Turista armado', 'Juega en todos los mapas normales.'],
   },
@@ -33,6 +34,7 @@ export const achievementTranslations: Partial<Record<string, Record<AchievementI
     selfDestruct: ['Selbstzerstörung', 'Stirb durch deine eigene Granate.'],
     easyBotOops: ['Wie ist das passiert?', 'Verliere gegen den Bot auf Easy.'],
     painSpeedrun: ['Schmerz-Speedrun', 'Erziele einen Punkt gegen den thermonuklearen Bot.'],
+    disappointment3: ['Enttäuschung III', 'Versuche als Gast dem offiziellen Server beizutreten.'],
     modeMaster: ['Allround-Champion', 'Gewinne in jedem Spielmodus.'],
     mapTour: ['Tourist mit Waffe', 'Spiele jede normale Karte.'],
   },
@@ -47,6 +49,7 @@ export const achievementTranslations: Partial<Record<string, Record<AchievementI
     selfDestruct: ['Autodestruction', 'Meurs avec ta propre grenade.'],
     easyBotOops: ['Comment c’est arrivé ?', 'Perds contre le bot en Easy.'],
     painSpeedrun: ['Speedrun de douleur', 'Marque un point contre le bot thermonucléaire.'],
+    disappointment3: ['Déception III', 'Essaie de rejoindre le serveur officiel en invité.'],
     modeMaster: ['Champion complet', 'Gagne dans tous les modes.'],
     mapTour: ['Touriste armé', 'Joue toutes les cartes normales.'],
   },
@@ -61,6 +64,7 @@ export const achievementTranslations: Partial<Record<string, Record<AchievementI
     selfDestruct: ['Өзін-өзі жою', 'Өз гранатаңнан өл.'],
     easyBotOops: ['Бұл қалай болды?', 'Easy ботқа жеңіл.'],
     painSpeedrun: ['Ауырсыну speedrun', 'Термоядролық ботқа қарсы 1 ұпай ал.'],
+    disappointment3: ['Көңіл қалу III', 'Қонақ болып ресми серверге кіріп көр.'],
     modeMaster: ['Барлық режим чемпионы', 'Барлық ойын режимінде жең.'],
     mapTour: ['Мылтықты турист', 'Барлық кәдімгі карталарда ойна.'],
   },
@@ -77,6 +81,7 @@ export const achievements: Achievement[] = [
   { id: 'selfDestruct', title: 'Self Destruct', description: 'Die from your own grenade.' },
   { id: 'easyBotOops', title: 'How Did This Happen?', description: 'Lose to the bot on Easy.' },
   { id: 'painSpeedrun', title: 'Pain Speedrun', description: 'Score against the bot on Thermonuclear.' },
+  { id: 'disappointment3', title: 'Disappointment III', description: 'Try to join the official server as a guest.' },
   { id: 'modeMaster', title: 'All-Round Champion', description: 'Win in every game mode.' },
   { id: 'mapTour', title: 'Tourist With A Gun', description: 'Play every built-in map.' },
 ];
@@ -92,6 +97,7 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   selfDestruct: ['Самоуничтожение', 'Умри от своей же гранаты.'],
   easyBotOops: ['Как так вышло?', 'Проиграй боту на Easy.'],
   painSpeedrun: ['Спидран боли', 'Набери хотя бы 1 очко против термоядерного бота.'],
+  disappointment3: ['Разочарование III', 'Попытайся зайти на официальный сервер за гостя.'],
   modeMaster: ['Чемпион всех режимов', 'Победи во всех режимах игры.'],
   mapTour: ['Турист с пушкой', 'Сыграй на всех обычных картах.'],
 };
