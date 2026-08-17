@@ -5,10 +5,12 @@ import { Link } from 'wouter';
 import { Auth } from '../components/Auth';
 import { loadGameSettings, type Language } from '../lib/gameSettings';
 import { t } from '../lib/i18n';
+import { getAchievementText, unlockAchievement, type AchievementId } from '../lib/achievements';
 import { loadGuestProfile, loadPlayerProfile, playerSkins, savePlayerProfile, type PlayerProfile, type PlayerSkinId } from '../lib/playerProfile';
 import { isSupabaseConfigured, supabase, supabaseProjectRef } from '../lib/supabase';
 import { useCloudProgress } from '../lib/useCloudProgress';
 import './profile.css';
+import './game-toasts.css';
 
 function CloudSetupCard() {
   const linkCommand = supabaseProjectRef
@@ -92,6 +94,7 @@ export function ProfilePage() {
   const text = getProfileLabels(language);
   const [user, setUser] = useState<User | null>(null);
   const [message, setMessage] = useState('');
+  const [achievementToast, setAchievementToast] = useState<AchievementId | null>(null);
   const [playerProfile, setPlayerProfile] = useState(loadPlayerProfile);
   const cloudProgress = useCloudProgress(user, language, () => setPlayerProfile(loadPlayerProfile()));
   const guestProfile = loadGuestProfile();
@@ -101,6 +104,15 @@ export function ProfilePage() {
     const { data } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
     return () => data.subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!achievementToast) {
+      return undefined;
+    }
+
+    const timerId = window.setTimeout(() => setAchievementToast(null), 2800);
+    return () => window.clearTimeout(timerId);
+  }, [achievementToast]);
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -113,6 +125,9 @@ export function ProfilePage() {
 
   function saveLook() {
     savePlayerProfile(playerProfile);
+    if (playerProfile.skin === guestProfile.skin && unlockAchievement('guestSkinCopy')) {
+      setAchievementToast('guestSkinCopy');
+    }
     cloudProgress.clearMessage();
     setMessage(text.lookSaved);
   }
@@ -180,6 +195,12 @@ export function ProfilePage() {
         {cloudProgress.setupNeeded && <CloudSetupCard />}
         {(message || cloudProgress.message) && <p className="profile-message">{message || cloudProgress.message}</p>}
       </section>
+      {achievementToast && (
+        <div className="achievement-toast">
+          <strong>{getAchievementText(achievementToast, language).title}</strong>
+          <span>{getAchievementText(achievementToast, language).description}</span>
+        </div>
+      )}
     </main>
   );
 }
