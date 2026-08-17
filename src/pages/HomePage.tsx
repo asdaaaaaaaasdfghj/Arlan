@@ -55,19 +55,24 @@ export function HomePage() {
     let buffer = '';
     const creditsCode = 'ABSOLUTEZERO';
     const waterCode = 'OUTTHEWATER';
-    const lostMediaCode = 'LOSTMEDIA';
-    const hardCode = 'HARD';
-    const starCode = 'STAR';
-    const gameFaqsCode = 'GMFQS';
-    const powerCode = 'POWER';
     const openUpCode = 'OPENUP';
     const jumpscareCode = 'FNAF';
-    const lostMediaUrl = 'https://minecraft.wiki/w/Category_talk:Lost_media#lost_mini_game_Out_of_the_water';
-    const hardUrl = 'https://hardforum.com/threads/minecraft.1494304/#post-1036200514';
-    const starUrl = 'https://forum.esforces.com/threads/8-bit-legos.77442/';
-    const gameFaqsUrl = 'https://gamefaqs.gamespot.com/boards/606524-minecraft/60138896?validate=1';
-    const powerUrl = 'https://ru.namemc.com/profile/power.1';
-    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, lostMediaCode.length, hardCode.length, starCode.length, gameFaqsCode.length, powerCode.length, openUpCode.length, jumpscareCode.length);
+    const secretLinks = [
+      ['STAR', 'https://forum.esforces.com/threads/8-bit-legos.77442/?utm_source=chatgpt.com'],
+      ['GMFQS', 'https://gamefaqs.gamespot.com/boards/606524-minecraft/60138896?utm_source=chatgpt.com&validate=1'],
+      ['YESH', 'https://www.minecraftforum.net/forums/servers-java-edition/clans/530544-regular-minecrafters'],
+      ['HARD', 'https://hardforum.com/threads/minecraft.1494304/?utm_source=chatgpt.com#post-1036200514'],
+      ['POWER', 'https://ru.namemc.com/profile/power.1?utm_source=chatgpt.com'],
+      ['WORDPRESS', 'https://merlanfrit.wordpress.com/2010/10/13/world-of-minecraft/?utm_source=chatgpt.com'],
+      ['LOSTMEDIA', 'https://minecraft.wiki/w/Category_talk:Lost_media#lost_mini_game_Out_of_the_water'],
+      ['LOST MEDIA', 'https://minecraft.wiki/w/Category_talk:Lost_media#lost_mini_game_Out_of_the_water'],
+      ['WL1', 'https://minecraft-inside.ru/user/WL1/'],
+      ['LOOOL', 'https://znanija.com/task/2189051'],
+      ['CHINA', 'https://www.biligame.com/#/'],
+      ['NETBLYADDISCKORD', 'https://web.whatsapp.com'],
+    ] as const;
+    const linkCodeLength = Math.max(...secretLinks.map(([code]) => code.length));
+    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, linkCodeLength, openUpCode.length, jumpscareCode.length);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
       buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
@@ -77,20 +82,9 @@ export function HomePage() {
       if (buffer.endsWith(waterCode)) {
         setOutTheWaterOpen(true);
       }
-      if (buffer.endsWith(lostMediaCode)) {
-        window.open(lostMediaUrl, '_blank', 'noopener,noreferrer');
-      }
-      if (buffer.endsWith(hardCode)) {
-        window.open(hardUrl, '_blank', 'noopener,noreferrer');
-      }
-      if (buffer.endsWith(starCode)) {
-        window.open(starUrl, '_blank', 'noopener,noreferrer');
-      }
-      if (buffer.endsWith(gameFaqsCode)) {
-        window.open(gameFaqsUrl, '_blank', 'noopener,noreferrer');
-      }
-      if (buffer.endsWith(powerCode)) {
-        window.open(powerUrl, '_blank', 'noopener,noreferrer');
+      const secretLink = secretLinks.find(([code]) => buffer.endsWith(code));
+      if (secretLink) {
+        window.open(secretLink[1], '_blank', 'noopener,noreferrer');
       }
       if (buffer.endsWith(openUpCode)) {
         document.documentElement.dataset.openUp = 'true';
