@@ -99,6 +99,7 @@ export function HomePage() {
             <Link className="secondary-link" href="/editor">{t(language, 'mapEditor')}</Link>
             <Link className="secondary-link" href="/catalog">{language === 'ru' ? 'Каталог' : 'Catalog'}</Link>
             <Link className="secondary-link" href="/forum">{language === 'ru' ? 'Форум' : 'Forum'}</Link>
+            <Link className="secondary-link" href="/friends">{language === 'ru' ? 'Друзья' : 'Friends'}</Link>
             <Link className="secondary-link" href="/tutorial">{language === 'ru' ? 'Туториал' : 'Tutorial'}</Link>
             <Link className="secondary-link" href="/leaderboard">{language === 'ru' ? 'Лидеры' : 'Leaders'}</Link>
             <Link className="secondary-link" href="/profile">{language === 'ru' ? 'Профиль' : 'Profile'}</Link>

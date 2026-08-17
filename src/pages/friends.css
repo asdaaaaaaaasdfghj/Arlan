@@ -1,0 +1,219 @@
+.friends-page {
+  min-height: 100vh;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 22px 18px 44px;
+  color: #151719;
+}
+
+.friends-panel {
+  display: grid;
+  gap: 14px;
+  border: 1px solid #d9dee3;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 20px;
+}
+
+.friends-heading,
+.friend-chat-title,
+.friend-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.friends-heading h1 {
+  font-size: 38px;
+  line-height: 1;
+}
+
+.friends-warning {
+  border: 1px solid rgba(240, 140, 0, 0.38);
+  border-radius: 8px;
+  background: #fff9db;
+  color: #4d3b12;
+  padding: 10px;
+  font-weight: 900;
+}
+
+.friends-guest-card,
+.friend-add-form,
+.friend-card,
+.friend-chat {
+  display: grid;
+  gap: 10px;
+  border: 1px solid #e0e6eb;
+  border-radius: 8px;
+  background: #f8fafb;
+  padding: 14px;
+}
+
+.friend-add-form {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.friend-add-form label {
+  display: grid;
+  gap: 6px;
+  font-weight: 900;
+}
+
+.friend-add-form input,
+.friend-chat-form input {
+  border-radius: 8px;
+}
+
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.friend-chat {
+  grid-column: 1 / -1;
+}
+
+.friend-card h2,
+.friend-chat h2 {
+  font-size: 20px;
+}
+
+.friend-card p,
+.friends-guest-card p {
+  color: #56616a;
+  font-weight: 800;
+}
+
+.friend-row {
+  display: grid;
+  gap: 6px;
+  border: 1px solid #d8e0e6;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.friend-row span {
+  color: #60707c;
+  font-weight: 800;
+}
+
+.friend-pill {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  border: 1px solid #d8e0e6;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111820;
+  font-weight: 900;
+}
+
+.friend-pill.selected {
+  outline: 3px solid #6aa9ff;
+}
+
+.friend-pill span {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #111820;
+  border-radius: 999px;
+}
+
+.friend-messages {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 190px;
+  max-height: 280px;
+  overflow: auto;
+  border: 1px solid #d8e0e6;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.friend-messages p {
+  width: fit-content;
+  max-width: min(520px, 86%);
+  border-radius: 8px;
+  background: #eef3f6;
+  padding: 8px 10px;
+  font-weight: 800;
+  white-space: pre-wrap;
+}
+
+.friend-messages p.mine {
+  justify-self: end;
+  background: #d9ecff;
+}
+
+.friend-chat-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+:root[data-theme='dark'] .friends-page {
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .friends-page .menu-nav a {
+  color: #8fc9ff;
+}
+
+:root[data-theme='dark'] .friends-panel,
+:root[data-theme='dark'] .friends-guest-card,
+:root[data-theme='dark'] .friend-add-form,
+:root[data-theme='dark'] .friend-card,
+:root[data-theme='dark'] .friend-chat {
+  border-color: #2a3440;
+  background: #111820;
+}
+
+:root[data-theme='dark'] .friend-row,
+:root[data-theme='dark'] .friend-pill,
+:root[data-theme='dark'] .friend-messages {
+  border-color: #334253;
+  background: #0d131a;
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .friend-add-form input,
+:root[data-theme='dark'] .friend-chat-form input {
+  border-color: #334253;
+  background: #0d131a;
+  color: #f4f7fb;
+}
+
+:root[data-theme='dark'] .friend-card p,
+:root[data-theme='dark'] .friends-guest-card p,
+:root[data-theme='dark'] .friend-row span {
+  color: #c9d3de;
+}
+
+:root[data-theme='dark'] .friends-warning {
+  border-color: #806018;
+  background: #211a09;
+  color: #ffe28c;
+}
+
+:root[data-theme='dark'] .friend-messages p {
+  background: #1c2832;
+}
+
+:root[data-theme='dark'] .friend-messages p.mine {
+  background: #17365b;
+}
+
+@media (max-width: 760px) {
+  .friend-add-form,
+  .friend-chat-form,
+  .friends-grid {
+    grid-template-columns: 1fr;
+  }
+}
