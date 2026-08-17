@@ -58,12 +58,14 @@ export function HomePage() {
     const lostMediaCode = 'LOSTMEDIA';
     const hardCode = 'HARD';
     const starCode = 'STAR';
+    const gameFaqsCode = 'GMFQS';
     const openUpCode = 'OPENUP';
     const jumpscareCode = 'FNAF';
     const lostMediaUrl = 'https://minecraft.wiki/w/Category_talk:Lost_media#lost_mini_game_Out_of_the_water';
     const hardUrl = 'https://hardforum.com/threads/minecraft.1494304/#post-1036200514';
     const starUrl = 'https://forum.esforces.com/threads/8-bit-legos.77442/';
-    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, lostMediaCode.length, hardCode.length, starCode.length, openUpCode.length, jumpscareCode.length);
+    const gameFaqsUrl = 'https://gamefaqs.gamespot.com/boards/606524-minecraft/60138896?validate=1';
+    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, lostMediaCode.length, hardCode.length, starCode.length, gameFaqsCode.length, openUpCode.length, jumpscareCode.length);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
       buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
@@ -81,6 +83,9 @@ export function HomePage() {
       }
       if (buffer.endsWith(starCode)) {
         window.open(starUrl, '_blank', 'noopener,noreferrer');
+      }
+      if (buffer.endsWith(gameFaqsCode)) {
+        window.open(gameFaqsUrl, '_blank', 'noopener,noreferrer');
       }
       if (buffer.endsWith(openUpCode)) {
         document.documentElement.dataset.openUp = 'true';
