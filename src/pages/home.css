@@ -197,10 +197,23 @@
   display: inline-flex;
   min-height: 36px;
   align-items: center;
+  gap: 8px;
   border-radius: 8px;
   padding: 0 14px;
   font-weight: 900;
   text-decoration: none;
+}
+
+.action-icon {
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 13px;
+  font-weight: 1000;
+  line-height: 1;
 }
 
 .primary-link {
@@ -212,6 +225,11 @@
   border: 1px solid #cbd3d8;
   background: #ffffff;
   color: #26323b;
+}
+
+.secondary-link .action-icon {
+  background: #e7f2ff;
+  color: #2e6f95;
 }
 
 .home-selection {

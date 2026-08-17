@@ -94,16 +94,16 @@ export function HomePage() {
             ))}
           </MenuPicker>
           <div className="home-actions">
-            <Link className="primary-link" href={playHref}>{t(language, 'play')}</Link>
-            <Link className="secondary-link" href="/online">{language === 'ru' ? 'Онлайн' : 'Online'}</Link>
-            <Link className="secondary-link" href="/editor">{t(language, 'mapEditor')}</Link>
-            <Link className="secondary-link" href="/catalog">{language === 'ru' ? 'Каталог' : 'Catalog'}</Link>
-            <Link className="secondary-link" href="/forum">{language === 'ru' ? 'Форум' : 'Forum'}</Link>
-            <Link className="secondary-link" href="/friends">{language === 'ru' ? 'Друзья' : 'Friends'}</Link>
-            <Link className="secondary-link" href="/tutorial">{language === 'ru' ? 'Туториал' : 'Tutorial'}</Link>
-            <Link className="secondary-link" href="/leaderboard">{language === 'ru' ? 'Лидеры' : 'Leaders'}</Link>
-            <Link className="secondary-link" href="/profile">{language === 'ru' ? 'Профиль' : 'Profile'}</Link>
-            <Link className="secondary-link" href="/settings">{t(language, 'settings')}</Link>
+            <ActionLink className="primary-link" href={playHref} icon="▶">{t(language, 'play')}</ActionLink>
+            <ActionLink href="/online" icon="◎">{language === 'ru' ? 'Онлайн' : 'Online'}</ActionLink>
+            <ActionLink href="/editor" icon="▣">{t(language, 'mapEditor')}</ActionLink>
+            <ActionLink href="/catalog" icon="▦">{language === 'ru' ? 'Каталог' : 'Catalog'}</ActionLink>
+            <ActionLink href="/forum" icon="≡">{language === 'ru' ? 'Форум' : 'Forum'}</ActionLink>
+            <ActionLink href="/friends" icon="⚭">{language === 'ru' ? 'Друзья' : 'Friends'}</ActionLink>
+            <ActionLink href="/tutorial" icon="?">{language === 'ru' ? 'Туториал' : 'Tutorial'}</ActionLink>
+            <ActionLink href="/leaderboard" icon="#">{language === 'ru' ? 'Лидеры' : 'Leaders'}</ActionLink>
+            <ActionLink href="/profile" icon="◉">{language === 'ru' ? 'Профиль' : 'Profile'}</ActionLink>
+            <ActionLink href="/settings" icon="⚙">{t(language, 'settings')}</ActionLink>
           </div>
           <section className="home-selection">
             <div>
@@ -167,5 +167,19 @@ function MenuPicker({ title, children }: { title: string; children: ReactNode })
       <strong>{title}</strong>
       <div>{children}</div>
     </section>
+  );
+}
+
+function ActionLink({ className = 'secondary-link', href, icon, children }: {
+  className?: string;
+  href: string;
+  icon: string;
+  children: ReactNode;
+}) {
+  return (
+    <Link className={className} href={href}>
+      <span className="action-icon" aria-hidden="true">{icon}</span>
+      <span>{children}</span>
+    </Link>
   );
 }

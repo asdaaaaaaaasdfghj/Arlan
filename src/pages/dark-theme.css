@@ -118,6 +118,11 @@
   color: var(--soft);
 }
 
+:root[data-theme='dark'] .secondary-link .action-icon {
+  background: #19324a;
+  color: #9dcbff;
+}
+
 :root[data-theme='dark'] .arena,
 :root[data-theme='dark'] .menu-showcase {
   border-color: #8fb7d6;
