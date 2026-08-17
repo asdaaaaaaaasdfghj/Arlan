@@ -46,8 +46,9 @@ export function HomePage() {
     const creditsCode = 'ABSOLUTEZERO';
     const waterCode = 'OUTTHEWATER';
     const lostMediaCode = 'LOSTMEDIA';
+    const openUpCode = 'OPENUP';
     const lostMediaUrl = 'https://minecraft.wiki/w/Category_talk:Lost_media#lost_mini_game_Out_of_the_water';
-    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, lostMediaCode.length);
+    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, lostMediaCode.length, openUpCode.length);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
       buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
@@ -59,6 +60,9 @@ export function HomePage() {
       }
       if (buffer.endsWith(lostMediaCode)) {
         window.open(lostMediaUrl, '_blank', 'noopener,noreferrer');
+      }
+      if (buffer.endsWith(openUpCode)) {
+        document.documentElement.dataset.openUp = 'true';
       }
     };
 
