@@ -56,6 +56,48 @@
   font-weight: 900;
 }
 
+.absolute-zero-secret {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(64, 80, 255, 0.18), transparent 28%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.06), transparent 45%),
+    #050507;
+  color: #000000;
+  cursor: pointer;
+}
+
+.absolute-zero-secret div {
+  display: grid;
+  gap: 6px;
+  text-align: center;
+  transform: scale(1.02);
+}
+
+.absolute-zero-secret h2,
+.absolute-zero-secret p {
+  margin: 0;
+  color: #000000;
+  font-weight: 1000;
+  text-shadow:
+    0 0 5px #4757ff,
+    0 0 13px #4757ff,
+    0 0 24px rgba(255, 255, 255, 0.58);
+}
+
+.absolute-zero-secret h2 {
+  margin-bottom: 22px;
+  font-size: clamp(46px, 11vw, 110px);
+}
+
+.absolute-zero-secret p {
+  font-size: clamp(28px, 6vw, 58px);
+  line-height: 0.98;
+}
+
 .eyebrow {
   color: #2e6f95;
   font-size: 12px;

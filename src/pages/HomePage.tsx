@@ -19,6 +19,7 @@ export function HomePage() {
   const [mapId, setMapId] = useState<MapId>(settings.defaultMap);
   const [splash] = useState(pickSplashText);
   const [achievementToast, setAchievementToast] = useState<AchievementId | null>(null);
+  const [secretCreditsOpen, setSecretCreditsOpen] = useState(false);
   const versionStatus = useVersionStatus();
   const playHref = `/game?mode=${mode}&map=${mapId}`;
 
@@ -38,6 +39,21 @@ export function HomePage() {
     const timerId = window.setTimeout(() => setAchievementToast(null), 2800);
     return () => window.clearTimeout(timerId);
   }, [achievementToast]);
+
+  useEffect(() => {
+    let buffer = '';
+    const code = 'ABSOLUTEZERO';
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
+      buffer = `${buffer}${event.key.toUpperCase()}`.slice(-code.length);
+      if (buffer === code) {
+        setSecretCreditsOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
     <main className="home-page">
@@ -102,7 +118,26 @@ export function HomePage() {
         </div>
         <MenuShowcase language={language} />
       </section>
+      {secretCreditsOpen && <SecretCredits onClose={() => setSecretCreditsOpen(false)} />}
     </main>
+  );
+}
+
+function SecretCredits({ onClose }: { onClose: () => void }) {
+  return (
+    <section className="absolute-zero-secret" onClick={onClose} role="presentation">
+      <div>
+        <h2>Made by:</h2>
+        <p>Power</p>
+        <p>Absolute_zero</p>
+        <p>Btsharp</p>
+        <p>Himanyo</p>
+        <p>Dilligaf</p>
+        <p>Snaggles</p>
+        <p>Zuel122</p>
+        <p>Rudy2006</p>
+      </div>
+    </section>
   );
 }
 
