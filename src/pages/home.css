@@ -116,6 +116,99 @@
   filter: saturate(1.1) contrast(1.05);
 }
 
+.jumpscare-secret {
+  position: fixed;
+  inset: 0;
+  z-index: 1002;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.18), transparent 12%),
+    radial-gradient(circle at 50% 52%, #4a0509 0 24%, #060000 58%);
+  animation: jumpscare-shake 0.08s steps(2, end) infinite;
+  pointer-events: none;
+}
+
+.jumpscare-static {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.24;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.25) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(90deg, transparent 0 7px, rgba(255, 0, 0, 0.24) 7px 9px);
+  mix-blend-mode: screen;
+  animation: static-snap 0.12s steps(2, end) infinite;
+}
+
+.jumpscare-face {
+  position: relative;
+  width: min(92vw, 720px);
+  aspect-ratio: 1;
+  border: 14px solid #050202;
+  border-radius: 44% 44% 38% 38%;
+  background:
+    radial-gradient(circle at 33% 36%, rgba(255, 244, 210, 0.45), transparent 7%),
+    radial-gradient(circle at 67% 36%, rgba(255, 244, 210, 0.45), transparent 7%),
+    linear-gradient(135deg, #6a3a22, #1a0b08 56%, #000000);
+  box-shadow:
+    inset 0 -38px 0 rgba(0, 0, 0, 0.52),
+    0 0 60px #ff001e,
+    0 0 140px rgba(255, 0, 30, 0.88);
+  transform: scale(1.2);
+}
+
+.jumpscare-ear {
+  position: absolute;
+  top: -11%;
+  width: 30%;
+  aspect-ratio: 1;
+  border: 12px solid #050202;
+  border-radius: 50%;
+  background: #2b120c;
+}
+
+.jumpscare-ear.left { left: 4%; }
+.jumpscare-ear.right { right: 4%; }
+
+.jumpscare-eye {
+  position: absolute;
+  top: 28%;
+  width: 16%;
+  aspect-ratio: 1;
+  border: 8px solid #050202;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0 17%, #ffe680 18% 28%, #050202 30% 100%);
+  box-shadow: 0 0 35px #ffe680;
+}
+
+.jumpscare-eye.left { left: 26%; }
+.jumpscare-eye.right { right: 26%; }
+
+.jumpscare-nose {
+  position: absolute;
+  left: 43%;
+  top: 48%;
+  width: 14%;
+  height: 9%;
+  border-radius: 50%;
+  background: #030101;
+}
+
+.jumpscare-mouth {
+  position: absolute;
+  left: 24%;
+  right: 24%;
+  bottom: 19%;
+  height: 16%;
+  border: 8px solid #050202;
+  border-radius: 0 0 999px 999px;
+  background:
+    repeating-linear-gradient(90deg, #f4eee8 0 9px, #050202 9px 13px),
+    #170000;
+  box-shadow: inset 0 18px 0 #130000;
+}
+
 .eyebrow {
   color: #2e6f95;
   font-size: 12px;
@@ -394,4 +487,14 @@
 @keyframes splash-pop {
   0% { transform: rotate(-17deg) scale(0.96); }
   100% { transform: rotate(-17deg) scale(1.04); }
+}
+
+@keyframes jumpscare-shake {
+  0% { transform: translate(-2px, 3px) scale(1.02); filter: hue-rotate(0deg); }
+  100% { transform: translate(4px, -3px) scale(1.06); filter: hue-rotate(-18deg); }
+}
+
+@keyframes static-snap {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-18px, 12px); }
 }

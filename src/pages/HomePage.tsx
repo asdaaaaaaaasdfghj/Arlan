@@ -21,6 +21,7 @@ export function HomePage() {
   const [achievementToast, setAchievementToast] = useState<AchievementId | null>(null);
   const [secretCreditsOpen, setSecretCreditsOpen] = useState(false);
   const [outTheWaterOpen, setOutTheWaterOpen] = useState(false);
+  const [jumpscareOpen, setJumpscareOpen] = useState(false);
   const versionStatus = useVersionStatus();
   const playHref = `/game?mode=${mode}&map=${mapId}`;
 
@@ -42,13 +43,23 @@ export function HomePage() {
   }, [achievementToast]);
 
   useEffect(() => {
+    if (!jumpscareOpen) {
+      return undefined;
+    }
+
+    const timerId = window.setTimeout(() => setJumpscareOpen(false), 1250);
+    return () => window.clearTimeout(timerId);
+  }, [jumpscareOpen]);
+
+  useEffect(() => {
     let buffer = '';
     const creditsCode = 'ABSOLUTEZERO';
     const waterCode = 'OUTTHEWATER';
     const lostMediaCode = 'LOSTMEDIA';
     const openUpCode = 'OPENUP';
+    const jumpscareCode = 'FNAF';
     const lostMediaUrl = 'https://minecraft.wiki/w/Category_talk:Lost_media#lost_mini_game_Out_of_the_water';
-    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, lostMediaCode.length, openUpCode.length);
+    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, lostMediaCode.length, openUpCode.length, jumpscareCode.length);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
       buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
@@ -63,6 +74,9 @@ export function HomePage() {
       }
       if (buffer.endsWith(openUpCode)) {
         document.documentElement.dataset.openUp = 'true';
+      }
+      if (buffer.endsWith(jumpscareCode)) {
+        setJumpscareOpen(true);
       }
     };
 
@@ -139,6 +153,7 @@ export function HomePage() {
         setSplash('I have no idea who this is; I made the game alone.');
       }} />}
       {outTheWaterOpen && <OutTheWaterSecret onClose={() => setOutTheWaterOpen(false)} />}
+      {jumpscareOpen && <JumpscareSecret />}
     </main>
   );
 }
@@ -165,6 +180,22 @@ function OutTheWaterSecret({ onClose }: { onClose: () => void }) {
   return (
     <section className="out-water-secret" onClick={onClose} role="presentation">
       <img src={`${import.meta.env.BASE_URL}secrets/out-the-water.png`} alt="Out the water secret" />
+    </section>
+  );
+}
+
+function JumpscareSecret() {
+  return (
+    <section className="jumpscare-secret" aria-label="Jumpscare">
+      <div className="jumpscare-static" />
+      <div className="jumpscare-face">
+        <span className="jumpscare-ear left" />
+        <span className="jumpscare-ear right" />
+        <span className="jumpscare-eye left" />
+        <span className="jumpscare-eye right" />
+        <span className="jumpscare-nose" />
+        <span className="jumpscare-mouth" />
+      </div>
     </section>
   );
 }
