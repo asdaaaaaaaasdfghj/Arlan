@@ -42,8 +42,13 @@ export function FriendsPage() {
     void refreshRequests(user);
   }, [user]);
 
+  const currentNicknameKey = loadPlayerProfile().nickname.toLowerCase();
   const accepted = requests.filter((request) => request.status === 'accepted');
-  const incoming = requests.filter((request) => request.status === 'pending' && request.addressee_id === user?.id);
+  const incoming = requests.filter((request) => (
+    request.status === 'pending'
+    && request.requester_id !== user?.id
+    && (request.addressee_id === user?.id || request.target_nickname_key === currentNicknameKey)
+  ));
   const outgoing = requests.filter((request) => request.status === 'pending' && request.requester_id === user?.id);
   const activeRequest = accepted.find((request) => request.id === activeRequestId) ?? accepted[0];
   const activeFriend = useMemo(
@@ -103,7 +108,8 @@ export function FriendsPage() {
   async function answer(requestId: string, status: 'accepted' | 'rejected') {
     try {
       setBusy(true);
-      await answerFriendRequest(requestId, status);
+      if (!user) return;
+      await answerFriendRequest(requestId, user, status);
       await refreshRequests();
       setNotice(status === 'accepted'
         ? language === 'ru' ? 'Дружба подтверждена. Чат открыт.' : 'Friendship accepted. Chat unlocked.'
@@ -192,7 +198,7 @@ export function FriendsPage() {
                 <h2>{language === 'ru' ? 'Ожидают' : 'Pending'}</h2>
                 {outgoing.length === 0 ? <p>{language === 'ru' ? 'Никто не морозится.' : 'Nobody is pending.'}</p> : outgoing.map((request) => (
                   <article className="friend-row" key={request.id}>
-                    <strong>{request.addressee?.nickname ?? 'Unknown'}</strong>
+                    <strong>{request.addressee?.nickname ?? request.target_nickname ?? 'Unknown'}</strong>
                     <span>{language === 'ru' ? 'ещё не подтвердил' : 'has not accepted yet'}</span>
                   </article>
                 ))}

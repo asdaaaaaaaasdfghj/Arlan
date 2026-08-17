@@ -14,7 +14,9 @@ export type FriendStatus = 'pending' | 'accepted' | 'rejected';
 export type FriendRequest = {
   id: string;
   requester_id: string;
-  addressee_id: string;
+  addressee_id: string | null;
+  target_nickname: string | null;
+  target_nickname_key: string | null;
   status: FriendStatus;
   created_at: string;
   requester?: FriendProfile;
@@ -39,63 +41,64 @@ export async function syncFriendProfile(user: User, profile: PlayerProfile = loa
     skin: profile.skin,
     updated_at: new Date().toISOString(),
   });
-
   if (error) throwFriendsError(error);
 }
 
 export async function loadFriendRequests(user: User): Promise<FriendRequest[]> {
+  await syncFriendProfile(user);
   const { data, error } = await supabase
     .from('friend_requests')
-    .select('id,requester_id,addressee_id,status,created_at')
-    .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
+    .select('id,requester_id,addressee_id,target_nickname,target_nickname_key,status,created_at')
     .neq('status', 'rejected')
     .order('created_at', { ascending: false });
 
   if (error) throwFriendsError(error);
 
   const rows = (data ?? []) as FriendRequestRow[];
-  const ids = [...new Set(rows.flatMap((row) => [row.requester_id, row.addressee_id]))];
+  const ids = [...new Set(rows.flatMap((row) => [row.requester_id, row.addressee_id]).filter(isString))];
   const profiles = await loadProfiles(ids);
   return rows.map((row) => ({
     ...row,
     requester: profiles.get(row.requester_id),
-    addressee: profiles.get(row.addressee_id),
+    addressee: row.addressee_id ? profiles.get(row.addressee_id) : undefined,
   }));
 }
 
 export async function sendFriendRequest(user: User, targetNickname: string): Promise<void> {
-  const nicknameKey = targetNickname.trim().toLowerCase();
+  const cleanNickname = targetNickname.trim().slice(0, 16);
+  const nicknameKey = cleanNickname.toLowerCase();
   if (!nicknameKey) throw new Error('Напиши ник друга.');
 
   await syncFriendProfile(user);
   const target = await findProfileByNickname(nicknameKey);
-  if (!target) throw new Error('Игрок не найден. Он должен войти в аккаунт и сохранить ник в профиле.');
-  if (target.user_id === user.id) throw new Error('Себя добавить нельзя, даже если очень хочется.');
+  if (target?.user_id === user.id) throw new Error('Себя добавить нельзя, даже если очень хочется.');
 
   const requests = await loadFriendRequests(user);
-  const existing = requests.find((request) => (
-    request.requester_id === user.id && request.addressee_id === target.user_id
-  ) || (
-    request.requester_id === target.user_id && request.addressee_id === user.id
-  ));
+  const existing = requests.find((request) => {
+    const sameTarget = target && request.addressee_id === target.user_id;
+    const sameRequester = target && request.requester_id === target.user_id;
+    const sameNickname = request.target_nickname_key === nicknameKey;
+    return (request.requester_id === user.id && (sameTarget || sameNickname))
+      || (request.addressee_id === user.id && sameRequester);
+  });
   if (existing?.status === 'accepted') throw new Error('Вы уже друзья.');
   if (existing?.status === 'pending') throw new Error('Заявка уже ждёт ответа.');
 
   const { error } = await supabase.from('friend_requests').insert({
     requester_id: user.id,
-    addressee_id: target.user_id,
+    addressee_id: target?.user_id ?? null,
+    target_nickname: target?.nickname ?? cleanNickname,
+    target_nickname_key: nicknameKey,
     status: 'pending',
   });
-
   if (error) throwFriendsError(error);
 }
 
-export async function answerFriendRequest(requestId: string, status: 'accepted' | 'rejected'): Promise<void> {
+export async function answerFriendRequest(requestId: string, user: User, status: 'accepted' | 'rejected'): Promise<void> {
   const { error } = await supabase
     .from('friend_requests')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ addressee_id: user.id, status, updated_at: new Date().toISOString() })
     .eq('id', requestId);
-
   if (error) throwFriendsError(error);
 }
 
@@ -106,7 +109,6 @@ export async function loadFriendMessages(requestId: string): Promise<FriendMessa
     .eq('request_id', requestId)
     .order('created_at', { ascending: true })
     .limit(80);
-
   if (error) throwFriendsError(error);
   return (data ?? []) as FriendMessage[];
 }
@@ -120,7 +122,6 @@ export async function sendFriendMessage(requestId: string, user: User, body: str
     sender_id: user.id,
     body: text,
   });
-
   if (error) throwFriendsError(error);
 }
 
@@ -130,21 +131,22 @@ async function findProfileByNickname(nicknameKey: string): Promise<FriendProfile
     .select('user_id,nickname,color,skin')
     .eq('nickname_key', nicknameKey)
     .maybeSingle();
-
   if (error) throwFriendsError(error);
   return data as FriendProfile | null;
 }
 
 async function loadProfiles(userIds: string[]): Promise<Map<string, FriendProfile>> {
   if (userIds.length === 0) return new Map();
-
   const { data, error } = await supabase
     .from('friend_profiles')
     .select('user_id,nickname,color,skin')
     .in('user_id', userIds);
-
   if (error) throwFriendsError(error);
   return new Map(((data ?? []) as FriendProfile[]).map((profile) => [profile.user_id, profile]));
+}
+
+function isString(value: string | null): value is string {
+  return typeof value === 'string';
 }
 
 function throwFriendsError(error: { message?: string; code?: string }): never {
