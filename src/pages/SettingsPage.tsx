@@ -72,6 +72,7 @@ export function SettingsPage() {
         <NumberField label={t(language, 'redTeamBots')} value={settings.redTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, redTeamBots: value })} />
         <Toggle label={t(language, 'botUsesWeapons')} checked={settings.botUsesWeapons} onChange={(checked) => updateSettings({ ...settings, botUsesWeapons: checked })} />
         <Toggle label={t(language, 'secretZombies')} checked={settings.secretZombies} onChange={(checked) => updateSettings({ ...settings, secretZombies: checked })} />
+        <Toggle label={t(language, 'roundMutations')} checked={settings.roundMutations} onChange={(checked) => updateSettings({ ...settings, roundMutations: checked })} />
         <SelectField label={t(language, 'botDifficulty')} value={settings.botDifficulty} onChange={(value) => updateSettings({ ...settings, botDifficulty: value as GameSettings['botDifficulty'] })}>
           {botDifficultyOptions.map((difficulty) => (
             <option value={difficulty} key={difficulty}>{getBotDifficultyLabel(difficulty, language)}</option>

@@ -25,6 +25,7 @@ import { withRedBotInput } from '../lib/arenaBot';
 import { chooseRedBotWeapon } from '../lib/arenaBotWeapon';
 import { addTeamBots } from '../lib/arenaTeamBots';
 import { modeOrder } from '../lib/arenaModes';
+import { createRoundMutation } from '../lib/arenaMutations';
 import { saveProgressToAccount } from '../lib/accountProgress';
 import { getAchievementText } from '../lib/achievements';
 import { recordFinishedGame } from '../lib/gameStats';
@@ -191,7 +192,9 @@ function getInitialChoice(defaultMode: GameMode, defaultMap: MapId): { mode: Gam
 }
 
 function createGameWithBots(mode: GameMode, mapId: MapId, settings: ReturnType<typeof loadGameSettings>) {
-  return addTeamBots(createInitialGame(mode, mapId), {
+  const baseGame = createInitialGame(mode, mapId);
+  const mutatedGame = { ...baseGame, mutation: createRoundMutation(settings.roundMutations, baseGame.mode, baseGame.mapId) };
+  return addTeamBots(mutatedGame, {
     blue: settings.blueTeamBots,
     red: settings.redTeamBots,
   });

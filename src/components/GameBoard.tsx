@@ -8,6 +8,7 @@ import { getMiniGameIndex, getMiniGameRule, isMiniGamesMode, miniGameDuration } 
 import { getModeSwapRifts } from '../lib/arenaSwapRifts';
 import { isFarArenaOpen } from '../lib/arenaTimeDuel';
 import { poisonSeconds } from '../lib/arenaTraps';
+import { getMutationScale } from '../lib/arenaMutations';
 import { loadCustomCodeBlocks, loadCustomConveyors, loadCustomDecorations, loadCustomMagnets, loadCustomSolidDecorations, loadCustomSwapRifts, loadCustomTerrain, loadCustomTheme, loadCustomVehicles } from '../lib/customMap';
 import type { Language } from '../lib/gameSettings';
 import { modeDescription, modeName, t } from '../lib/i18n';
@@ -88,6 +89,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   const mapObstacles = getMapObstacles(game.mapId);
   const runDecorations = game.mode === 'tileRun' ? getRunFakeDecorations(bounds) : [];
   const farArenaOpen = isFarArenaOpen(game, bounds);
+  const fighterScale = getMutationScale(game.mutation);
   const laserBlockers = [
     ...mapObstacles,
     ...game.mapBoards,
@@ -131,8 +133,8 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
         {game.allyCheckpoints.map((checkpoint) => <AllyCheckpointSprite checkpoint={checkpoint} key={checkpoint.id} />)}
         {game.mode === 'captureFlag' && Object.values(game.flags).map((flag) => <FlagSprite flag={flag} key={flag.owner} />)}
         {(game.timeEchoes ?? []).map((echo) => <TimeEchoSprite echo={echo} key={echo.id} />)}
-        <PlayerSprite player={game.players.blue} profile={playerProfiles?.blue} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.blue, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} />
-        <PlayerSprite player={game.players.red} profile={playerProfiles?.red} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.red, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} />
+        <PlayerSprite player={game.players.blue} profile={playerProfiles?.blue} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.blue, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} scale={fighterScale} />
+        <PlayerSprite player={game.players.red} profile={playerProfiles?.red} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.red, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} scale={fighterScale} />
         {playerEmotes?.blue && <PlayerEmoteLabel player={game.players.blue} label={playerEmotes.blue} />}
         {playerEmotes?.red && <PlayerEmoteLabel player={game.players.red} label={playerEmotes.red} />}
         {game.allies.map((ally) => <AllySprite ally={ally} key={ally.id} />)}

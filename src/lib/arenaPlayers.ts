@@ -24,6 +24,8 @@ export type PlayerMechanics = {
   conveyors: ConveyorBlock[];
   magnets: MagnetBlock[];
   vehicles: VehicleBlock[];
+  forceIce?: boolean;
+  speedMultiplier?: number;
 };
 
 export function createPlayer(
@@ -120,8 +122,8 @@ function updatePlayer(
   const vehicleKind = vehicle ? input.enterVehicle ? vehicle.kind : player.vehicleKind : null;
   const riding = vehicleKind && vehicle?.kind === vehicleKind ? vehicle : null;
   const waterSlow = mapId === 'custom' && !riding && isInRectList(player.x, player.y, mechanics.water) ? 0.58 : 1;
-  const onIce = mapId === 'custom' && riding?.kind !== 'hover' && isInRectList(player.x, player.y, mechanics.ice);
-  const speed = (player.speedBoost > 0 ? PLAYER_SPEED * 1.32 : PLAYER_SPEED) * waterSlow * getVehicleSpeed(riding) * statusSlow(player);
+  const onIce = mechanics.forceIce || (mapId === 'custom' && riding?.kind !== 'hover' && isInRectList(player.x, player.y, mechanics.ice));
+  const speed = (player.speedBoost > 0 ? PLAYER_SPEED * 1.32 : PLAYER_SPEED) * waterSlow * getVehicleSpeed(riding) * statusSlow(player) * (mechanics.speedMultiplier ?? 1);
   const targetSlideX = xAxis === 0 && yAxis === 0 ? 0 : (xAxis / length) * speed;
   const targetSlideY = xAxis === 0 && yAxis === 0 ? 0 : (yAxis / length) * speed;
   const slideX = onIce ? updateIceSlide(player.slideX, targetSlideX, delta) : targetSlideX;

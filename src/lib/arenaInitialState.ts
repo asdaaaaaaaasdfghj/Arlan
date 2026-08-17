@@ -55,6 +55,7 @@ export function createInitialGame(mode: GameMode = 'duel', mapId: MapId = 'cross
     floorHoles: [],
     timeEchoes: [],
     farArenaActive: false,
+    mutation: { id: 'none', seed: 0 },
     bullets: [],
     grenades: [],
     powerUps: customPowerUps,

@@ -24,6 +24,7 @@ export type GameSettings = {
   redTeamBots: number;
   botUsesWeapons: boolean;
   secretZombies: boolean;
+  roundMutations: boolean;
   botDifficulty: BotDifficulty;
   language: Language;
   controls: ControlBindings;
@@ -46,6 +47,7 @@ export const defaultSettings: GameSettings = {
   redTeamBots: 0,
   botUsesWeapons: false,
   secretZombies: true,
+  roundMutations: false,
   botDifficulty: 'normal',
   language: 'en',
   controls: defaultControlBindings,

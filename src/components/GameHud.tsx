@@ -4,6 +4,7 @@ import { getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arena
 import { isSurvivalGrace, survivalGraceSeconds } from '../lib/arenaSurvivalMode';
 import { getWeaponConfig } from '../lib/arenaWeapons';
 import { getScoreToWin } from '../lib/arenaRules';
+import { getMutationDescription, getMutationName } from '../lib/arenaMutations';
 import type { Language } from '../lib/gameSettings';
 import { modeDescription, modeName, t } from '../lib/i18n';
 
@@ -24,6 +25,7 @@ export function GameHud({ game, language }: GameHudProps) {
         <p>{game.status === 'playing' ? t(language, 'liveDuel') : t(language, 'multiplayerShooter')}</p>
         <h1>{modeName(game.mode, language)}</h1>
         <p className="mode-description">{modeDescription(game.mode, language)}</p>
+        {game.mutation.id !== 'none' && <p className="mode-description mutation-line">{getMutationName(game.mutation, language)}: {getMutationDescription(game.mutation, language)}</p>}
         {isSurvivalGrace(game.mode, game.elapsedTime) && <p className="mode-description">{getSurvivalGraceText(game, language)}</p>}
         {isMiniGamesMode(game) && <p className="mode-description">{getMiniGameText(game)}</p>}
       </div>

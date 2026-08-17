@@ -16,12 +16,13 @@ import {
 } from '../lib/arenaShooter';
 import type { PlayerProfile } from '../lib/playerProfile';
 
-export function PlayerSprite({ player, profile, showName = true, useProfileColor = true, hidden = false }: {
+export function PlayerSprite({ player, profile, showName = true, useProfileColor = true, hidden = false, scale = 1 }: {
   player: Player;
   profile?: PlayerProfile;
   showName?: boolean;
   useProfileColor?: boolean;
   hidden?: boolean;
+  scale?: number;
 }) {
   const classes = [
     'fighter',
@@ -38,6 +39,7 @@ export function PlayerSprite({ player, profile, showName = true, useProfileColor
     left: xPercent(player.x),
     top: yPercent(player.y),
     '--fighter-color': useProfileColor ? profile?.color : undefined,
+    '--fighter-scale': scale,
     '--aim-angle': `${Math.atan2(player.facingY, player.facingX)}rad`,
   } as CSSProperties;
 

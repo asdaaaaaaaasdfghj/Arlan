@@ -14,6 +14,7 @@ import { tickLuckyBlocks } from './arenaLuckyBlocks';
 import { applySwordAttacks } from './arenaMelee';
 import { getMiniGameRule, isMiniGamesMode, lockMiniGameWeapons } from './arenaMiniGames';
 import { moveBarricadesFromMovingBlocks, pushPlayersFromMovingBlocks, tickMovingBlocks } from './arenaMovingBlocks';
+import { applyMutationToBullets, applyMutationToCooldowns, applyMutationToMechanics } from './arenaMutations';
 import { isFlameMode, isSwordMode, modeConfigs } from './arenaModes';
 import { tickPaintBattle } from './arenaPaint';
 import { teleportPlayers } from './arenaPortals';
@@ -56,8 +57,9 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     }
     : { water: [], ice: [], conveyors: [], magnets: [], swapRifts: getModeSwapRifts(state.mode, state.mapId), vehicles: [] };
   const activeTnts = tnts.filter((tnt) => tnt.active);
+  const mutatedMechanics = applyMutationToMechanics(mechanics, state.mutation);
   const blockers = [...pushedBarricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
-  const movedPlayers = updatePlayers(state.players, input, delta, state.mapId, blockers, mechanics);
+  const movedPlayers = updatePlayers(state.players, input, delta, state.mapId, blockers, mutatedMechanics);
   const players = tickSwapRifts(teleportPlayers(pushPlayersFromMovingBlocks(movedPlayers, movingBlocks), state.portals), mechanics.swapRifts);
   const movedState = { ...state, barricades: pushedBarricades, mapBoards: pushedMapBoards, movingBlocks, elapsedTime };
   const building = buildZombieModeBarricades(movedState, players, input);
@@ -74,19 +76,23 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const shooting = swordActive
     ? { players: throwing.players, bullets: [] }
     : spawnBullets(throwing.players, combatInput, state.nextBulletId, state.mapId);
+  const mutatedShooting = {
+    players: applyMutationToCooldowns(shooting.players, state.mutation),
+    bullets: applyMutationToBullets(shooting.bullets, state.mutation),
+  };
   const allyBlockers = [...building.barricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
   const allyState = tickAllies(
     state.allies,
     state.allyCheckpoints,
-    shooting.players,
+    mutatedShooting.players,
     state.zombies,
     allyBlockers,
     state.mapId,
     delta,
-    state.nextBulletId + shooting.bullets.length,
+    state.nextBulletId + mutatedShooting.bullets.length,
   );
   const moved = moveBullets(
-    [...state.bullets, ...shooting.bullets, ...allyState.bullets],
+    [...state.bullets, ...mutatedShooting.bullets, ...allyState.bullets],
     delta,
     state.mapId,
     [...movingBlocks, ...(state.lasers ?? [])],
@@ -99,9 +105,9 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     mechanics.magnets,
     state.mode,
   );
-  const timeEchoes = tickTimeEchoes(state, shooting.players, elapsedTime, delta, state.portals);
-  const farArenaActive = state.farArenaActive || hasFarArenaBreach({ ...state, players: shooting.players, timeEchoes }, getArenaBounds(state.mapId));
-  const paradoxState = applyTimeParadoxHits(shooting.players, moved.bullets, timeEchoes, state.nextEffectId + swordState.effects.length);
+  const timeEchoes = tickTimeEchoes(state, mutatedShooting.players, elapsedTime, delta, state.portals);
+  const farArenaActive = state.farArenaActive || hasFarArenaBreach({ ...state, players: mutatedShooting.players, timeEchoes }, getArenaBounds(state.mapId));
+  const paradoxState = applyTimeParadoxHits(mutatedShooting.players, moved.bullets, timeEchoes, state.nextEffectId + swordState.effects.length);
   const oldEffects = ageHitEffects(state.hitEffects, delta);
   const tntState = triggerTnts({
     tnts,
@@ -217,7 +223,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     disasters: disasterState.disasters,
     flags: flagState.flags,
     hitEffects,
-    nextBulletId: state.nextBulletId + shooting.bullets.length + allyState.bullets.length,
+    nextBulletId: state.nextBulletId + mutatedShooting.bullets.length + allyState.bullets.length,
     nextGrenadeId: state.nextGrenadeId + throwing.grenades.length,
     nextZombieId: secretState.nextZombieId,
     nextBarricadeId: Math.max(codeState.nextBarricadeId, building.nextBarricadeId, luckyBlocks.nextId),

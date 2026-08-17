@@ -128,6 +128,8 @@ export type TrapKind = 'spikes' | 'lava' | 'acid' | 'zap' | 'poison' | 'saw' | '
 export type TrapBlock = Obstacle & { kind: TrapKind };
 export type PaintTile = Obstacle & { owner: PlayerId };
 export type FloorHole = Obstacle & { owner: PlayerId | null; age: number };
+export type RoundMutationId = 'none' | 'speedRush' | 'slipperyArena' | 'bigBullets' | 'rapidFire' | 'tinyPlayers';
+export type RoundMutation = { id: RoundMutationId; seed: number };
 
 export type TimeEcho = {
   id: number;
@@ -207,6 +209,7 @@ export type GameState = {
   floorHoles: FloorHole[];
   timeEchoes: TimeEcho[];
   farArenaActive: boolean;
+  mutation: RoundMutation;
   bullets: Bullet[];
   grenades: Grenade[];
   powerUps: PowerUp[];
