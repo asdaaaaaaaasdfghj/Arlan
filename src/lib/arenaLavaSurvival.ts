@@ -1,13 +1,13 @@
 import { ARENA_HEIGHT, type Barricade, type GameState, type Player, type PlayerId } from './arenaTypes';
 
 export const lavaMazeWidth = 168;
-const mazeCols = 18;
-const mazeRows = 7;
+const mazeCols = 20;
+const mazeRows = 5;
 const mazeOriginX = 8;
 const mazeOriginY = 5;
 const mazeWidth = lavaMazeWidth - 16;
 const mazeHeight = ARENA_HEIGHT - 10;
-const wallWidth = 2.3;
+const wallWidth = 1.8;
 const mazeWallHp = 48;
 const lavaDelay = 4;
 const lavaSpeed = 2.05;
@@ -82,8 +82,9 @@ function carveMaze(random: () => number): MazeCell[][] {
       walls: { north: true, east: true, south: true, west: true },
     }))
   ));
-  const stack: MazeCell[] = [cells[3][0]];
-  cells[3][0].visited = true;
+  const startRow = Math.floor(mazeRows / 2);
+  const stack: MazeCell[] = [cells[startRow][0]];
+  cells[startRow][0].visited = true;
 
   while (stack.length > 0) {
     const current = stack[stack.length - 1];
@@ -126,10 +127,10 @@ function mazeToWalls(cells: MazeCell[][], random: () => number): Barricade[] {
 }
 
 function createBrokenColumns(startId: number, random: () => number): Barricade[] {
-  return Array.from({ length: 10 }, (_, index) => {
+  return Array.from({ length: 8 }, (_, index) => {
     const x = mazeOriginX + 18 + random() * (mazeWidth - 36);
     const y = mazeOriginY + 5 + random() * (mazeHeight - 10);
-    return createMazeWall(startId + index, x, y, 3.4 + random() * 3, 2.4 + random() * 5);
+    return createMazeWall(startId + index, x, y, 2.6 + random() * 2.4, 2 + random() * 4);
   });
 }
 
