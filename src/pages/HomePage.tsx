@@ -17,7 +17,7 @@ export function HomePage() {
   const language = settings.language;
   const [mode, setMode] = useState<GameMode>(settings.defaultMode);
   const [mapId, setMapId] = useState<MapId>(settings.defaultMap);
-  const [splash] = useState(pickSplashText);
+  const [splash, setSplash] = useState(pickSplashText);
   const [achievementToast, setAchievementToast] = useState<AchievementId | null>(null);
   const [secretCreditsOpen, setSecretCreditsOpen] = useState(false);
   const versionStatus = useVersionStatus();
@@ -118,7 +118,10 @@ export function HomePage() {
         </div>
         <MenuShowcase language={language} />
       </section>
-      {secretCreditsOpen && <SecretCredits onClose={() => setSecretCreditsOpen(false)} />}
+      {secretCreditsOpen && <SecretCredits onClose={() => {
+        setSecretCreditsOpen(false);
+        setSplash('I have no idea who this is; I made the game alone.');
+      }} />}
     </main>
   );
 }
