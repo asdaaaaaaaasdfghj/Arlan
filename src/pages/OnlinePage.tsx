@@ -147,6 +147,7 @@ const emotes: Array<{ id: EmoteId; label: string }> = [
 const emoteLifeMs = 2400;
 const qChatAchievementKey = 'duel-arena-q-chat-count';
 const qChatAchievementGoal = 10;
+const creatorNickname = 'ADMINlol';
 const builderThemes = ['Castle', 'Space base', 'Monster', 'Secret bunker', 'Parkour tower', 'Volcano lab'];
 const defaultModeState: OnlineModeState = {
   infectedIds: [],
@@ -229,6 +230,16 @@ export function OnlinePage() {
   useEffect(() => {
     roomPlayersRef.current = roomPlayers;
   }, [roomPlayers]);
+
+  useEffect(() => {
+    if (status !== 'online' || !roomPlayers.some((player) => normalizeNickname(player.nickname) === normalizeNickname(creatorNickname))) {
+      return;
+    }
+
+    if (unlockAchievement('adminServer')) {
+      setAchievementToast('adminServer');
+    }
+  }, [roomPlayers, status]);
 
   useEffect(() => {
     extraPlayersRef.current = extraPlayers;

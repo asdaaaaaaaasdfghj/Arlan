@@ -1,5 +1,5 @@
 export type AchievementId = 'firstScore' | 'duelWin' | 'survivor' | 'builder' | 'grenadier' | 'zombieHunter'
-  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'qSpam' | 'modeMaster' | 'mapTour';
+  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'qSpam' | 'adminServer' | 'modeMaster' | 'mapTour';
 
 export type Achievement = {
   id: AchievementId;
@@ -83,6 +83,7 @@ export const achievements: Achievement[] = [
   { id: 'painSpeedrun', title: 'Pain Speedrun', description: 'Score against the bot on Thermonuclear.' },
   { id: 'disappointment3', title: 'Disappointment III', description: 'Try to join the official server as a guest.' },
   { id: 'qSpam', title: 'QQQQQQQQQQQ', description: 'QQQQQQQQQQQQQ' },
+  { id: 'adminServer', title: 'да я админ', description: 'играйте на 1 сервере с создателем игры' },
   { id: 'modeMaster', title: 'All-Round Champion', description: 'Win in every game mode.' },
   { id: 'mapTour', title: 'Tourist With A Gun', description: 'Play every built-in map.' },
 ];
@@ -100,6 +101,7 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   painSpeedrun: ['Спидран боли', 'Набери хотя бы 1 очко против термоядерного бота.'],
   disappointment3: ['Разочарование III', 'Попытайся зайти на официальный сервер за гостя.'],
   qSpam: ['QQQQQQQQQQQ', 'QQQQQQQQQQQQQ'],
+  adminServer: ['да я админ', 'играйте на 1 сервере с создателем игры'],
   modeMaster: ['Чемпион всех режимов', 'Победи во всех режимах игры.'],
   mapTour: ['Турист с пушкой', 'Сыграй на всех обычных картах.'],
 };
