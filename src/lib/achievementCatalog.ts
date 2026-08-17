@@ -85,7 +85,7 @@ export const achievements: Achievement[] = [
   { id: 'qSpam', title: 'QQQQQQQQQQQ', description: 'QQQQQQQQQQQQQ' },
   { id: 'updateConfusion', title: 'это что такое', description: 'обновите игру' },
   { id: 'adminServer', title: 'да я админ', description: 'играйте на 1 сервере с создателем игры' },
-  { id: 'guestSkinCopy', title: 'Пародия', description: 'Имейте такойже скин как у гостей' },
+  { id: 'guestSkinCopy', title: 'Пародия', description: 'Имейте такойже скин и цвет как у гостей' },
   { id: 'modeMaster', title: 'All-Round Champion', description: 'Win in every game mode.' },
   { id: 'mapTour', title: 'Tourist With A Gun', description: 'Play every built-in map.' },
 ];
@@ -105,7 +105,7 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   qSpam: ['QQQQQQQQQQQ', 'QQQQQQQQQQQQQ'],
   updateConfusion: ['это что такое', 'обновите игру'],
   adminServer: ['да я админ', 'играйте на 1 сервере с создателем игры'],
-  guestSkinCopy: ['Пародия', 'Имейте такойже скин как у гостей'],
+  guestSkinCopy: ['Пародия', 'Имейте такойже скин и цвет как у гостей'],
   modeMaster: ['Чемпион всех режимов', 'Победи во всех режимах игры.'],
   mapTour: ['Турист с пушкой', 'Сыграй на всех обычных картах.'],
 };

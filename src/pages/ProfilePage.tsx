@@ -125,7 +125,7 @@ export function ProfilePage() {
 
   function saveLook() {
     savePlayerProfile(playerProfile);
-    if (playerProfile.skin === guestProfile.skin && unlockAchievement('guestSkinCopy')) {
+    if (isGuestLook(playerProfile, guestProfile) && unlockAchievement('guestSkinCopy')) {
       setAchievementToast('guestSkinCopy');
     }
     cloudProgress.clearMessage();
@@ -211,6 +211,10 @@ function getProfileLabels(language: Language) {
 
 function getSkinName(skin: PlayerSkinId, language: Language): string {
   return skinNames[language === 'ru' ? 'ru' : 'en'][skin];
+}
+
+function isGuestLook(profile: PlayerProfile, guestProfile: PlayerProfile): boolean {
+  return profile.skin === guestProfile.skin && profile.color.toLowerCase() === guestProfile.color.toLowerCase();
 }
 
 function getErrorMessage(error: unknown, language: Language): string {
