@@ -96,6 +96,7 @@ function isUnlocked(
   if (id === 'silentSurvivor') return didBlueSurviveSilently(game);
   if (id === 'selfDestruct') return game.players.blue.selfGrenadeDeaths > 0 || game.players.red.selfGrenadeDeaths > 0;
   if (id === 'easyBotOops') return context.redBot && context.botDifficulty === 'easy' && game.winner === 'red';
+  if (id === 'painSpeedrun') return context.redBot && context.botDifficulty === 'thermonuclear' && game.players.blue.score >= 1;
   if (id === 'modeMaster') return modeOrder.every((mode) => progress.wonModes.includes(mode));
   return mapOrder.filter((mapId) => mapId !== 'custom').every((mapId) => progress.playedMaps.includes(mapId));
 }

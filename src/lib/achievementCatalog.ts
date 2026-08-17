@@ -1,5 +1,5 @@
 export type AchievementId = 'firstScore' | 'duelWin' | 'survivor' | 'builder' | 'grenadier' | 'zombieHunter'
-  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'modeMaster' | 'mapTour';
+  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'modeMaster' | 'mapTour';
 
 export type Achievement = {
   id: AchievementId;
@@ -18,6 +18,7 @@ export const achievementTranslations: Partial<Record<string, Record<AchievementI
     silentSurvivor: ['Leyenda silenciosa', 'Sobrevive una ronda sin disparar.'],
     selfDestruct: ['Autodestrucción', 'Muere por tu propia granada.'],
     easyBotOops: ['¿Cómo pasó esto?', 'Pierde contra el bot en Easy.'],
+    painSpeedrun: ['Speedrun del dolor', 'Consigue un punto contra el bot termonuclear.'],
     modeMaster: ['Campeón total', 'Gana en todos los modos de juego.'],
     mapTour: ['Turista armado', 'Juega en todos los mapas normales.'],
   },
@@ -31,6 +32,7 @@ export const achievementTranslations: Partial<Record<string, Record<AchievementI
     silentSurvivor: ['Stille Legende', 'Überlebe eine Runde ohne Schuss.'],
     selfDestruct: ['Selbstzerstörung', 'Stirb durch deine eigene Granate.'],
     easyBotOops: ['Wie ist das passiert?', 'Verliere gegen den Bot auf Easy.'],
+    painSpeedrun: ['Schmerz-Speedrun', 'Erziele einen Punkt gegen den thermonuklearen Bot.'],
     modeMaster: ['Allround-Champion', 'Gewinne in jedem Spielmodus.'],
     mapTour: ['Tourist mit Waffe', 'Spiele jede normale Karte.'],
   },
@@ -44,6 +46,7 @@ export const achievementTranslations: Partial<Record<string, Record<AchievementI
     silentSurvivor: ['Légende silencieuse', 'Survis sans tirer une seule fois.'],
     selfDestruct: ['Autodestruction', 'Meurs avec ta propre grenade.'],
     easyBotOops: ['Comment c’est arrivé ?', 'Perds contre le bot en Easy.'],
+    painSpeedrun: ['Speedrun de douleur', 'Marque un point contre le bot thermonucléaire.'],
     modeMaster: ['Champion complet', 'Gagne dans tous les modes.'],
     mapTour: ['Touriste armé', 'Joue toutes les cartes normales.'],
   },
@@ -57,6 +60,7 @@ export const achievementTranslations: Partial<Record<string, Record<AchievementI
     silentSurvivor: ['Тыныш аңыз', 'Бірде-бір оқ атпай раундтан аман қал.'],
     selfDestruct: ['Өзін-өзі жою', 'Өз гранатаңнан өл.'],
     easyBotOops: ['Бұл қалай болды?', 'Easy ботқа жеңіл.'],
+    painSpeedrun: ['Ауырсыну speedrun', 'Термоядролық ботқа қарсы 1 ұпай ал.'],
     modeMaster: ['Барлық режим чемпионы', 'Барлық ойын режимінде жең.'],
     mapTour: ['Мылтықты турист', 'Барлық кәдімгі карталарда ойна.'],
   },
@@ -72,6 +76,7 @@ export const achievements: Achievement[] = [
   { id: 'silentSurvivor', title: 'Silent Legend', description: 'Survive a round without firing a shot.' },
   { id: 'selfDestruct', title: 'Self Destruct', description: 'Die from your own grenade.' },
   { id: 'easyBotOops', title: 'How Did This Happen?', description: 'Lose to the bot on Easy.' },
+  { id: 'painSpeedrun', title: 'Pain Speedrun', description: 'Score against the bot on Thermonuclear.' },
   { id: 'modeMaster', title: 'All-Round Champion', description: 'Win in every game mode.' },
   { id: 'mapTour', title: 'Tourist With A Gun', description: 'Play every built-in map.' },
 ];
@@ -86,6 +91,7 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   silentSurvivor: ['Тихая легенда', 'Выживи раунд без единого выстрела.'],
   selfDestruct: ['Самоуничтожение', 'Умри от своей же гранаты.'],
   easyBotOops: ['Как так вышло?', 'Проиграй боту на Easy.'],
+  painSpeedrun: ['Спидран боли', 'Набери хотя бы 1 очко против термоядерного бота.'],
   modeMaster: ['Чемпион всех режимов', 'Победи во всех режимах игры.'],
   mapTour: ['Турист с пушкой', 'Сыграй на всех обычных картах.'],
 };
