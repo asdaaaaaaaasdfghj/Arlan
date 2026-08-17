@@ -1252,7 +1252,7 @@ export function OnlinePage() {
   }
 
   function trackQChatAchievement(text: string) {
-    if (text !== ':Q') return;
+    if (text !== 'Q') return;
     const count = Math.min(qChatAchievementGoal, loadQChatCount() + 1);
     saveQChatCount(count);
     if (count >= qChatAchievementGoal && unlockAchievement('qSpam')) {
