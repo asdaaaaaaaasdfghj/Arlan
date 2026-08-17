@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { MenuShowcase } from '../components/MenuShowcase';
 import { mapNames, mapOrder } from '../lib/arenaMap';
@@ -8,7 +8,9 @@ import { mapName, modeDescription, modeName, t } from '../lib/i18n';
 import { pickSplashText } from '../lib/splashTexts';
 import type { GameMode, MapId } from '../lib/arenaShooter';
 import { useVersionStatus } from '../lib/appVersion';
+import { getAchievementText, unlockAchievement, type AchievementId } from '../lib/achievements';
 import './home.css';
+import './game-toasts.css';
 
 export function HomePage() {
   const [settings] = useState(loadGameSettings);
@@ -16,12 +18,36 @@ export function HomePage() {
   const [mode, setMode] = useState<GameMode>(settings.defaultMode);
   const [mapId, setMapId] = useState<MapId>(settings.defaultMap);
   const [splash] = useState(pickSplashText);
+  const [achievementToast, setAchievementToast] = useState<AchievementId | null>(null);
   const versionStatus = useVersionStatus();
   const playHref = `/game?mode=${mode}&map=${mapId}`;
+
+  useEffect(() => {
+    if (!versionStatus.outdated || !unlockAchievement('updateConfusion')) {
+      return;
+    }
+
+    setAchievementToast('updateConfusion');
+  }, [versionStatus.outdated]);
+
+  useEffect(() => {
+    if (!achievementToast) {
+      return undefined;
+    }
+
+    const timerId = window.setTimeout(() => setAchievementToast(null), 2800);
+    return () => window.clearTimeout(timerId);
+  }, [achievementToast]);
 
   return (
     <main className="home-page">
       {versionStatus.outdated && <UpdateNotice language={language} />}
+      {achievementToast && (
+        <div className="achievement-toast">
+          <strong>{getAchievementText(achievementToast, language).title}</strong>
+          <span>{getAchievementText(achievementToast, language).description}</span>
+        </div>
+      )}
       <section className="home-hero-grid">
         <div className="home-hero">
           <p className="eyebrow">{t(language, 'localShooter')}</p>
