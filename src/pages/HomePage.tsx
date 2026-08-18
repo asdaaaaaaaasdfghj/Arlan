@@ -22,6 +22,7 @@ export function HomePage() {
   const [secretCreditsOpen, setSecretCreditsOpen] = useState(false);
   const [outTheWaterOpen, setOutTheWaterOpen] = useState(false);
   const [jumpscareOpen, setJumpscareOpen] = useState(false);
+  const [secretLinkPulse, setSecretLinkPulse] = useState<string | null>(null);
   const versionStatus = useVersionStatus();
   const playHref = `/game?mode=${mode}&map=${mapId}`;
 
@@ -50,6 +51,15 @@ export function HomePage() {
     const timerId = window.setTimeout(() => setJumpscareOpen(false), 1250);
     return () => window.clearTimeout(timerId);
   }, [jumpscareOpen]);
+
+  useEffect(() => {
+    if (!secretLinkPulse) {
+      return undefined;
+    }
+
+    const timerId = window.setTimeout(() => setSecretLinkPulse(null), 900);
+    return () => window.clearTimeout(timerId);
+  }, [secretLinkPulse]);
 
   useEffect(() => {
     let buffer = '';
@@ -88,6 +98,7 @@ export function HomePage() {
       }
       const secretLink = secretLinks.find(([code]) => buffer.endsWith(code));
       if (secretLink) {
+        setSecretLinkPulse(secretLink[0]);
         window.open(secretLink[1], '_blank', 'noopener,noreferrer');
       }
       if (buffer.endsWith(openUpCode)) {
@@ -172,6 +183,7 @@ export function HomePage() {
       }} />}
       {outTheWaterOpen && <OutTheWaterSecret onClose={() => setOutTheWaterOpen(false)} />}
       {jumpscareOpen && <JumpscareSecret />}
+      {secretLinkPulse && <SecretLinkPulse code={secretLinkPulse} />}
     </main>
   );
 }
@@ -213,6 +225,17 @@ function JumpscareSecret() {
         <span className="jumpscare-eye right" />
         <span className="jumpscare-nose" />
         <span className="jumpscare-mouth" />
+      </div>
+    </section>
+  );
+}
+
+function SecretLinkPulse({ code }: { code: string }) {
+  return (
+    <section className="secret-link-pulse" aria-live="polite">
+      <div>
+        <span>SECRET LINK</span>
+        <strong>{code}</strong>
       </div>
     </section>
   );

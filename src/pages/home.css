@@ -209,6 +209,68 @@
   box-shadow: inset 0 18px 0 #130000;
 }
 
+.secret-link-pulse {
+  position: fixed;
+  inset: 0;
+  z-index: 1003;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(106, 169, 255, 0.24), transparent 23%),
+    rgba(5, 7, 10, 0.58);
+  pointer-events: none;
+  animation: secret-link-fade 0.9s ease-out both;
+}
+
+.secret-link-pulse::before,
+.secret-link-pulse::after {
+  content: '';
+  position: absolute;
+  width: min(64vw, 420px);
+  aspect-ratio: 1;
+  border: 4px solid rgba(157, 203, 255, 0.78);
+  border-radius: 50%;
+  box-shadow:
+    0 0 24px rgba(106, 169, 255, 0.8),
+    inset 0 0 24px rgba(106, 169, 255, 0.4);
+  animation: secret-link-ring 0.9s ease-out both;
+}
+
+.secret-link-pulse::after {
+  width: min(42vw, 280px);
+  border-color: rgba(255, 212, 59, 0.82);
+  animation-delay: 0.08s;
+}
+
+.secret-link-pulse div {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 4px;
+  border: 2px solid #9dcbff;
+  border-radius: 8px;
+  background: rgba(9, 14, 20, 0.92);
+  padding: 14px 18px;
+  text-align: center;
+  box-shadow: 0 0 36px rgba(106, 169, 255, 0.72);
+  animation: secret-link-card 0.9s cubic-bezier(0.15, 0.95, 0.25, 1) both;
+}
+
+.secret-link-pulse span {
+  color: #ffd43b;
+  font-size: 12px;
+  font-weight: 1000;
+}
+
+.secret-link-pulse strong {
+  max-width: min(84vw, 680px);
+  overflow-wrap: anywhere;
+  color: #ffffff;
+  font-size: clamp(24px, 5vw, 46px);
+  line-height: 1;
+  text-shadow: 0 0 12px #6aa9ff;
+}
+
 .eyebrow {
   color: #2e6f95;
   font-size: 12px;
@@ -497,4 +559,24 @@
 @keyframes static-snap {
   0% { transform: translate(0, 0); }
   100% { transform: translate(-18px, 12px); }
+}
+
+@keyframes secret-link-fade {
+  0% { opacity: 0; }
+  12% { opacity: 1; }
+  72% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes secret-link-ring {
+  0% { opacity: 0; transform: scale(0.15) rotate(0deg); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.6) rotate(90deg); }
+}
+
+@keyframes secret-link-card {
+  0% { opacity: 0; transform: translateY(16px) scale(0.86); }
+  18% { opacity: 1; transform: translateY(0) scale(1.04); }
+  72% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-10px) scale(0.98); }
 }
