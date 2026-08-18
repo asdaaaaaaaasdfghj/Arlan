@@ -6,22 +6,20 @@ import type { PlayerId } from './arenaTypes';
 
 const shotSoundUrl = `${import.meta.env.BASE_URL}sounds/revolver-shot.mp3`;
 const flameSoundUrl = `${import.meta.env.BASE_URL}sounds/fireignite.mp3`;
+const swordSoundUrl = `${import.meta.env.BASE_URL}sounds/sword-blade.mp3`;
 
 export function useShotSound(game: GameState) {
   const previousShotsRef = useRef(getPlayerShots(game));
   const audioPoolsRef = useRef<Record<ShotSound, HTMLAudioElement[]>>({
     shot: [],
     flame: [],
+    sword: [],
   });
 
   useEffect(() => {
     const nextShots = getPlayerShots(game);
     const previousShots = previousShotsRef.current;
     previousShotsRef.current = nextShots;
-
-    if (isSwordMode(game.mode) || (isMiniGamesMode(game) && getMiniGameRule(game).sword)) {
-      return;
-    }
 
     (['blue', 'red'] satisfies PlayerId[]).forEach((id) => {
       if (nextShots[id] <= previousShots[id]) {
@@ -33,7 +31,7 @@ export function useShotSound(game: GameState) {
   }, [game.players.blue.shotsFired, game.players.red.shotsFired]);
 }
 
-type ShotSound = 'shot' | 'flame';
+type ShotSound = 'shot' | 'flame' | 'sword';
 
 function getPlayerShots(game: GameState): Record<PlayerId, number> {
   return {
@@ -43,14 +41,24 @@ function getPlayerShots(game: GameState): Record<PlayerId, number> {
 }
 
 function getSoundForPlayer(game: GameState, id: PlayerId): ShotSound {
+  if (isSwordMode(game.mode) || (isMiniGamesMode(game) && getMiniGameRule(game).sword)) {
+    return 'sword';
+  }
+
   return game.players[id].weapon === 'flamethrower' ? 'flame' : 'shot';
 }
 
 function playSound(kind: ShotSound, audioPoolsRef: MutableRefObject<Record<ShotSound, HTMLAudioElement[]>>) {
-  const sound = getReadyAudio(audioPoolsRef.current[kind], kind === 'flame' ? flameSoundUrl : shotSoundUrl);
+  const sound = getReadyAudio(audioPoolsRef.current[kind], getSoundUrl(kind));
   sound.currentTime = 0;
-  sound.volume = kind === 'flame' ? 0.38 : 0.45;
+  sound.volume = kind === 'flame' ? 0.38 : kind === 'sword' ? 0.5 : 0.45;
   void sound.play().catch(() => undefined);
+}
+
+function getSoundUrl(kind: ShotSound): string {
+  if (kind === 'flame') return flameSoundUrl;
+  if (kind === 'sword') return swordSoundUrl;
+  return shotSoundUrl;
 }
 
 function getReadyAudio(pool: HTMLAudioElement[], url: string): HTMLAudioElement {
