@@ -11,6 +11,7 @@ import {
   type HitEffect,
   type Player,
   type PowerUp,
+  type Ship,
   type TimeEcho,
   type Zombie,
 } from '../lib/arenaShooter';
@@ -180,6 +181,27 @@ export function BulletSprite({ bullet }: { bullet: Bullet }) {
       }}
     />
   );
+}
+
+export function ShipSprite({ ship }: { ship: Ship }) {
+  return (
+    <div className={`ship ship-${ship.owner}`} style={rectStyle(ship)}>
+      <span className="ship-bow" />
+      <span className="ship-deck" />
+      <span className="ship-cannon ship-cannon-top" />
+      <span className="ship-cannon ship-cannon-bottom" />
+      <i style={{ width: `${Math.max(0, (ship.hp / ship.maxHp) * 100)}%` }} />
+    </div>
+  );
+}
+
+function rectStyle(rect: { x: number; y: number; width: number; height: number }): CSSProperties {
+  return {
+    left: xPercent(rect.x),
+    top: yPercent(rect.y),
+    width: xPercent(rect.width),
+    height: yPercent(rect.height),
+  };
 }
 
 function getPowerUpLabel(kind: PowerUp['kind']) {

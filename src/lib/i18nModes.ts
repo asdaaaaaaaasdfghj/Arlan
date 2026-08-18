@@ -85,6 +85,14 @@ const modes: Record<GameMode, ModeText> = {
     ['Mutations', 'Toutes les 15 secondes, une nouvelle mutation s empile.'],
     ['Мутациялар', 'Әр 15 секунд сайын жаңа мутация қосылады.'],
   ),
+  seaBattle: makeMode(
+    ['Sea Battle', 'Spawn on ships and destroy the enemy ship with cannons.'],
+    ['Битва на море', 'Игроки появляются на кораблях. Разрушь чужой корабль пушками.'],
+    ['Batalla naval', 'Aparece en barcos y destruye el barco enemigo con cañones.'],
+    ['Seeschlacht', 'Spawne auf Schiffen und zerstöre das gegnerische Schiff mit Kanonen.'],
+    ['Bataille navale', 'Apparais sur des navires et détruis le navire ennemi au canon.'],
+    ['Теңіз шайқасы', 'Кемелерде пайда болып, жау кемесін зеңбірекпен қират.'],
+  ),
   spleef: makeMode(
     ['Spleef', 'Shoot the floor under the enemy and make them fall.'],
     ['Сплиф', 'Разрушай плиты под врагом и сбрасывай его вниз.'],

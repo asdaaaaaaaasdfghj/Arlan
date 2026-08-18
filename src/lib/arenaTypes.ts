@@ -1,7 +1,7 @@
 export type PlayerId = 'blue' | 'red';
 export type GameStatus = 'ready' | 'playing' | 'finished';
 export type GameMode = 'duel' | 'zombies' | 'quickDraw' | 'blitz' | 'tankDuel' | 'railDuel'
-  | 'grenadeMayhem' | 'flameDuel' | 'paintBattle' | 'miniGames' | 'mutationStorm' | 'spleef' | 'tileRun' | 'hideSeek' | 'hungerGames' | 'swapRift' | 'craftSurvival' | 'lavaSurvival' | 'timeDuel' | 'swordDuel' | 'swarmNight' | 'nightmare' | 'fortress' | 'endlessDuel' | 'disasters' | 'captureFlag' | 'kingHill' | 'glassWars' | 'luckyBlocks';
+  | 'grenadeMayhem' | 'flameDuel' | 'paintBattle' | 'miniGames' | 'mutationStorm' | 'seaBattle' | 'spleef' | 'tileRun' | 'hideSeek' | 'hungerGames' | 'swapRift' | 'craftSurvival' | 'lavaSurvival' | 'timeDuel' | 'swordDuel' | 'swarmNight' | 'nightmare' | 'fortress' | 'endlessDuel' | 'disasters' | 'captureFlag' | 'kingHill' | 'glassWars' | 'luckyBlocks';
 export type WeaponId = 'blaster' | 'railgun' | 'shotgun' | 'flamethrower' | 'custom4' | 'custom5' | 'termos';
 export type MapId = 'crossfire' | 'lanes' | 'bunker' | 'open' | 'lavaMaze' | 'custom';
 
@@ -130,6 +130,7 @@ export type PaintTile = Obstacle & { owner: PlayerId };
 export type FloorHole = Obstacle & { owner: PlayerId | null; age: number };
 export type RoundMutationId = 'none' | 'speedRush' | 'slipperyArena' | 'bigBullets' | 'rapidFire' | 'tinyPlayers';
 export type RoundMutation = { id: RoundMutationId; seed: number };
+export type Ship = Obstacle & { owner: PlayerId; hp: number; maxHp: number };
 
 export type TimeEcho = {
   id: number;
@@ -207,6 +208,7 @@ export type GameState = {
   traps: TrapBlock[];
   paintTiles: PaintTile[];
   floorHoles: FloorHole[];
+  ships: Ship[];
   timeEchoes: TimeEcho[];
   farArenaActive: boolean;
   mutation: RoundMutation;

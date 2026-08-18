@@ -6,6 +6,7 @@ import { createLuckyBlocks } from './arenaLuckyBlocks';
 import { getMapSpawn } from './arenaMap';
 import { modeConfigs } from './arenaModes';
 import { createPlayer } from './arenaPlayers';
+import { createSeaBattleShips, getSeaBattleSpawn } from './arenaSeaBattle';
 import {
   loadCustomAllies,
   loadCustomAllyCheckpoints,
@@ -24,8 +25,8 @@ import {
 export function createInitialGame(mode: GameMode = 'duel', mapId: MapId = 'crossfire'): GameState {
   const config = modeConfigs[mode];
   const effectiveMapId = isLavaSurvivalMode(mode) ? 'lavaMaze' : mapId;
-  const blueSpawn = getMapSpawn(effectiveMapId, 'blue');
-  const redSpawn = getMapSpawn(effectiveMapId, 'red');
+  const blueSpawn = mode === 'seaBattle' ? getSeaBattleSpawn('blue') : getMapSpawn(effectiveMapId, 'blue');
+  const redSpawn = mode === 'seaBattle' ? getSeaBattleSpawn('red') : getMapSpawn(effectiveMapId, 'red');
   const customPowerUps = effectiveMapId === 'custom' ? loadCustomPowerUps() : [];
   const players = {
     blue: createPlayer('blue', blueSpawn.x, blueSpawn.y, 1, config.playerHp, config.defaultWeapon),
@@ -53,6 +54,7 @@ export function createInitialGame(mode: GameMode = 'duel', mapId: MapId = 'cross
     traps: effectiveMapId === 'custom' ? loadCustomTraps() : [],
     paintTiles: [],
     floorHoles: [],
+    ships: createSeaBattleShips().filter(() => mode === 'seaBattle'),
     timeEchoes: [],
     farArenaActive: false,
     mutation: { id: 'none', seed: 0 },

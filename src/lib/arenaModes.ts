@@ -33,6 +33,7 @@ export const modeConfigs: Record<GameMode, ModeConfig> = {
     grenadeCooldown: 1.35,
   },
   mutationStorm: createDuel('mutationStorm', 'Mutations', 'Every 15 seconds a new mutation stacks onto the round.', 105, 6),
+  seaBattle: createDuel('seaBattle', 'Sea Battle', 'Spawn on ships and destroy the enemy ship with cannons.', 120, 1, 130, 'railgun'),
   spleef: createDuel('spleef', 'Spleef', 'Shoot the floor under the enemy and make them fall.', 75, 5),
   tileRun: createDuel('tileRun', 'Run', 'Tiles break after you step on them. Keep moving.', 65, 5),
   hideSeek: createDuel('hideSeek', 'Hide and Seek', 'Use objects and cover to hide, ambush, and survive.', 80, 5, 100, 'shotgun'),
@@ -84,6 +85,7 @@ export const modeOrder: GameMode[] = [
   'paintBattle',
   'miniGames',
   'mutationStorm',
+  'seaBattle',
   'spleef',
   'tileRun',
   'hideSeek',
@@ -122,7 +124,7 @@ export const modeGroups: ModeGroup[] = [
   {
     id: 'strategy',
     label: { en: 'Strategy', ru: 'Стратегические', es: 'Estrategia', de: 'Strategie', fr: 'Stratégie', kk: 'Стратегия' },
-    modes: ['glassWars', 'captureFlag', 'craftSurvival', 'lavaSurvival'],
+    modes: ['glassWars', 'captureFlag', 'craftSurvival', 'lavaSurvival', 'seaBattle'],
   },
   {
     id: 'arcade',
@@ -147,6 +149,7 @@ export const modeGroups: ModeGroup[] = [
       'captureFlag',
       'craftSurvival',
       'lavaSurvival',
+      'seaBattle',
       'paintBattle',
       'miniGames',
       'mutationStorm',

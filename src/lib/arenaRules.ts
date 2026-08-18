@@ -3,6 +3,7 @@ import { isGlassCoreDestroyed } from './arenaGlassWars';
 import { isLavaSurvivalMode } from './arenaLavaSurvival';
 import { isDisasterMode, isZombieMode, modeConfigs } from './arenaModes';
 import { getPaintBattleWinner } from './arenaPaint';
+import { getSeaBattleWinner } from './arenaSeaBattle';
 import { countTeamBots } from './arenaTeamBots';
 
 export function findWinner(
@@ -18,6 +19,10 @@ export function findWinner(
     if (blueLost) return 'red';
     if (redLost) return 'blue';
     return null;
+  }
+
+  if (mode === 'seaBattle' && state) {
+    return getSeaBattleWinner(state.ships);
   }
 
   if (isZombieMode(mode)) {

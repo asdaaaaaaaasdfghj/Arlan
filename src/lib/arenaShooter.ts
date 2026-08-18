@@ -21,6 +21,7 @@ import { teleportPlayers } from './arenaPortals';
 import { tickPowerUps } from './arenaPowerUps';
 import { updatePlayers } from './arenaPlayers';
 import { findWinner } from './arenaRules';
+import { damageShipsWithBullets } from './arenaSeaBattle';
 import { spawnSecretZombies } from './arenaSecretZombies';
 import { getModeSwapRifts, tickSwapRifts } from './arenaSwapRifts';
 import { isSurvivalGrace, lockSurvivalWeapons } from './arenaSurvivalMode';
@@ -108,9 +109,10 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     mechanics.magnets,
     state.mode,
   );
+  const shipState = damageShipsWithBullets(state.ships ?? [], moved.bullets);
   const timeEchoes = tickTimeEchoes(state, mutatedShooting.players, elapsedTime, delta, state.portals);
   const farArenaActive = state.farArenaActive || hasFarArenaBreach({ ...state, players: mutatedShooting.players, timeEchoes }, getArenaBounds(state.mapId));
-  const paradoxState = applyTimeParadoxHits(mutatedShooting.players, moved.bullets, timeEchoes, state.nextEffectId + swordState.effects.length);
+  const paradoxState = applyTimeParadoxHits(mutatedShooting.players, shipState.bullets, timeEchoes, state.nextEffectId + swordState.effects.length);
   const oldEffects = ageHitEffects(state.hitEffects, delta);
   const tntState = triggerTnts({
     tnts,
@@ -190,7 +192,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const paintState = tickPaintBattle({ ...state, players: lavaPlayers, paintTiles: state.paintTiles ?? [] });
   const secretState = spawnSecretZombies(state.players, paintState.players, trapState.zombies, codeState.nextZombieId, secretZombies);
   const secretHappened = secretState.nextZombieId > codeState.nextZombieId;
-  const winner = secretHappened ? null : findWinner(paintState.players, timeLeft, state.mode, { ...state, paintTiles: paintState.paintTiles });
+  const winner = secretHappened ? null : findWinner(paintState.players, timeLeft, state.mode, { ...state, paintTiles: paintState.paintTiles, ships: shipState.ships });
   const powerUps = tickPowerUps(
     paintState.players,
     codeState.barricades,
@@ -218,6 +220,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     traps: trapState.traps,
     paintTiles: paintState.paintTiles,
     floorHoles: floorState.floorHoles,
+    ships: shipState.ships,
     timeEchoes,
     farArenaActive,
     mutation: mutationState.mutation,
