@@ -694,6 +694,9 @@ export function OnlinePage() {
         leaveRoom();
         setRole(null);
         setStatus('idle');
+        if (unlockAchievement('kickedOnce')) {
+          setAchievementToast('kickedOnce');
+        }
         setNotice(language === 'ru' ? 'Тебя кикнули с сервера.' : 'You were kicked from the server.');
       });
     }
