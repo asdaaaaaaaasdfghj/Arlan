@@ -8,7 +8,7 @@ import { getMiniGameIndex, getMiniGameRule, isMiniGamesMode, miniGameDuration } 
 import { getModeSwapRifts } from '../lib/arenaSwapRifts';
 import { isFarArenaOpen } from '../lib/arenaTimeDuel';
 import { poisonSeconds } from '../lib/arenaTraps';
-import { getMutationScale } from '../lib/arenaMutations';
+import { getMutationDescription, getMutationName, getMutationScale } from '../lib/arenaMutations';
 import { loadCustomCodeBlocks, loadCustomConveyors, loadCustomDecorations, loadCustomMagnets, loadCustomSolidDecorations, loadCustomSwapRifts, loadCustomTerrain, loadCustomTheme, loadCustomVehicles } from '../lib/customMap';
 import type { Language } from '../lib/gameSettings';
 import { modeDescription, modeName, t } from '../lib/i18n';
@@ -156,9 +156,29 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
       )}
       {farArenaOpen && <FarArenaBanner language={language} />}
       {isMiniGamesMode(game) && <MiniGameBanner game={game} />}
+      {game.mutation.id !== 'none' && game.elapsedTime < 4.5 && <MutationBanner game={game} language={language} />}
       {game.status !== 'playing' && <GameOverlay game={game} language={language} />}
     </section>
   );
+}
+
+function MutationBanner({ game, language }: { game: GameState; language: Language }) {
+  return (
+    <div className={`mutation-banner mutation-banner-${game.mutation.id}`}>
+      <span>{getMutationIcon(game.mutation.id)}</span>
+      <strong>{getMutationName(game.mutation, language)}</strong>
+      <small>{getMutationDescription(game.mutation, language)}</small>
+    </div>
+  );
+}
+
+function getMutationIcon(id: GameState['mutation']['id']): string {
+  if (id === 'speedRush') return '>>';
+  if (id === 'rapidFire') return '!!';
+  if (id === 'tinyPlayers') return 'o';
+  if (id === 'bigBullets') return 'O';
+  if (id === 'slipperyArena') return '~';
+  return '?';
 }
 
 function FarArenaLayer({ game }: { game: GameState }) {

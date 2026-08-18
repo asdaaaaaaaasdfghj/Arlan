@@ -1101,6 +1101,60 @@
   font-weight: 900;
 }
 
+.mutation-banner {
+  position: absolute;
+  z-index: 58;
+  top: 18px;
+  left: 50%;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+  width: min(420px, calc(100% - 24px));
+  padding: 10px 12px;
+  border: 2px solid rgba(21, 23, 25, 0.9);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #151719;
+  box-shadow: 0 14px 28px rgba(21, 23, 25, 0.22);
+  transform: translateX(-50%);
+  animation: mutation-banner 4.5s ease forwards;
+  pointer-events: none;
+}
+
+.mutation-banner span {
+  grid-row: 1 / 3;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 2px solid #151719;
+  border-radius: 8px;
+  background: #ffd43b;
+  font-size: 20px;
+  font-weight: 1000;
+}
+
+.mutation-banner strong {
+  overflow: hidden;
+  font-size: 18px;
+  font-weight: 1000;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mutation-banner small {
+  color: #59636b;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.mutation-banner-speedRush span { background: #74c0fc; }
+.mutation-banner-rapidFire span { background: #ff8787; }
+.mutation-banner-tinyPlayers span { background: #b2f2bb; }
+
 @keyframes mini-game-banner {
   0% {
     opacity: 0;
@@ -1116,5 +1170,23 @@
   100% {
     opacity: 0;
     transform: translate(-50%, -12px) scale(0.98);
+  }
+}
+
+@keyframes mutation-banner {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -14px) scale(0.96);
+  }
+
+  12%,
+  82% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -8px) scale(0.98);
   }
 }
