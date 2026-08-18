@@ -2,17 +2,19 @@ import { mapOrder } from './arenaMap';
 import { isZombieMode, modeOrder } from './arenaModes';
 import type { GameMode, GameState, MapId } from './arenaTypes';
 import { achievementRu, achievementTranslations, achievements, type Achievement, type AchievementId } from './achievementCatalog';
-import type { BotDifficulty, Language } from './gameSettings';
+import { languageOptions, type BotDifficulty, type Language } from './gameSettings';
 export { achievements, type Achievement, type AchievementId } from './achievementCatalog';
 
 export type AchievementContext = {
   redBot: boolean;
   botDifficulty: BotDifficulty;
+  language: Language;
 };
 
 export type AchievementProgress = {
   wonModes: GameMode[];
   playedMaps: MapId[];
+  playedLanguages: Language[];
 };
 
 const storageKey = 'duel-arena-achievements';
@@ -52,7 +54,7 @@ export function findNewAchievements(
   unlocked: AchievementId[],
   context: AchievementContext,
 ): AchievementId[] {
-  const progress = updateProgress(game, loadAchievementProgress());
+  const progress = updateProgress(game, loadAchievementProgress(), context.language);
   saveAchievementProgress(progress);
 
   const next = achievements
@@ -107,6 +109,7 @@ function isUnlocked(
   if (id === 'easyBotOops') return context.redBot && context.botDifficulty === 'easy' && game.winner === 'red';
   if (id === 'painSpeedrun') return context.redBot && context.botDifficulty === 'thermonuclear' && game.players.blue.score >= 1;
   if (id === 'modeMaster') return modeOrder.every((mode) => progress.wonModes.includes(mode));
+  if (id === 'languageTour') return languageOptions.every((language) => progress.playedLanguages.includes(language));
   if (id === 'collector') return false;
   return mapOrder.filter((mapId) => mapId !== 'custom').every((mapId) => progress.playedMaps.includes(mapId));
 }
@@ -126,7 +129,7 @@ function didBlueSurviveSilently(game: GameState): boolean {
     && game.players.blue.shotsFired === 0;
 }
 
-function updateProgress(game: GameState, progress: AchievementProgress): AchievementProgress {
+function updateProgress(game: GameState, progress: AchievementProgress, language: Language): AchievementProgress {
   if (game.status !== 'finished') {
     return progress;
   }
@@ -134,6 +137,7 @@ function updateProgress(game: GameState, progress: AchievementProgress): Achieve
   return {
     wonModes: isBlueWin(game) ? addUnique(progress.wonModes, game.mode) : progress.wonModes,
     playedMaps: game.mapId === 'custom' ? progress.playedMaps : addUnique(progress.playedMaps, game.mapId),
+    playedLanguages: addUnique(progress.playedLanguages, language),
   };
 }
 
@@ -144,13 +148,18 @@ function isBlueWin(game: GameState): boolean {
 export function loadAchievementProgress(): AchievementProgress {
   const saved = window.localStorage.getItem(progressKey);
   if (!saved) {
-    return { wonModes: [], playedMaps: [] };
+    return emptyAchievementProgress();
   }
 
   try {
-    return JSON.parse(saved) as AchievementProgress;
+    const parsed = JSON.parse(saved) as Partial<AchievementProgress>;
+    return {
+      wonModes: parsed.wonModes ?? [],
+      playedMaps: parsed.playedMaps ?? [],
+      playedLanguages: parsed.playedLanguages ?? [],
+    };
   } catch {
-    return { wonModes: [], playedMaps: [] };
+    return emptyAchievementProgress();
   }
 }
 
@@ -160,4 +169,8 @@ export function saveAchievementProgress(progress: AchievementProgress) {
 
 function addUnique<T>(items: T[], item: T): T[] {
   return items.includes(item) ? items : [...items, item];
+}
+
+function emptyAchievementProgress(): AchievementProgress {
+  return { wonModes: [], playedMaps: [], playedLanguages: [] };
 }

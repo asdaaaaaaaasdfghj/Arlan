@@ -1,5 +1,5 @@
 export type AchievementId = 'firstScore' | 'duelWin' | 'survivor' | 'builder' | 'grenadier' | 'zombieHunter'
-  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'kickedOnce' | 'qSpam' | 'adminServer' | 'updateConfusion' | 'guestSkinCopy' | 'modeMaster' | 'mapTour' | 'collector';
+  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'kickedOnce' | 'qSpam' | 'adminServer' | 'updateConfusion' | 'guestSkinCopy' | 'modeMaster' | 'mapTour' | 'languageTour' | 'collector';
 
 export type Achievement = {
   id: AchievementId;
@@ -93,6 +93,7 @@ export const achievements: Achievement[] = [
   { id: 'guestSkinCopy', title: 'Пародия', description: 'Имейте такойже скин и цвет как у гостей' },
   { id: 'modeMaster', title: 'All-Round Champion', description: 'Win in every game mode.' },
   { id: 'mapTour', title: 'Tourist With A Gun', description: 'Play every built-in map.' },
+  { id: 'languageTour', title: 'I Understand You', description: 'Play in every available language.' },
   { id: 'collector', title: 'Collector', description: 'Unlock every achievement.' },
 ];
 
@@ -115,5 +116,6 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   guestSkinCopy: ['Пародия', 'Имейте такойже скин и цвет как у гостей'],
   modeMaster: ['Чемпион всех режимов', 'Победи во всех режимах игры.'],
   mapTour: ['Турист с пушкой', 'Сыграй на всех обычных картах.'],
+  languageTour: ['я тебя понимаю', 'сыграйте на всех доступных языках'],
   collector: ['колекционер', 'получиь все очивки'],
 };

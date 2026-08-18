@@ -23,7 +23,7 @@ export function useAchievementToasts(game: GameState, enabled: boolean, context:
     saveUnlockedAchievements(unlockedRef.current);
     if (enabled) {
       setLeaving(false);
-      setToast(next[0]);
+      setToast(next.includes('collector') ? 'collector' : next[0]);
     }
   }, [context, enabled, game]);
 

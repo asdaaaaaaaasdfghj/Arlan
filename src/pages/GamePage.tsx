@@ -51,7 +51,8 @@ export function GamePage() {
   const achievementContext = useMemo(() => ({
     redBot: settings.redBot,
     botDifficulty: settings.botDifficulty,
-  }), [settings.botDifficulty, settings.redBot]);
+    language,
+  }), [language, settings.botDifficulty, settings.redBot]);
   const achievementToast = useAchievementToasts(game, settings.achievementToasts, achievementContext);
   useGameMusic(musicOn);
   useCheatCode(() => setWeapon('blue', 'termos'));
