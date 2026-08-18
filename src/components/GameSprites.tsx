@@ -28,6 +28,7 @@ export function PlayerSprite({ player, profile, showName = true, useProfileColor
   const classes = [
     'fighter',
     `fighter-${player.id}`,
+    `fighter-weapon-${player.weapon}`,
     `fighter-skin-${profile?.skin ?? 'none'}`,
     player.hp <= 0 ? 'fighter-dead' : 'fighter-alive',
     player.cooldown > 0 ? 'fighter-shooting' : '',

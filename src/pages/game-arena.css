@@ -928,10 +928,11 @@
 .bullet-railgun { border-radius: 3px; }
 .bullet-shotgun { opacity: 0.88; }
 .bullet-flamethrower {
+  transform: translate(-50%, -50%) scaleX(1.35);
   border-radius: 52% 48% 58% 42%;
   background: radial-gradient(circle at 35% 35%, #fff7ad 0 18%, #ff922b 38%, #e03131 72%);
-  box-shadow: 0 0 12px rgba(255, 146, 43, 0.9), 0 0 0 3px rgba(255, 224, 102, 0.24);
-  opacity: 0.88;
+  box-shadow: 0 0 8px rgba(255, 146, 43, 0.76), 0 0 0 2px rgba(255, 224, 102, 0.16);
+  opacity: 0.82;
 }
 
 .arena-mode-swordDuel .fighter-cannon {

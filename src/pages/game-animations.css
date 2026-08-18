@@ -14,6 +14,10 @@
   animation: tank-cannon-kick 0.18s ease-out;
 }
 
+.fighter-weapon-flamethrower.fighter-shooting .fighter-cannon {
+  animation: none;
+}
+
 .arena-mode-swordDuel .fighter-shooting .fighter-cannon {
   animation: sword-slash 0.18s ease-out;
 }

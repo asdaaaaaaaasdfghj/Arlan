@@ -51,7 +51,7 @@ export const weaponConfigs: Record<WeaponId, WeaponConfig> = {
     speed: 38,
     bullets: 4,
     spread: 0.13,
-    size: 18,
+    size: 11,
   },
   custom4: {
     id: 'custom4',
