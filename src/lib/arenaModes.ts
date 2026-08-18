@@ -32,6 +32,7 @@ export const modeConfigs: Record<GameMode, ModeConfig> = {
     ...createDuel('miniGames', 'Mini Games', 'Ten mini-games, thirty seconds each. Adapt fast.', 300, 0),
     grenadeCooldown: 1.35,
   },
+  mutationStorm: createDuel('mutationStorm', 'Mutations', 'Every 15 seconds a new mutation stacks onto the round.', 105, 6),
   spleef: createDuel('spleef', 'Spleef', 'Shoot the floor under the enemy and make them fall.', 75, 5),
   tileRun: createDuel('tileRun', 'Run', 'Tiles break after you step on them. Keep moving.', 65, 5),
   hideSeek: createDuel('hideSeek', 'Hide and Seek', 'Use objects and cover to hide, ambush, and survive.', 80, 5, 100, 'shotgun'),
@@ -82,6 +83,7 @@ export const modeOrder: GameMode[] = [
   'captureFlag',
   'paintBattle',
   'miniGames',
+  'mutationStorm',
   'spleef',
   'tileRun',
   'hideSeek',
@@ -125,7 +127,7 @@ export const modeGroups: ModeGroup[] = [
   {
     id: 'arcade',
     label: { en: 'Arcade', ru: 'Аркады', es: 'Arcade', de: 'Arcade', fr: 'Arcade', kk: 'Аркада' },
-    modes: ['paintBattle', 'miniGames', 'spleef', 'tileRun', 'hideSeek', 'luckyBlocks', 'swapRift', 'timeDuel'],
+    modes: ['paintBattle', 'miniGames', 'mutationStorm', 'spleef', 'tileRun', 'hideSeek', 'luckyBlocks', 'swapRift', 'timeDuel'],
   },
   {
     id: 'other',
@@ -147,6 +149,7 @@ export const modeGroups: ModeGroup[] = [
       'lavaSurvival',
       'paintBattle',
       'miniGames',
+      'mutationStorm',
       'spleef',
       'tileRun',
       'hideSeek',

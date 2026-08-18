@@ -14,7 +14,7 @@ import { tickLuckyBlocks } from './arenaLuckyBlocks';
 import { applySwordAttacks } from './arenaMelee';
 import { getMiniGameRule, isMiniGamesMode, lockMiniGameWeapons } from './arenaMiniGames';
 import { moveBarricadesFromMovingBlocks, pushPlayersFromMovingBlocks, tickMovingBlocks } from './arenaMovingBlocks';
-import { applyMutationToBullets, applyMutationToCooldowns, applyMutationToMechanics } from './arenaMutations';
+import { applyMutationToBullets, applyMutationToCooldowns, applyMutationToMechanics, tickStackedMutations } from './arenaMutations';
 import { isFlameMode, isSwordMode, modeConfigs } from './arenaModes';
 import { tickPaintBattle } from './arenaPaint';
 import { teleportPlayers } from './arenaPortals';
@@ -41,6 +41,9 @@ export function startGame(state: GameState): GameState {
 export function tickGame(state: GameState, input: GameInput, delta: number, secretZombies = false): GameState {
   if (state.status !== 'playing') return state;
   const elapsedTime = state.elapsedTime + delta;
+  const existingMutations = state.activeMutations ?? [];
+  const mutationState = tickStackedMutations(state.mode, elapsedTime, state.mode === 'mutationStorm' ? existingMutations : [state.mutation].filter((mutation) => mutation.id !== 'none'));
+  const activeMutations = state.mode === 'mutationStorm' ? mutationState.activeMutations : mutationState.activeMutations.slice(0, 1);
   const luckyBlocks = tickLuckyBlocks(state.mode, state.mapBoards, state.elapsedTime, elapsedTime, state.nextBarricadeId);
   const movingBlocks = tickMovingBlocks(state.movingBlocks, elapsedTime);
   const pushedBarricades = moveBarricadesFromMovingBlocks(state.barricades, movingBlocks, state.mapId);
@@ -57,7 +60,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     }
     : { water: [], ice: [], conveyors: [], magnets: [], swapRifts: getModeSwapRifts(state.mode, state.mapId), vehicles: [] };
   const activeTnts = tnts.filter((tnt) => tnt.active);
-  const mutatedMechanics = applyMutationToMechanics(mechanics, state.mutation);
+  const mutatedMechanics = applyMutationToMechanics(mechanics, activeMutations);
   const blockers = [...pushedBarricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
   const movedPlayers = updatePlayers(state.players, input, delta, state.mapId, blockers, mutatedMechanics);
   const players = tickSwapRifts(teleportPlayers(pushPlayersFromMovingBlocks(movedPlayers, movingBlocks), state.portals), mechanics.swapRifts);
@@ -77,8 +80,8 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     ? { players: throwing.players, bullets: [] }
     : spawnBullets(throwing.players, combatInput, state.nextBulletId, state.mapId);
   const mutatedShooting = {
-    players: applyMutationToCooldowns(shooting.players, state.mutation),
-    bullets: applyMutationToBullets(shooting.bullets, state.mutation),
+    players: applyMutationToCooldowns(shooting.players, activeMutations),
+    bullets: applyMutationToBullets(shooting.bullets, activeMutations),
   };
   const allyBlockers = [...building.barricades, ...pushedMapBoards, ...movingBlocks, ...(state.lasers ?? []), ...activeTnts, ...state.ricochetBlocks, ...state.allyCheckpoints];
   const allyState = tickAllies(
@@ -217,6 +220,8 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     floorHoles: floorState.floorHoles,
     timeEchoes,
     farArenaActive,
+    mutation: mutationState.mutation,
+    activeMutations,
     bullets: fuseState.bullets,
     grenades: grenadeState.grenades,
     powerUps: powerUps.powerUps,

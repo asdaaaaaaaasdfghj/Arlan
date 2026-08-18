@@ -8,7 +8,7 @@ import { getMiniGameIndex, getMiniGameRule, isMiniGamesMode, miniGameDuration } 
 import { getModeSwapRifts } from '../lib/arenaSwapRifts';
 import { isFarArenaOpen } from '../lib/arenaTimeDuel';
 import { poisonSeconds } from '../lib/arenaTraps';
-import { getMutationDescription, getMutationName, getMutationScale } from '../lib/arenaMutations';
+import { getMutationCountText, getMutationDescription, getMutationName, getMutationScale } from '../lib/arenaMutations';
 import { loadCustomCodeBlocks, loadCustomConveyors, loadCustomDecorations, loadCustomMagnets, loadCustomSolidDecorations, loadCustomSwapRifts, loadCustomTerrain, loadCustomTheme, loadCustomVehicles } from '../lib/customMap';
 import type { Language } from '../lib/gameSettings';
 import { modeDescription, modeName, t } from '../lib/i18n';
@@ -92,7 +92,8 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   const mapObstacles = getMapObstacles(game.mapId);
   const runDecorations = game.mode === 'tileRun' ? getRunFakeDecorations(bounds) : [];
   const farArenaOpen = isFarArenaOpen(game, bounds);
-  const fighterScale = getMutationScale(game.mutation);
+  const activeMutations = game.activeMutations ?? [];
+  const fighterScale = getMutationScale(activeMutations.length > 0 ? activeMutations : game.mutation);
   const laserBlockers = [
     ...mapObstacles,
     ...game.mapBoards,
@@ -156,7 +157,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
       )}
       {farArenaOpen && <FarArenaBanner language={language} />}
       {isMiniGamesMode(game) && <MiniGameBanner game={game} />}
-      {game.mutation.id !== 'none' && game.elapsedTime < 4.5 && <MutationBanner game={game} language={language} />}
+      {shouldShowMutationBanner(game) && <MutationBanner game={game} language={language} />}
       {game.status !== 'playing' && <GameOverlay game={game} language={language} />}
     </section>
   );
@@ -167,9 +168,15 @@ function MutationBanner({ game, language }: { game: GameState; language: Languag
     <div className={`mutation-banner mutation-banner-${game.mutation.id}`}>
       <span>{getMutationIcon(game.mutation.id)}</span>
       <strong>{getMutationName(game.mutation, language)}</strong>
-      <small>{getMutationDescription(game.mutation, language)}</small>
+      <small>{getMutationDescription(game.mutation, language)} {getMutationCountText(game.activeMutations ?? [], language)}</small>
     </div>
   );
+}
+
+function shouldShowMutationBanner(game: GameState): boolean {
+  if (game.mutation.id === 'none') return false;
+  if (game.mode === 'mutationStorm') return game.elapsedTime % 15 < 4.5;
+  return game.elapsedTime < 4.5;
 }
 
 function getMutationIcon(id: GameState['mutation']['id']): string {

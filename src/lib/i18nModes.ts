@@ -77,6 +77,14 @@ const modes: Record<GameMode, ModeText> = {
     ['Mini-jeux', 'Dix mini-jeux de 30 secondes. Adapte-toi vite.'],
     ['Mini Games', '30 секундтық 10 мини-ойын. Ережелер тез өзгереді.'],
   ),
+  mutationStorm: makeMode(
+    ['Mutations', 'Every 15 seconds a new mutation stacks onto the round.'],
+    ['Мутации', 'Каждые 15 секунд появляется новая мутация и складывается с прошлыми.'],
+    ['Mutaciones', 'Cada 15 segundos se acumula una nueva mutación.'],
+    ['Mutationen', 'Alle 15 Sekunden stapelt sich eine neue Mutation.'],
+    ['Mutations', 'Toutes les 15 secondes, une nouvelle mutation s empile.'],
+    ['Мутациялар', 'Әр 15 секунд сайын жаңа мутация қосылады.'],
+  ),
   spleef: makeMode(
     ['Spleef', 'Shoot the floor under the enemy and make them fall.'],
     ['Сплиф', 'Разрушай плиты под врагом и сбрасывай его вниз.'],
