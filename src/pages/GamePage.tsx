@@ -199,7 +199,8 @@ function getInitialChoice(defaultMode: GameMode, defaultMap: MapId): { mode: Gam
 
 function createGameWithBots(mode: GameMode, mapId: MapId, settings: ReturnType<typeof loadGameSettings>) {
   const baseGame = createInitialGame(mode, mapId);
-  const mutatedGame = { ...baseGame, mutation: createRoundMutation(settings.roundMutations, baseGame.mode, baseGame.mapId) };
+  const mutation = createRoundMutation(settings.roundMutations, baseGame.mode, baseGame.mapId);
+  const mutatedGame = { ...baseGame, mutation, activeMutations: mutation.id === 'none' ? [] : [mutation] };
   return addTeamBots(mutatedGame, {
     blue: settings.blueTeamBots,
     red: settings.redTeamBots,
