@@ -95,8 +95,8 @@ function getSoundForPlayer(game: GameState, id: PlayerId): GameSound {
 function playSound(kind: GameSound, audioPoolsRef: MutableRefObject<Record<GameSound, HTMLAudioElement[]>>) {
   const sound = getReadyAudio(audioPoolsRef.current[kind], getSoundUrl(kind));
   sound.currentTime = 0;
-  sound.playbackRate = getPlaybackRate(kind);
-  sound.volume = getVolume(kind) * randomBetween(0.92, 1.06);
+  sound.playbackRate = 1;
+  sound.volume = getVolume(kind);
   void sound.play().catch(() => undefined);
 }
 
@@ -114,17 +114,6 @@ function getVolume(kind: GameSound): number {
   if (kind === 'lava') return 0.5;
   if (kind === 'teleport') return 0.46;
   return 0.45;
-}
-
-function getPlaybackRate(kind: GameSound): number {
-  if (kind === 'shot') return randomBetween(0.92, 1.1);
-  if (kind === 'flame') return randomBetween(0.96, 1.04);
-  if (kind === 'sword') return randomBetween(0.94, 1.08);
-  return randomBetween(0.98, 1.03);
-}
-
-function randomBetween(min: number, max: number): number {
-  return min + Math.random() * (max - min);
 }
 
 function getReadyAudio(pool: HTMLAudioElement[], url: string): HTMLAudioElement {
