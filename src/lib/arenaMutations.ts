@@ -1,7 +1,7 @@
 import type { Bullet, GameMode, MapId, Player, PlayerId, RoundMutation, RoundMutationId } from './arenaTypes';
 import type { PlayerMechanics } from './arenaPlayers';
 
-const mutationIds: Exclude<RoundMutationId, 'none'>[] = ['speedRush', 'slipperyArena', 'bigBullets', 'rapidFire', 'tinyPlayers'];
+const mutationIds: Exclude<RoundMutationId, 'none' | 'slipperyArena'>[] = ['speedRush', 'bigBullets', 'rapidFire', 'tinyPlayers'];
 
 export function createRoundMutation(enabled: boolean, mode: GameMode, mapId: MapId): RoundMutation {
   if (!enabled || mode === 'miniGames') return { id: 'none', seed: 0 };
@@ -11,7 +11,7 @@ export function createRoundMutation(enabled: boolean, mode: GameMode, mapId: Map
 
 export function applyMutationToMechanics(mechanics: PlayerMechanics, mutation: RoundMutation): PlayerMechanics {
   if (mutation.id === 'speedRush') return { ...mechanics, speedMultiplier: 1.28 };
-  if (mutation.id === 'slipperyArena') return { ...mechanics, forceIce: true, speedMultiplier: 0.94 };
+  if (mutation.id === 'slipperyArena') return { ...mechanics, speedMultiplier: 0.94 };
   if (mutation.id === 'tinyPlayers') return { ...mechanics, speedMultiplier: 1.16 };
   return mechanics;
 }
