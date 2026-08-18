@@ -92,20 +92,26 @@ export function HomePage() {
       buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
       if (buffer.endsWith(creditsCode)) {
         setSecretCreditsOpen(true);
+        recordMainMenuSecretCode(creditsCode, () => setAchievementToast('outOfWaterSecret'));
       }
       if (buffer.endsWith(waterCode)) {
         setOutTheWaterOpen(true);
+        recordMainMenuSecretCode(waterCode, () => setAchievementToast('outOfWaterSecret'));
       }
       const secretLink = secretLinks.find(([code]) => buffer.endsWith(code));
       if (secretLink) {
+        const secretCode = normalizeMainMenuSecretCode(secretLink[0]);
         setSecretLinkPulse(secretLink[0]);
+        recordMainMenuSecretCode(secretCode, () => setAchievementToast('outOfWaterSecret'));
         window.open(secretLink[1], '_blank', 'noopener,noreferrer');
       }
       if (buffer.endsWith(openUpCode)) {
         document.documentElement.dataset.openUp = 'true';
+        recordMainMenuSecretCode(openUpCode, () => setAchievementToast('outOfWaterSecret'));
       }
       if (buffer.endsWith(jumpscareCode)) {
         setJumpscareOpen(true);
+        recordMainMenuSecretCode(jumpscareCode, () => setAchievementToast('outOfWaterSecret'));
       }
     };
 
@@ -278,4 +284,50 @@ function ActionLink({ className = 'secondary-link', href, icon, children }: {
       <span>{children}</span>
     </Link>
   );
+}
+
+const mainMenuSecretProgressKey = 'duel-arena-main-menu-secret-codes';
+const requiredMainMenuSecretCodes = [
+  'ABSOLUTEZERO',
+  'OUTTHEWATER',
+  'STAR',
+  'GMFQS',
+  'YESH',
+  'HARD',
+  'POWER',
+  'WORDPRESS',
+  'LOSTMEDIA',
+  'WL1',
+  'LOOOL',
+  'CHINA',
+  'TMYV',
+  'SIODUIFIHUERIGEILFHUILHUIFREI',
+  'HIVERITI',
+  'NETBLYADDISCKORD',
+  'OPENUP',
+  'FNAF',
+] as const;
+
+function recordMainMenuSecretCode(code: string, onUnlock: () => void) {
+  const saved = loadMainMenuSecretCodes();
+  const next = [...new Set([...saved, code])];
+  window.localStorage.setItem(mainMenuSecretProgressKey, JSON.stringify(next));
+  if (requiredMainMenuSecretCodes.every((requiredCode) => next.includes(requiredCode)) && unlockAchievement('outOfWaterSecret')) {
+    onUnlock();
+  }
+}
+
+function loadMainMenuSecretCodes(): string[] {
+  try {
+    const saved = window.localStorage.getItem(mainMenuSecretProgressKey);
+    return saved ? JSON.parse(saved) as string[] : [];
+  } catch {
+    return [];
+  }
+}
+
+function normalizeMainMenuSecretCode(code: string): string {
+  if (code === 'LOST MEDIA') return 'LOSTMEDIA';
+  if (code === 'TMYV金钱有限公司') return 'TMYV';
+  return code;
 }
