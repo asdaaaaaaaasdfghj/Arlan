@@ -1,7 +1,7 @@
 import type { Bullet, GameMode, MapId, Player, PlayerId, RoundMutation, RoundMutationId } from './arenaTypes';
 import type { PlayerMechanics } from './arenaPlayers';
 
-const mutationIds: Exclude<RoundMutationId, 'none' | 'slipperyArena'>[] = ['speedRush', 'bigBullets', 'rapidFire', 'tinyPlayers'];
+const mutationIds: Exclude<RoundMutationId, 'none' | 'slipperyArena' | 'bigBullets'>[] = ['speedRush', 'rapidFire', 'tinyPlayers'];
 
 export function createRoundMutation(enabled: boolean, mode: GameMode, mapId: MapId): RoundMutation {
   if (!enabled || mode === 'miniGames') return { id: 'none', seed: 0 };
@@ -18,7 +18,7 @@ export function applyMutationToMechanics(mechanics: PlayerMechanics, mutation: R
 
 export function applyMutationToBullets(bullets: Bullet[], mutation: RoundMutation): Bullet[] {
   if (mutation.id !== 'bigBullets') return bullets;
-  return bullets.map((bullet) => ({ ...bullet, size: bullet.size * 1.85, damage: Math.round(bullet.damage * 1.12) }));
+  return bullets;
 }
 
 export function applyMutationToCooldowns(players: Record<PlayerId, Player>, mutation: RoundMutation): Record<PlayerId, Player> {
