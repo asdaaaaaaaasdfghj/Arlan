@@ -32,7 +32,7 @@ export function loadUnlockedAchievements(): AchievementId[] {
 }
 
 export function saveUnlockedAchievements(ids: AchievementId[]) {
-  window.localStorage.setItem(storageKey, JSON.stringify(ids));
+  window.localStorage.setItem(storageKey, JSON.stringify(withCollector(ids)));
 }
 
 export function clearUnlockedAchievements() {
@@ -55,9 +55,11 @@ export function findNewAchievements(
   const progress = updateProgress(game, loadAchievementProgress());
   saveAchievementProgress(progress);
 
-  return achievements
+  const next = achievements
+    .filter((achievement) => achievement.id !== 'collector')
     .filter((achievement) => !unlocked.includes(achievement.id) && isUnlocked(achievement.id, game, context, progress))
     .map((achievement) => achievement.id);
+  return withCollector([...unlocked, ...next]).filter((id) => !unlocked.includes(id));
 }
 
 export function getAchievement(id: AchievementId): Achievement {
@@ -105,7 +107,16 @@ function isUnlocked(
   if (id === 'easyBotOops') return context.redBot && context.botDifficulty === 'easy' && game.winner === 'red';
   if (id === 'painSpeedrun') return context.redBot && context.botDifficulty === 'thermonuclear' && game.players.blue.score >= 1;
   if (id === 'modeMaster') return modeOrder.every((mode) => progress.wonModes.includes(mode));
+  if (id === 'collector') return false;
   return mapOrder.filter((mapId) => mapId !== 'custom').every((mapId) => progress.playedMaps.includes(mapId));
+}
+
+function withCollector(ids: AchievementId[]): AchievementId[] {
+  const uniqueIds = [...new Set(ids)];
+  const achievementIds = achievements.map((achievement) => achievement.id);
+  const normalIds = achievementIds.filter((id) => id !== 'collector');
+  const hasEveryNormal = normalIds.every((id) => uniqueIds.includes(id));
+  return hasEveryNormal && !uniqueIds.includes('collector') ? [...uniqueIds, 'collector'] : uniqueIds;
 }
 
 function didBlueSurviveSilently(game: GameState): boolean {

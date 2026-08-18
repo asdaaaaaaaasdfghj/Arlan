@@ -1,5 +1,5 @@
 export type AchievementId = 'firstScore' | 'duelWin' | 'survivor' | 'builder' | 'grenadier' | 'zombieHunter'
-  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'qSpam' | 'adminServer' | 'updateConfusion' | 'guestSkinCopy' | 'modeMaster' | 'mapTour';
+  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'qSpam' | 'adminServer' | 'updateConfusion' | 'guestSkinCopy' | 'modeMaster' | 'mapTour' | 'collector';
 
 export type Achievement = {
   id: AchievementId;
@@ -22,6 +22,7 @@ export const achievementTranslations: Partial<Record<string, Partial<Record<Achi
     disappointment3: ['Decepción III', 'Intenta entrar al servidor oficial como invitado.'],
     modeMaster: ['Campeón total', 'Gana en todos los modos de juego.'],
     mapTour: ['Turista armado', 'Juega en todos los mapas normales.'],
+    collector: ['Coleccionista', 'Desbloquea todos los logros.'],
   },
   de: {
     firstScore: ['Erstes Blut', 'Erziele deinen ersten Punkt.'],
@@ -37,6 +38,7 @@ export const achievementTranslations: Partial<Record<string, Partial<Record<Achi
     disappointment3: ['Enttäuschung III', 'Versuche als Gast dem offiziellen Server beizutreten.'],
     modeMaster: ['Allround-Champion', 'Gewinne in jedem Spielmodus.'],
     mapTour: ['Tourist mit Waffe', 'Spiele jede normale Karte.'],
+    collector: ['Sammler', 'Schalte alle Erfolge frei.'],
   },
   fr: {
     firstScore: ['Premier sang', 'Marque ton premier point.'],
@@ -52,6 +54,7 @@ export const achievementTranslations: Partial<Record<string, Partial<Record<Achi
     disappointment3: ['Déception III', 'Essaie de rejoindre le serveur officiel en invité.'],
     modeMaster: ['Champion complet', 'Gagne dans tous les modes.'],
     mapTour: ['Touriste armé', 'Joue toutes les cartes normales.'],
+    collector: ['Collectionneur', 'Débloque tous les succès.'],
   },
   kk: {
     firstScore: ['Алғашқы қан', 'Бірінші ұпайыңды ал.'],
@@ -67,6 +70,7 @@ export const achievementTranslations: Partial<Record<string, Partial<Record<Achi
     disappointment3: ['Көңіл қалу III', 'Қонақ болып ресми серверге кіріп көр.'],
     modeMaster: ['Барлық режим чемпионы', 'Барлық ойын режимінде жең.'],
     mapTour: ['Мылтықты турист', 'Барлық кәдімгі карталарда ойна.'],
+    collector: ['Коллекционер', 'Барлық жетістіктерді аш.'],
   },
 };
 
@@ -88,6 +92,7 @@ export const achievements: Achievement[] = [
   { id: 'guestSkinCopy', title: 'Пародия', description: 'Имейте такойже скин и цвет как у гостей' },
   { id: 'modeMaster', title: 'All-Round Champion', description: 'Win in every game mode.' },
   { id: 'mapTour', title: 'Tourist With A Gun', description: 'Play every built-in map.' },
+  { id: 'collector', title: 'Collector', description: 'Unlock every achievement.' },
 ];
 
 export const achievementRu: Record<AchievementId, [string, string]> = {
@@ -108,4 +113,5 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   guestSkinCopy: ['Пародия', 'Имейте такойже скин и цвет как у гостей'],
   modeMaster: ['Чемпион всех режимов', 'Победи во всех режимах игры.'],
   mapTour: ['Турист с пушкой', 'Сыграй на всех обычных картах.'],
+  collector: ['колекционер', 'получиь все очивки'],
 };
