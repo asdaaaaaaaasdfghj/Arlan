@@ -489,6 +489,34 @@
   background: var(--fighter-color);
 }
 
+.fighter-tank-body {
+  width: 50px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.fighter-tank-body::before,
+.fighter-tank-body::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  width: 8px;
+  border: 2px solid rgba(21, 23, 25, 0.72);
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(0deg, rgba(21, 23, 25, 0.45) 0 3px, transparent 3px 7px),
+    rgba(255, 255, 255, 0.18);
+}
+
+.fighter-tank-body::before {
+  left: 4px;
+}
+
+.fighter-tank-body::after {
+  right: 4px;
+}
+
 .fighter-name {
   position: absolute;
   left: 50%;
@@ -545,6 +573,7 @@
 
 .fighter-cannon {
   position: absolute;
+  z-index: 2;
   left: 50%;
   top: 50%;
   width: 25px;
@@ -557,9 +586,15 @@
 
 .fighter-core {
   position: absolute;
+  z-index: 3;
   inset: 11px;
   border-radius: 50%;
   background: #ffffff;
+}
+
+.fighter-tank-body .fighter-core {
+  inset: 8px 15px;
+  border: 2px solid rgba(21, 23, 25, 0.35);
 }
 
 .fighter-core::before {

@@ -37,9 +37,10 @@ type GameBoardProps = {
   playerEmotes?: Partial<Record<keyof GameState['players'], string>>;
   showPlayerNames?: boolean;
   useProfileColors?: boolean;
+  tankPlayers?: boolean;
 };
 
-export function GameBoard({ game, language, cameraMode = 'follow', playerProfiles, playerEmotes, showPlayerNames = true, useProfileColors = true }: GameBoardProps) {
+export function GameBoard({ game, language, cameraMode = 'follow', playerProfiles, playerEmotes, showPlayerNames = true, useProfileColors = true, tankPlayers = false }: GameBoardProps) {
   const bounds = getArenaBounds(game.mapId);
   const cameras = cameraMode === 'overview'
     ? [createCamera('overview', bounds.width / 2, bounds.height / 2, getOverviewZoom(bounds), null, null)]
@@ -57,6 +58,7 @@ export function GameBoard({ game, language, cameraMode = 'follow', playerProfile
           playerEmotes={playerEmotes}
           showPlayerNames={showPlayerNames}
           useProfileColors={useProfileColors}
+          tankPlayers={tankPlayers}
           key={camera.id}
         />
       ))}
@@ -64,7 +66,7 @@ export function GameBoard({ game, language, cameraMode = 'follow', playerProfile
   );
 }
 
-function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmotes, showPlayerNames, useProfileColors }: {
+function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmotes, showPlayerNames, useProfileColors, tankPlayers }: {
   game: GameState;
   language: Language;
   bounds: ArenaBounds;
@@ -73,6 +75,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   playerEmotes?: GameBoardProps['playerEmotes'];
   showPlayerNames: boolean;
   useProfileColors: boolean;
+  tankPlayers: boolean;
 }) {
   const water = game.mapId === 'custom' ? loadCustomTerrain('water') : [];
   const ice = game.mapId === 'custom' ? loadCustomTerrain('ice') : [];
@@ -133,8 +136,8 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
         {game.allyCheckpoints.map((checkpoint) => <AllyCheckpointSprite checkpoint={checkpoint} key={checkpoint.id} />)}
         {game.mode === 'captureFlag' && Object.values(game.flags).map((flag) => <FlagSprite flag={flag} key={flag.owner} />)}
         {(game.timeEchoes ?? []).map((echo) => <TimeEchoSprite echo={echo} key={echo.id} />)}
-        <PlayerSprite player={game.players.blue} profile={playerProfiles?.blue} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.blue, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} scale={fighterScale} />
-        <PlayerSprite player={game.players.red} profile={playerProfiles?.red} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.red, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} scale={fighterScale} />
+        <PlayerSprite player={game.players.blue} profile={playerProfiles?.blue} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.blue, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} scale={fighterScale} tankBody={tankPlayers} />
+        <PlayerSprite player={game.players.red} profile={playerProfiles?.red} showName={showPlayerNames} useProfileColor={useProfileColors} hidden={isHiddenBehindCover(game.players.red, game, [...mapObstacles, ...game.mapBoards, ...decorations, ...solidDecorations])} scale={fighterScale} tankBody={tankPlayers} />
         {playerEmotes?.blue && <PlayerEmoteLabel player={game.players.blue} label={playerEmotes.blue} />}
         {playerEmotes?.red && <PlayerEmoteLabel player={game.players.red} label={playerEmotes.red} />}
         {game.allies.map((ally) => <AllySprite ally={ally} key={ally.id} />)}

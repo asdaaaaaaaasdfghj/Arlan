@@ -16,13 +16,14 @@ import {
 } from '../lib/arenaShooter';
 import type { PlayerProfile } from '../lib/playerProfile';
 
-export function PlayerSprite({ player, profile, showName = true, useProfileColor = true, hidden = false, scale = 1 }: {
+export function PlayerSprite({ player, profile, showName = true, useProfileColor = true, hidden = false, scale = 1, tankBody = false }: {
   player: Player;
   profile?: PlayerProfile;
   showName?: boolean;
   useProfileColor?: boolean;
   hidden?: boolean;
   scale?: number;
+  tankBody?: boolean;
 }) {
   const classes = [
     'fighter',
@@ -34,6 +35,7 @@ export function PlayerSprite({ player, profile, showName = true, useProfileColor
     player.shockTimer > 0 ? 'fighter-shocked' : '',
     player.acidTimer > 0 ? 'fighter-acid' : '',
     hidden ? 'fighter-hidden' : '',
+    tankBody ? 'fighter-tank-body' : '',
   ].filter(Boolean).join(' ');
   const style = {
     left: xPercent(player.x),

@@ -164,6 +164,7 @@ export function GamePage() {
         playerProfiles={{ blue: playerProfile }}
         showPlayerNames={false}
         useProfileColors={false}
+        tankPlayers={settings.tankPlayers}
       />
       <GameControls
         game={game}

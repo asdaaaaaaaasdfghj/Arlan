@@ -18,6 +18,7 @@ export type GameSettings = {
   achievementToasts: boolean;
   darkMode: boolean;
   lowSpecMode: boolean;
+  tankPlayers: boolean;
   music: boolean;
   redBot: boolean;
   blueTeamBots: number;
@@ -41,6 +42,7 @@ export const defaultSettings: GameSettings = {
   achievementToasts: true,
   darkMode: false,
   lowSpecMode: false,
+  tankPlayers: false,
   music: false,
   redBot: true,
   blueTeamBots: 0,

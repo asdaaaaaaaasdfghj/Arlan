@@ -1595,7 +1595,7 @@ export function OnlinePage() {
               </div>
             ) : (
               <>
-                <GameBoard game={game} language={language} playerProfiles={playerProfiles} playerEmotes={getFighterEmoteLabels(playerEmotes, roomPlayers)} />
+                <GameBoard game={game} language={language} playerProfiles={playerProfiles} playerEmotes={getFighterEmoteLabels(playerEmotes, roomPlayers)} tankPlayers={settings.tankPlayers} />
                 {isOfficialRoom && <OfficialSecretRoom active={isOfficialSecretActive(game, filterExtraPlayers(extraPlayers, roomPlayers))} />}
                 {getVisibleExtraPlayers(extraPlayers, roomPlayers).map((player) => (
                   <SandboxAvatar
