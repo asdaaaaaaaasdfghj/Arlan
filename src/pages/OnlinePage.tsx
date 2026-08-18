@@ -25,6 +25,7 @@ import {
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { loadGameSettings, type Language } from '../lib/gameSettings';
 import { useGameKeyboard } from '../lib/useGameKeyboard';
+import { useShotSound } from '../lib/useShotSound';
 import { mapName, modeName, t } from '../lib/i18n';
 import { modeGroups, modeOrder } from '../lib/arenaModes';
 import { getMapObstacles, mapNames, mapOrder } from '../lib/arenaMap';
@@ -455,6 +456,7 @@ export function OnlinePage() {
     onWeaponChange: setWeapon,
     controls: settings.controls,
   });
+  useShotSound(game);
 
   function createRoom() {
     if (isGuestAccount && serverMap === 'custom') {

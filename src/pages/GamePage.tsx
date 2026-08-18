@@ -21,6 +21,7 @@ import { loadGameSettings, saveGameSettings } from '../lib/gameSettings';
 import { useCheatCode } from '../lib/useCheatCode';
 import { useGameKeyboard } from '../lib/useGameKeyboard';
 import { useGameMusic } from '../lib/useGameMusic';
+import { useShotSound } from '../lib/useShotSound';
 import { mapOrder } from '../lib/arenaMap';
 import { withRedBotInput } from '../lib/arenaBot';
 import { chooseRedBotWeapon } from '../lib/arenaBotWeapon';
@@ -55,6 +56,7 @@ export function GamePage() {
   }), [language, settings.botDifficulty, settings.redBot]);
   const achievementToast = useAchievementToasts(game, settings.achievementToasts, achievementContext);
   useGameMusic(musicOn);
+  useShotSound(game);
   useCheatCode(() => setWeapon('blue', 'termos'));
 
   useEffect(() => {
