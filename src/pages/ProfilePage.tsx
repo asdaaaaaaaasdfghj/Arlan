@@ -116,6 +116,9 @@ export function ProfilePage() {
   }, [achievementToast]);
 
   async function signOut() {
+    if (unlockAchievement('signedOut')) {
+      setAchievementToast('signedOut');
+    }
     await supabase.auth.signOut();
     setUser(null);
   }

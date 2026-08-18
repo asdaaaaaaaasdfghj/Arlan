@@ -1,5 +1,5 @@
 export type AchievementId = 'firstScore' | 'duelWin' | 'survivor' | 'builder' | 'grenadier' | 'zombieHunter'
-  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'kickedOnce' | 'qSpam' | 'adminServer' | 'updateConfusion' | 'guestSkinCopy' | 'modeMaster' | 'mapTour' | 'languageTour' | 'collector';
+  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'kickedOnce' | 'signedOut' | 'qSpam' | 'adminServer' | 'updateConfusion' | 'guestSkinCopy' | 'modeMaster' | 'mapTour' | 'languageTour' | 'collector';
 
 export type Achievement = {
   id: AchievementId;
@@ -87,6 +87,7 @@ export const achievements: Achievement[] = [
   { id: 'painSpeedrun', title: 'Pain Speedrun', description: 'Score against the bot on Thermonuclear.' },
   { id: 'disappointment3', title: 'Disappointment III', description: 'Try to join the official server as a guest.' },
   { id: 'kickedOnce', title: 'Behind Bars', description: 'Get kicked at least once.' },
+  { id: 'signedOut', title: 'Why?', description: 'Sign out of your account.' },
   { id: 'qSpam', title: 'QQQQQQQQQQQ', description: 'QQQQQQQQQQQQQ' },
   { id: 'updateConfusion', title: 'это что такое', description: 'обновите игру' },
   { id: 'adminServer', title: 'да я админ', description: 'играйте на 1 сервере с создателем игры' },
@@ -110,6 +111,7 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   painSpeedrun: ['Спидран боли', 'Набери хотя бы 1 очко против термоядерного бота.'],
   disappointment3: ['Разочарование III', 'Попытайся зайти на официальный сервер за гостя.'],
   kickedOnce: ['сижу за решоткой в темнице сырой', 'будте кикнуты хотябы 1 раз'],
+  signedOut: ['зачем?', 'выйдите со своего акаунта'],
   qSpam: ['QQQQQQQQQQQ', 'QQQQQQQQQQQQQ'],
   updateConfusion: ['это что такое', 'обновите игру'],
   adminServer: ['да я админ', 'играйте на 1 сервере с создателем игры'],
