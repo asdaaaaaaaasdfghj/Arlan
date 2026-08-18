@@ -25,6 +25,34 @@ body { background: var(--bg); color: var(--ink); }
   transform-origin: center center;
 }
 
+:root[data-razver='true'] body {
+  min-height: 100vh;
+  overflow: auto;
+  background:
+    linear-gradient(90deg, rgba(21, 23, 25, 0.14) 1px, transparent 1px),
+    linear-gradient(rgba(21, 23, 25, 0.14) 1px, transparent 1px),
+    #313940;
+  background-size: 42px 42px;
+}
+
+:root[data-razver='true'] #root {
+  width: min(820px, calc(100vw - 48px));
+  height: min(560px, calc(100vh - 48px));
+  min-height: 0;
+  margin: 24px auto;
+  overflow: auto;
+  border: 4px solid #151719;
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.42),
+    0 24px 60px rgba(0, 0, 0, 0.42);
+}
+
+:root[data-open-up='true'][data-razver='true'] #root {
+  transform: rotate(180deg);
+}
+
 .container {
   max-width: 560px;
   margin: 0 auto;

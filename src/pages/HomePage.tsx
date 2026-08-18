@@ -66,6 +66,7 @@ export function HomePage() {
     const creditsCode = 'ABSOLUTEZERO';
     const waterCode = 'OUTTHEWATER';
     const openUpCode = 'OPENUP';
+    const razverCode = 'RAZVER';
     const jumpscareCode = 'FNAF';
     const secretLinks = [
       ['STAR', 'https://forum.esforces.com/threads/8-bit-legos.77442/?utm_source=chatgpt.com'],
@@ -86,7 +87,7 @@ export function HomePage() {
       ['NETBLYADDISCKORD', 'https://web.whatsapp.com'],
     ] as const;
     const linkCodeLength = Math.max(...secretLinks.map(([code]) => code.length));
-    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, linkCodeLength, openUpCode.length, jumpscareCode.length);
+    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, linkCodeLength, openUpCode.length, razverCode.length, jumpscareCode.length);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
       buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
@@ -108,6 +109,10 @@ export function HomePage() {
       if (buffer.endsWith(openUpCode)) {
         document.documentElement.dataset.openUp = 'true';
         recordMainMenuSecretCode(openUpCode, () => setAchievementToast('outOfWaterSecret'));
+      }
+      if (buffer.endsWith(razverCode)) {
+        document.documentElement.dataset.razver = 'true';
+        recordMainMenuSecretCode(razverCode, () => setAchievementToast('outOfWaterSecret'));
       }
       if (buffer.endsWith(jumpscareCode)) {
         setJumpscareOpen(true);
@@ -305,6 +310,7 @@ const requiredMainMenuSecretCodes = [
   'HIVERITI',
   'NETBLYADDISCKORD',
   'OPENUP',
+  'RAZVER',
   'FNAF',
 ] as const;
 
