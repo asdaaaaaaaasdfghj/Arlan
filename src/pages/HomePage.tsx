@@ -17,7 +17,7 @@ export function HomePage() {
   const language = settings.language;
   const [mode, setMode] = useState<GameMode>(settings.defaultMode);
   const [mapId, setMapId] = useState<MapId>(settings.defaultMap);
-  const [splash, setSplash] = useState(pickSplashText);
+  const [splash, setSplash] = useState(() => loadSecretSplash() ?? pickSplashText());
   const [achievementToast, setAchievementToast] = useState<AchievementId | null>(null);
   const [secretCreditsOpen, setSecretCreditsOpen] = useState(false);
   const [outTheWaterOpen, setOutTheWaterOpen] = useState(false);
@@ -91,8 +91,9 @@ export function HomePage() {
     const linkCodeLength = Math.max(...secretLinks.map(([code]) => code.length));
     const maxCodeLength = Math.max(creditsCode.length, waterCode.length, linkCodeLength, openUpCode.length, razverCode.length, jumpscareCode.length, splashCode.length);
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
-      buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
+      const key = getSecretCodeKey(event);
+      if (!key) return;
+      buffer = `${buffer}${key}`.slice(-maxCodeLength);
       if (buffer.endsWith(creditsCode)) {
         setSecretCreditsOpen(true);
         recordMainMenuSecretCode(creditsCode, () => setAchievementToast('outOfWaterSecret'));
@@ -121,7 +122,10 @@ export function HomePage() {
         recordMainMenuSecretCode(jumpscareCode, () => setAchievementToast('outOfWaterSecret'));
       }
       if (buffer.endsWith(splashCode)) {
-        setSplash(`code:${splashCode}`);
+        const nextSplash = `code:${splashCode}`;
+        setSplash(nextSplash);
+        saveSecretSplash(nextSplash);
+        setSecretLinkPulse(splashCode);
         recordMainMenuSecretCode(splashCode, () => setAchievementToast('outOfWaterSecret'));
       }
     };
@@ -298,6 +302,7 @@ function ActionLink({ className = 'secondary-link', href, icon, children }: {
 }
 
 const mainMenuSecretProgressKey = 'duel-arena-main-menu-secret-codes';
+const secretSplashKey = 'duel-arena-secret-splash';
 const requiredMainMenuSecretCodes = [
   'ABSOLUTEZERO',
   'OUTTHEWATER',
@@ -338,6 +343,30 @@ function loadMainMenuSecretCodes(): string[] {
   } catch {
     return [];
   }
+}
+
+function loadSecretSplash(): string | null {
+  return window.localStorage.getItem(secretSplashKey);
+}
+
+function saveSecretSplash(splash: string) {
+  window.localStorage.setItem(secretSplashKey, splash);
+}
+
+function getSecretCodeKey(event: KeyboardEvent): string | null {
+  if (event.ctrlKey || event.altKey || event.metaKey) {
+    return null;
+  }
+
+  if (/^Key[A-Z]$/.test(event.code)) {
+    return event.code.slice(3);
+  }
+
+  if (/^Digit[0-9]$/.test(event.code)) {
+    return event.code.slice(5);
+  }
+
+  return event.key.length === 1 ? event.key.toUpperCase() : null;
 }
 
 function normalizeMainMenuSecretCode(code: string): string {
