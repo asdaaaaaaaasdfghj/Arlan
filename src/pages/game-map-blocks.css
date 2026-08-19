@@ -442,6 +442,13 @@
     linear-gradient(0deg, rgba(255, 236, 179, 0.18), transparent 42% 58%, rgba(255, 236, 179, 0.18)),
     linear-gradient(135deg, #5c3b1e, #a86f2d 52%, #495057);
 }
+.tnt-block-yellow {
+  color: #151719;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+  background:
+    radial-gradient(circle, #ffffff 0 12%, transparent 14% 100%),
+    conic-gradient(from 0deg, #ffd43b, #f08c00, #fff3bf, #ffd43b);
+}
 
 .ricochet-block {
   position: absolute;

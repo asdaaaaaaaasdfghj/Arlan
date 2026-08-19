@@ -6,6 +6,9 @@ const tntRadius = 14;
 const chainRadius = 18;
 const fuseSeconds = 0.55;
 const redRespawnSeconds = 6;
+const bulletBurstCount = 14;
+const bulletBurstDamage = 13;
+const bulletBurstSize = 7;
 
 export type BlastPoint = { x: number; y: number; owner: PlayerId };
 
@@ -63,8 +66,9 @@ export function triggerTnts(
     }
     return false;
   });
+  const spawnedBullets = nextState.bullets.slice(state.bullets.length);
 
-  return triggerTntChain({ ...nextState, bullets }, blasts);
+  return triggerTntChain({ ...nextState, bullets: [...bullets, ...spawnedBullets] }, blasts);
 }
 
 export function explodeReadyTnts(
@@ -114,6 +118,7 @@ function explodeTnt(state: TntState, tnt: TntBlock, owner: PlayerId, mode: GameM
     zombies: zombieState.zombies,
     barricades: damageBarricades(state.barricades, blast, tntDamage, tntRadius),
     mapBoards: damageBarricades(state.mapBoards, blast, tntDamage, tntRadius),
+    bullets: tnt.kind === 'yellow' ? [...state.bullets, ...createBulletBurst(tnt, owner, effectId)] : state.bullets,
     tnts: state.tnts.map((item) => {
       if (item.id !== tnt.id) return item;
       return {
@@ -126,6 +131,27 @@ function explodeTnt(state: TntState, tnt: TntBlock, owner: PlayerId, mode: GameM
     }),
     effects: [...state.effects, { id: effectId, x: blast.x, y: blast.y, kind: 'explosion', age: 0.48 }],
   };
+}
+
+function createBulletBurst(tnt: TntBlock, owner: PlayerId, effectId: number): Bullet[] {
+  const x = centerX(tnt);
+  const y = centerY(tnt);
+  return Array.from({ length: bulletBurstCount }, (_, index) => {
+    const angle = (Math.PI * 2 * index) / bulletBurstCount;
+    return {
+      id: effectId * 100 + index,
+      owner,
+      weapon: 'blaster',
+      x,
+      y,
+      dx: Math.cos(angle),
+      dy: Math.sin(angle),
+      damage: bulletBurstDamage,
+      size: bulletBurstSize,
+      bounces: 0,
+      portalCooldown: 0.08,
+    };
+  });
 }
 
 function isChainTnt(tnt: TntBlock): boolean {

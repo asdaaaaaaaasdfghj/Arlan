@@ -181,6 +181,7 @@ function getTntKind(kind: EditorCell['kind']): TntBlock['kind'] {
   if (kind === 'tntRed') return 'red';
   if (kind === 'tntGray') return 'gray';
   if (kind === 'tntBrown') return 'brown';
+  if (kind === 'tntYellow') return 'yellow';
   return 'blue';
 }
 

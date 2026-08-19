@@ -88,7 +88,7 @@ export type TntBlock = {
   y: number;
   width: number;
   height: number;
-  kind: 'blue' | 'red' | 'gray' | 'brown';
+  kind: 'blue' | 'red' | 'gray' | 'brown' | 'yellow';
   active: boolean;
   respawnTimer: number;
   fuseTimer: number;
