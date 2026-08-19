@@ -18,7 +18,7 @@ import {
 } from './arenaTypes';
 import { isPointInsideObstacle, type Blocker } from './arenaMap';
 import { getArenaBounds } from './arenaBounds';
-import { isCoopSurvivalMode } from './arenaModes';
+import { isCoopSurvivalMode, isGlassWarsMode } from './arenaModes';
 import { respawnPlayer } from './arenaPlayers';
 import { createWeaponBullets } from './arenaBulletFactory';
 import { getMagnetMove } from './arenaMagnets';
@@ -274,12 +274,16 @@ export function applyBulletHits(
     nextPlayers[targetId] = hp <= 0 && canRespawn[targetId] ? respawnPlayer(target, mapId) : { ...target, hp: Math.max(0, hp) };
     nextPlayers[bullet.owner] = {
       ...nextPlayers[bullet.owner],
-      score: hp <= 0 ? nextPlayers[bullet.owner].score + 1 : nextPlayers[bullet.owner].score,
+      score: hp <= 0 && shouldScorePlayerKill(mode, targetId, canRespawn) ? nextPlayers[bullet.owner].score + 1 : nextPlayers[bullet.owner].score,
     };
     return false;
   });
 
   return { players: nextPlayers, allies: nextAllies, bullets: activeBullets, effects };
+}
+
+function shouldScorePlayerKill(mode: GameMode, targetId: PlayerId, canRespawn: Record<PlayerId, boolean>): boolean {
+  return !isGlassWarsMode(mode) || !canRespawn[targetId];
 }
 
 function pointInRect(x: number, y: number, rect: Barricade): boolean {

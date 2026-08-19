@@ -5,6 +5,7 @@ import { applyBulletHits, moveBullets, spawnBullets } from './arenaCombat';
 import { tickDisasters } from './arenaDisasters';
 import { tickFloorModes } from './arenaFloorModes';
 import { tickFlags } from './arenaFlags';
+import { canRespawnByCore } from './arenaGlassWars';
 import { spawnGrenades, tickGrenades } from './arenaGrenades';
 export { createInitialGame } from './arenaInitialState';
 import { tickKingHill } from './arenaKingHill';
@@ -109,6 +110,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     mechanics.magnets,
     state.mode,
   );
+  const glassRespawns = canRespawnByCore(state.mode, moved.checkpoints);
   const shipState = damageShipsWithBullets(state.ships ?? [], moved.bullets);
   const timeEchoes = tickTimeEchoes(state, mutatedShooting.players, elapsedTime, delta, state.portals);
   const farArenaActive = state.farArenaActive || hasFarArenaBreach({ ...state, players: mutatedShooting.players, timeEchoes }, getArenaBounds(state.mapId));
@@ -129,6 +131,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     state.mode,
     state.mapId,
     state.nextEffectId + swordState.effects.length + paradoxState.effects.length + tntState.effects.length,
+    glassRespawns,
   );
   const zombieState = updateZombieMode(
     { ...movedState, zombies: tntState.zombies, mapBoards: tntState.mapBoards, tnts: tntState.tnts },
@@ -148,6 +151,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
     state.nextEffectId + swordState.effects.length + paradoxState.effects.length + tntState.effects.length + afterDuelHits.effects.length + zombieState.effects.length,
     delta,
     mechanics.magnets,
+    glassRespawns,
   );
   const chainState = triggerTntChain({
     tnts: tntState.tnts,
@@ -192,7 +196,7 @@ export function tickGame(state: GameState, input: GameInput, delta: number, secr
   const paintState = tickPaintBattle({ ...state, players: lavaPlayers, paintTiles: state.paintTiles ?? [] });
   const secretState = spawnSecretZombies(state.players, paintState.players, trapState.zombies, codeState.nextZombieId, secretZombies);
   const secretHappened = secretState.nextZombieId > codeState.nextZombieId;
-  const winner = secretHappened ? null : findWinner(paintState.players, timeLeft, state.mode, { ...state, paintTiles: paintState.paintTiles, ships: shipState.ships });
+  const winner = secretHappened ? null : findWinner(paintState.players, timeLeft, state.mode, { ...state, allyCheckpoints: moved.checkpoints, paintTiles: paintState.paintTiles, ships: shipState.ships });
   const powerUps = tickPowerUps(
     paintState.players,
     codeState.barricades,

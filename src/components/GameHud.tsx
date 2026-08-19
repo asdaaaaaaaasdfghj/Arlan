@@ -4,6 +4,7 @@ import { getMiniGameRule, isMiniGamesMode, miniGameDuration } from '../lib/arena
 import { isSurvivalGrace, survivalGraceSeconds } from '../lib/arenaSurvivalMode';
 import { getWeaponConfig } from '../lib/arenaWeapons';
 import { getScoreToWin } from '../lib/arenaRules';
+import { isGlassCoreDestroyed } from '../lib/arenaGlassWars';
 import { getMutationCountText, getMutationDescription, getMutationName } from '../lib/arenaMutations';
 import type { Language } from '../lib/gameSettings';
 import { modeDescription, modeName, t } from '../lib/i18n';
@@ -35,14 +36,14 @@ export function GameHud({ game, language }: GameHudProps) {
         {game.disasters.length > 0 && <small>{game.disasters.length} {t(language, 'disasters')}</small>}
       </div>
       <div className="score-row">
-        <PlayerStat id="blue" game={game} />
-        <PlayerStat id="red" game={game} />
+        <PlayerStat id="blue" game={game} language={language} />
+        <PlayerStat id="red" game={game} language={language} />
       </div>
     </header>
   );
 }
 
-function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
+function PlayerStat({ id, game, language }: { id: PlayerId; game: GameState; language: Language }) {
   const player = game.players[id];
   const weapon = getWeaponConfig(player.weapon, game.mapId);
   const miniSword = isMiniGamesMode(game) && getMiniGameRule(game).sword;
@@ -50,6 +51,7 @@ function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
   const scoreToWin = getScoreToWin(game.mode, game);
   const scoreText = game.mode === 'paintBattle'
     ? `${player.score.toFixed(1)}%`
+    : game.mode === 'glassWars' ? getGlassWarsScoreText(game, id, language)
     : scoreToWin > 0 ? `${Math.floor(player.score)}/${scoreToWin}` : Math.floor(player.score);
 
   return (
@@ -64,6 +66,10 @@ function PlayerStat({ id, game }: { id: PlayerId; game: GameState }) {
       </div>
     </section>
   );
+}
+
+function getGlassWarsScoreText(game: GameState, id: PlayerId, language: Language): string {
+  return isGlassCoreDestroyed(game.allyCheckpoints, id) ? t(language, 'coreBroken') : t(language, 'coreAlive');
 }
 
 function getMiniGameText(game: GameState): string {

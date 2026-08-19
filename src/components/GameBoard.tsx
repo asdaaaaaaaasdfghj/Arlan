@@ -95,6 +95,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   const farArenaOpen = isFarArenaOpen(game, bounds);
   const activeMutations = game.activeMutations ?? [];
   const fighterScale = getMutationScale(activeMutations.length > 0 ? activeMutations : game.mutation);
+  const seaArena = game.mode === 'seaBattle' || (game.ships ?? []).length > 0;
   const laserBlockers = [
     ...mapObstacles,
     ...game.mapBoards,
@@ -107,7 +108,7 @@ function ArenaPane({ game, language, bounds, camera, playerProfiles, playerEmote
   ];
 
   return (
-    <section className={`arena arena-theme-${theme} arena-mode-${game.mode} ${farArenaOpen ? 'arena-far-open' : ''} ${isMiniGamesMode(game) && getMiniGameRule(game).sword ? 'arena-mode-swordDuel' : ''}`} aria-label="Battle arena" style={{ ...cameraVars(camera, bounds), ...farArenaVars(game, farArenaOpen) }}>
+    <section className={`arena arena-theme-${theme} arena-mode-${game.mode} ${seaArena ? 'arena-sea' : ''} ${farArenaOpen ? 'arena-far-open' : ''} ${isMiniGamesMode(game) && getMiniGameRule(game).sword ? 'arena-mode-swordDuel' : ''}`} aria-label="Battle arena" style={{ ...cameraVars(camera, bounds), ...farArenaVars(game, farArenaOpen) }}>
       <div className="arena-world">
         <div className="arena-grid" />
         {farArenaOpen && <FarArenaLayer game={game} />}

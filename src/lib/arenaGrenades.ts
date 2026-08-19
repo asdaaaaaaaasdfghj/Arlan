@@ -70,13 +70,14 @@ export function tickGrenades(
   nextEffectId: number,
   delta: number,
   magnets: MagnetBlock[] = [],
+  canRespawn: Record<PlayerId, boolean> = { blue: true, red: true },
 ) {
   const moved = grenades.map((grenade) => moveGrenade(grenade, mapId, delta, magnets));
   const exploding = moved.filter((grenade) => grenade.timer <= 0);
   const activeGrenades = moved.filter((grenade) => grenade.timer > 0);
 
   return exploding.reduce((state, grenade, index) => (
-    explodeGrenade(grenade, state, mode, mapId, nextEffectId + index)
+    explodeGrenade(grenade, state, mode, mapId, nextEffectId + index, canRespawn)
   ), { players, zombies, barricades, grenades: activeGrenades, effects: [] as HitEffect[], blasts: [] as BlastPoint[] });
 }
 
@@ -103,9 +104,10 @@ function explodeGrenade(
   mode: GameMode,
   mapId: MapId,
   effectId: number,
+  canRespawn: Record<PlayerId, boolean>,
 ) {
   const damage = modeConfigs[mode].grenadeDamage;
-  const players = damagePlayers(state.players, grenade, mode, mapId, damage, EXPLOSION_RADIUS);
+  const players = damagePlayers(state.players, grenade, mode, mapId, damage, EXPLOSION_RADIUS, canRespawn);
   const zombieState = damageZombies(state.zombies, players, grenade, damage, EXPLOSION_RADIUS);
 
   return {

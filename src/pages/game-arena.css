@@ -182,21 +182,24 @@
     linear-gradient(135deg, #d8f3ff 0%, #f8f9ff 46%, #fff1c2 100%);
 }
 
-.arena-mode-seaBattle {
+.arena-mode-seaBattle,
+.arena-sea {
   background:
     radial-gradient(circle at 22% 20%, rgba(255, 255, 255, 0.28), transparent 18%),
     repeating-linear-gradient(165deg, rgba(255, 255, 255, 0.16) 0 2px, transparent 2px 18px),
     linear-gradient(135deg, #66d9e8 0%, #228be6 54%, #1864ab 100%);
 }
 
-.arena-mode-seaBattle .arena-grid {
+.arena-mode-seaBattle .arena-grid,
+.arena-sea .arena-grid {
   opacity: 0.42;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
 }
 
-.arena-mode-seaBattle::before {
+.arena-mode-seaBattle::before,
+.arena-sea::before {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -210,11 +213,19 @@
   content: '';
 }
 
-:root[data-theme='dark'] .arena-mode-seaBattle {
+:root[data-theme='dark'] .arena-mode-seaBattle,
+:root[data-theme='dark'] .arena-sea,
+:root[data-theme='dark'] .arena.arena-sea {
   background:
     radial-gradient(circle at 28% 24%, rgba(165, 216, 255, 0.22), transparent 20%),
     repeating-linear-gradient(165deg, rgba(165, 216, 255, 0.13) 0 2px, transparent 2px 18px),
     linear-gradient(135deg, #0b3d63 0%, #0c5a8a 52%, #082b49 100%);
+}
+
+:root[data-theme='dark'] .arena-sea .arena-grid {
+  background-image:
+    linear-gradient(rgba(216, 232, 244, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(216, 232, 244, 0.18) 1px, transparent 1px);
 }
 
 .arena-mode-lavaSurvival {

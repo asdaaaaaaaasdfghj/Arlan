@@ -7,7 +7,7 @@ import {
   type PlayerId,
   type Zombie,
 } from './arenaTypes';
-import { isCoopSurvivalMode } from './arenaModes';
+import { isCoopSurvivalMode, isGlassWarsMode } from './arenaModes';
 import { respawnPlayer } from './arenaPlayers';
 
 export function damagePlayers(
@@ -39,11 +39,15 @@ export function damagePlayers(
     }
     nextPlayers[grenade.owner] = {
       ...nextPlayers[grenade.owner],
-      score: hp <= 0 && id !== grenade.owner && !isCoopSurvivalMode(mode) ? nextPlayers[grenade.owner].score + 1 : nextPlayers[grenade.owner].score,
+      score: hp <= 0 && id !== grenade.owner && !isCoopSurvivalMode(mode) && shouldScorePlayerKill(mode, id, canRespawn) ? nextPlayers[grenade.owner].score + 1 : nextPlayers[grenade.owner].score,
     };
   });
 
   return nextPlayers;
+}
+
+function shouldScorePlayerKill(mode: GameMode, targetId: PlayerId, canRespawn: Record<PlayerId, boolean>): boolean {
+  return !isGlassWarsMode(mode) || !canRespawn[targetId];
 }
 
 export function damageZombies(
