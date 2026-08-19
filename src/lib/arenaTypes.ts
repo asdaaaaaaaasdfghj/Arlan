@@ -50,7 +50,8 @@ export type Bullet = {
 
 export type Obstacle = { id: string; x: number; y: number; width: number; height: number };
 
-export type Zombie = { id: number; x: number; y: number; hp: number };
+export type ZombieKind = 'walker' | 'runner' | 'brute' | 'spitter';
+export type Zombie = { id: number; x: number; y: number; hp: number; kind?: ZombieKind };
 
 export type Barricade = { id: number; x: number; y: number; width: number; height: number; hp: number; variant?: 'board' | 'glass' | 'buildBlock' | 'lucky' };
 

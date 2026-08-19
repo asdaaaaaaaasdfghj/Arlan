@@ -5,6 +5,7 @@ import {
   type Player,
   type PlayerId,
   type Zombie,
+  type ZombieKind,
 } from './arenaTypes';
 import { isBlockedZombiePosition } from './arenaMap';
 import { getArenaBounds } from './arenaBounds';
@@ -29,9 +30,11 @@ export function tickZombies(
 }
 
 export function spawnZombie(nextId: number, mode: GameMode, mapId: MapId): Zombie {
+  const kind = rollZombieKind(mode, nextId);
+  const hp = getZombieHp(kind, mode);
   const custom = mapId === 'custom' ? pickCustomZombieSpawn() : null;
   if (custom) {
-    return { id: nextId, x: custom.x, y: custom.y, hp: modeConfigs[mode].zombieHp ?? 42 };
+    return { id: nextId, x: custom.x, y: custom.y, hp, kind };
   }
 
   const bounds = getArenaBounds(mapId);
@@ -39,7 +42,7 @@ export function spawnZombie(nextId: number, mode: GameMode, mapId: MapId): Zombi
   const x = vertical ? (Math.random() > 0.5 ? 4 : bounds.width - 4) : randomInArena(4, bounds.width - 4);
   const y = vertical ? randomInArena(4, bounds.height - 4) : Math.random() > 0.5 ? 4 : bounds.height - 4;
 
-  return { id: nextId, x, y, hp: modeConfigs[mode].zombieHp ?? 42 };
+  return { id: nextId, x, y, hp, kind };
 }
 
 function pickCustomZombieSpawn(): { x: number; y: number } | null {
@@ -64,7 +67,7 @@ function moveZombie(
   const x = target.x - zombie.x;
   const y = target.y - zombie.y;
   const length = Math.hypot(x, y) || 1;
-  const speed = modeConfigs[mode].zombieSpeed ?? 13;
+  const speed = getZombieSpeed(zombie, mode);
   const wantedX = zombie.x + (x / length) * speed * delta;
   const wantedY = zombie.y + (y / length) * speed * delta;
   const nextX = isBlockedZombiePosition(wantedX, zombie.y, mapId, barricades) ? zombie.x : wantedX;
@@ -92,7 +95,7 @@ function applyZombieAttacks(
     const barricadeIndex = nextBarricades.findIndex((barricade) => zombieTouchesBarricade(zombie, barricade));
     if (barricadeIndex >= 0) {
       const barricade = nextBarricades[barricadeIndex];
-      const hp = barricade.hp - (modeConfigs[mode].barricadeDamage ?? 24) * delta;
+      const hp = barricade.hp - getZombieBarricadeDamage(zombie, mode) * delta;
       nextBarricades = hp <= 0
         ? nextBarricades.filter((item) => item.id !== barricade.id)
         : nextBarricades.map((item) => (item.id === barricade.id ? { ...item, hp } : item));
@@ -108,14 +111,83 @@ function applyZombieAttacks(
       const hit = Math.hypot(zombie.x - player.x, zombie.y - player.y) < ZOMBIE_ATTACK_SIZE;
       if (!hit) return;
 
-      const hp = player.hp - (modeConfigs[mode].zombieDamage ?? 18) * delta;
+      const hp = player.hp - getZombieDamage(zombie, mode) * delta;
       nextPlayers[id] = hp <= 0 && !isCoopSurvivalMode(mode)
         ? respawnPlayer(player, mapId)
-        : { ...player, hp: Math.max(0, hp) };
+        : applyZombieStatus(zombie, { ...player, hp: Math.max(0, hp) }, delta);
     });
   });
 
   return { players: nextPlayers, zombies, barricades: nextBarricades };
+}
+
+function rollZombieKind(mode: GameMode, seed: number): ZombieKind {
+  const roll = Math.random();
+  if (mode === 'swarmNight') {
+    if (roll < 0.46) return 'runner';
+    if (roll < 0.58) return 'spitter';
+    return 'walker';
+  }
+
+  if (mode === 'nightmare') {
+    if (roll < 0.34) return 'brute';
+    if (roll < 0.58) return 'spitter';
+    if (roll < 0.76) return 'runner';
+    return 'walker';
+  }
+
+  if (mode === 'fortress') {
+    if (roll < 0.42) return 'brute';
+    if (roll < 0.58) return 'spitter';
+    return seed % 4 === 0 ? 'runner' : 'walker';
+  }
+
+  if (roll < 0.18) return 'runner';
+  if (roll < 0.3) return 'spitter';
+  if (roll < 0.4) return 'brute';
+  return 'walker';
+}
+
+function getZombieHp(kind: ZombieKind, mode: GameMode): number {
+  const base = modeConfigs[mode].zombieHp ?? 42;
+  if (kind === 'runner') return Math.max(18, base * 0.62);
+  if (kind === 'brute') return base * 2.35;
+  if (kind === 'spitter') return base * 0.9;
+  return base;
+}
+
+function getZombieSpeed(zombie: Zombie, mode: GameMode): number {
+  const base = modeConfigs[mode].zombieSpeed ?? 13;
+  if (zombie.kind === 'runner') return base * 1.55;
+  if (zombie.kind === 'brute') return base * 0.66;
+  return base;
+}
+
+function getZombieDamage(zombie: Zombie, mode: GameMode): number {
+  const base = modeConfigs[mode].zombieDamage ?? 18;
+  if (zombie.kind === 'runner') return base * 0.72;
+  if (zombie.kind === 'brute') return base * 1.75;
+  if (zombie.kind === 'spitter') return base * 0.84;
+  return base;
+}
+
+function getZombieBarricadeDamage(zombie: Zombie, mode: GameMode): number {
+  const base = modeConfigs[mode].barricadeDamage ?? 24;
+  if (zombie.kind === 'brute') return base * 2.1;
+  if (zombie.kind === 'runner') return base * 0.68;
+  return base;
+}
+
+function applyZombieStatus(zombie: Zombie, player: Player, delta: number): Player {
+  if (zombie.kind !== 'spitter') {
+    return player;
+  }
+
+  return {
+    ...player,
+    acidTimer: Math.max(player.acidTimer, 1.4),
+    poisonTimer: Math.max(player.poisonTimer, 0.85 + delta),
+  };
 }
 
 function zombieTouchesBarricade(zombie: Zombie, barricade: Barricade): boolean {

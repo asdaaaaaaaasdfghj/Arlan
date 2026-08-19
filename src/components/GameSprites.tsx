@@ -115,7 +115,7 @@ export function BarricadeSprite({ barricade }: { barricade: Barricade }) {
 
 export function ZombieSprite({ zombie }: { zombie: Zombie }) {
   return (
-    <div className="zombie" style={{ left: xPercent(zombie.x), top: yPercent(zombie.y) }}>
+    <div className={`zombie zombie-${zombie.kind ?? 'walker'}`} style={{ left: xPercent(zombie.x), top: yPercent(zombie.y) }}>
       <span className="zombie-arm zombie-arm-left" />
       <span className="zombie-face" />
       <span className="zombie-arm zombie-arm-right" />

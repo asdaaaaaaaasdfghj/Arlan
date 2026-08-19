@@ -879,12 +879,51 @@
   box-shadow: 0 8px 15px rgba(23, 53, 28, 0.22);
 }
 
+.zombie-runner {
+  width: 28px;
+  height: 28px;
+  border-color: #13523d;
+  border-radius: 50% 50% 42% 42%;
+  background: #12b886;
+  box-shadow: 0 8px 15px rgba(18, 184, 134, 0.24);
+}
+
+.zombie-brute {
+  width: 44px;
+  height: 44px;
+  border-color: #1b2f12;
+  border-radius: 12px;
+  background: #2f6b2f;
+  box-shadow: 0 10px 22px rgba(23, 53, 28, 0.34);
+}
+
+.zombie-spitter {
+  width: 33px;
+  height: 33px;
+  border-color: #3b4d10;
+  border-radius: 50% 12px 50% 12px;
+  background:
+    radial-gradient(circle at 70% 34%, rgba(217, 249, 157, 0.82) 0 12%, transparent 13%),
+    #82c91e;
+  box-shadow: 0 8px 15px rgba(130, 201, 30, 0.26), 0 0 16px rgba(148, 216, 45, 0.34);
+}
+
 .zombie-face {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: #d9f99d;
   box-shadow: 0 0 12px rgba(217, 249, 157, 0.88);
+}
+
+.zombie-brute .zombie-face {
+  width: 15px;
+  height: 15px;
+}
+
+.zombie-runner .zombie-face {
+  width: 9px;
+  height: 9px;
 }
 
 .zombie-arm {
@@ -899,6 +938,11 @@
 
 .zombie-arm-left { left: -7px; }
 .zombie-arm-right { right: -7px; }
+.zombie-brute .zombie-arm-left { left: -9px; }
+.zombie-brute .zombie-arm-right { right: -9px; }
+.zombie-runner .zombie-arm {
+  height: 16px;
+}
 
 .time-echo {
   z-index: 16;
