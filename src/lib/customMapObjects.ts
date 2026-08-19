@@ -180,6 +180,7 @@ export function cellToObstacle(cell: EditorCell, _size: CustomMapSize): Obstacle
 function getTntKind(kind: EditorCell['kind']): TntBlock['kind'] {
   if (kind === 'tntRed') return 'red';
   if (kind === 'tntGray') return 'gray';
+  if (kind === 'tntBrown') return 'brown';
   return 'blue';
 }
 

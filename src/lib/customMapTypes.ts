@@ -32,7 +32,7 @@ export const defaultCustomWeapons: CustomWeaponSettings = {
 };
 
 export type CustomBlockKind = 'wall' | 'stoneWall' | 'metalWall' | 'glassWall' | 'sandWall' | 'board' | 'luckyBlock' | 'grass' | 'water' | 'ice' | 'flag' | 'blueFlag' | 'redFlag' | 'hillZone' | 'zombieSpawn' | 'healSpawn' | 'speedSpawn' | 'repairSpawn' | 'mover' | 'moverUp' | 'carousel' | 'piston' | 'stickyPiston' | 'swapRift' | 'laser' | 'codeBlock'
-  | 'tntBlue' | 'tntRed' | 'tntGray' | 'ricochet' | 'portalBlue' | 'portalOrange'
+  | 'tntBlue' | 'tntRed' | 'tntGray' | 'tntBrown' | 'ricochet' | 'portalBlue' | 'portalOrange'
   | 'spikes' | 'lava' | 'acid' | 'zap' | 'poison'
   | 'blueAlly' | 'redAlly' | 'blueCheckpoint' | 'redCheckpoint' | 'conveyorX' | 'conveyorY'
   | 'magnetPull' | 'magnetPush' | 'vehicleBuggy' | 'vehicleTank' | 'vehicleHover'
@@ -127,6 +127,7 @@ export const blockTools: BlockTool[] = [
   { kind: 'tntBlue', label: 'Blue TNT', category: 'traps' },
   { kind: 'tntRed', label: 'Red TNT', category: 'traps' },
   { kind: 'tntGray', label: 'Chain TNT', category: 'traps' },
+  { kind: 'tntBrown', label: 'Respawn chain TNT', category: 'traps' },
   { kind: 'spikes', label: 'Spikes', category: 'traps' },
   { kind: 'lava', label: 'Lava', category: 'traps' },
   { kind: 'acid', label: 'Acid', category: 'traps' },

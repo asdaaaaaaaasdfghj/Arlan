@@ -21,11 +21,11 @@ type TntState = {
 
 export function tickTnts(tnts: TntBlock[], delta: number): TntBlock[] {
   return tnts.map((tnt) => {
-    if (tnt.active && tnt.kind === 'gray' && tnt.fuseTimer > 0) {
+    if (tnt.active && isChainTnt(tnt) && tnt.fuseTimer > 0) {
       return { ...tnt, fuseTimer: Math.max(0, tnt.fuseTimer - delta) };
     }
 
-    if (tnt.active || tnt.kind !== 'red') {
+    if (tnt.active || !isRespawnTnt(tnt)) {
       return tnt;
     }
 
@@ -50,9 +50,16 @@ export function triggerTnts(
       return true;
     }
 
-    if (tnt.kind !== 'gray') {
+    if (!isChainTnt(tnt)) {
       nextState = explodeTnt(nextState, tnt, bullet.owner, mode, mapId, nextEffectId + nextState.effects.length);
       blasts.push({ x: centerX(tnt), y: centerY(tnt), owner: bullet.owner });
+    } else if (!tnt.fuseOwner) {
+      nextState = {
+        ...nextState,
+        tnts: nextState.tnts.map((item) => (
+          item.id === tnt.id ? { ...item, fuseTimer: fuseSeconds, fuseOwner: bullet.owner } : item
+        )),
+      };
     }
     return false;
   });
@@ -68,7 +75,7 @@ export function explodeReadyTnts(
 ): TntState {
   let nextState = state;
   const readyTnts = nextState.tnts.filter((tnt) => (
-    tnt.active && tnt.kind === 'gray' && tnt.fuseTimer === 0 && tnt.fuseOwner
+    tnt.active && isChainTnt(tnt) && tnt.fuseTimer === 0 && tnt.fuseOwner
   ));
 
   readyTnts.forEach((tnt) => {
@@ -88,7 +95,7 @@ function igniteNearbyTnts(state: TntState, blast: BlastPoint): TntState {
   return {
     ...state,
     tnts: state.tnts.map((tnt) => {
-      const shouldIgnite = tnt.active && tnt.kind === 'gray' && tnt.fuseTimer === 0 && !tnt.fuseOwner;
+      const shouldIgnite = tnt.active && isChainTnt(tnt) && tnt.fuseTimer === 0 && !tnt.fuseOwner;
       return shouldIgnite && distanceToTnt(blast, tnt) <= chainRadius
         ? { ...tnt, fuseTimer: fuseSeconds, fuseOwner: blast.owner }
         : tnt;
@@ -112,13 +119,21 @@ function explodeTnt(state: TntState, tnt: TntBlock, owner: PlayerId, mode: GameM
       return {
         ...item,
         active: false,
-        respawnTimer: item.kind === 'red' ? redRespawnSeconds : 0,
+        respawnTimer: isRespawnTnt(item) ? redRespawnSeconds : 0,
         fuseTimer: 0,
         fuseOwner: null,
       };
     }),
     effects: [...state.effects, { id: effectId, x: blast.x, y: blast.y, kind: 'explosion', age: 0.48 }],
   };
+}
+
+function isChainTnt(tnt: TntBlock): boolean {
+  return tnt.kind === 'gray' || tnt.kind === 'brown';
+}
+
+function isRespawnTnt(tnt: TntBlock): boolean {
+  return tnt.kind === 'red' || tnt.kind === 'brown';
 }
 
 function pointInRect(x: number, y: number, rect: TntBlock): boolean {

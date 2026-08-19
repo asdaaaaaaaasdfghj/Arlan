@@ -258,7 +258,7 @@ function isDecorationCell(cell: EditorCell): boolean {
 }
 
 function isTntCell(cell: EditorCell): boolean {
-  return cell.kind === 'tntBlue' || cell.kind === 'tntRed' || cell.kind === 'tntGray';
+  return cell.kind === 'tntBlue' || cell.kind === 'tntRed' || cell.kind === 'tntGray' || cell.kind === 'tntBrown';
 }
 
 function isPortalCell(cell: EditorCell): boolean {
