@@ -68,6 +68,7 @@ export function HomePage() {
     const openUpCode = 'OPENUP';
     const razverCode = 'RAZVER';
     const jumpscareCode = 'FNAF';
+    const splashCode = 'QSEDCVFGYNMKIY';
     const secretLinks = [
       ['STAR', 'https://forum.esforces.com/threads/8-bit-legos.77442/?utm_source=chatgpt.com'],
       ['GMFQS', 'https://gamefaqs.gamespot.com/boards/606524-minecraft/60138896?utm_source=chatgpt.com&validate=1'],
@@ -88,7 +89,7 @@ export function HomePage() {
       ['NETBLYADDISCKORD', 'https://web.whatsapp.com'],
     ] as const;
     const linkCodeLength = Math.max(...secretLinks.map(([code]) => code.length));
-    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, linkCodeLength, openUpCode.length, razverCode.length, jumpscareCode.length);
+    const maxCodeLength = Math.max(creditsCode.length, waterCode.length, linkCodeLength, openUpCode.length, razverCode.length, jumpscareCode.length, splashCode.length);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
       buffer = `${buffer}${event.key.toUpperCase()}`.slice(-maxCodeLength);
@@ -118,6 +119,10 @@ export function HomePage() {
       if (buffer.endsWith(jumpscareCode)) {
         setJumpscareOpen(true);
         recordMainMenuSecretCode(jumpscareCode, () => setAchievementToast('outOfWaterSecret'));
+      }
+      if (buffer.endsWith(splashCode)) {
+        setSplash(`code:${splashCode}`);
+        recordMainMenuSecretCode(splashCode, () => setAchievementToast('outOfWaterSecret'));
       }
     };
 
@@ -310,6 +315,7 @@ const requiredMainMenuSecretCodes = [
   'SIODUIFIHUERIGEILFHUILHUIFREI',
   'HIVERITI',
   'FUFIL',
+  'QSEDCVFGYNMKIY',
   'NETBLYADDISCKORD',
   'OPENUP',
   'RAZVER',
