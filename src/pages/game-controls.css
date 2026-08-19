@@ -55,13 +55,25 @@
 
 @media (max-width: 720px) {
   .game-controls {
+    position: sticky;
+    bottom: 0;
+    z-index: 85;
     grid-template-columns: 1fr;
     gap: 6px;
-    margin-top: 6px;
+    margin: 6px -6px 0;
+    border-top: 1px solid rgba(38, 50, 59, 0.12);
+    background: rgba(248, 246, 239, 0.95);
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    backdrop-filter: blur(10px);
   }
 
   .control-panel {
     gap: 4px;
+  }
+
+  .touch-pad,
+  .weapon-picker {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .touch-pad button,
@@ -76,7 +88,7 @@
 @media (max-width: 430px) {
   .touch-pad,
   .weapon-picker {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .touch-pad button,
@@ -87,4 +99,28 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+}
+
+@media (max-width: 720px) and (orientation: landscape) {
+  .game-controls {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    position: static;
+    margin: 5px 0 0;
+    padding: 0;
+    border-top: 0;
+    background: transparent;
+  }
+
+  .touch-pad {
+    display: none;
+  }
+
+  .weapon-picker {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+:root[data-theme='dark'] .game-controls {
+  background: rgba(11, 16, 20, 0.96);
+  border-top-color: rgba(216, 232, 244, 0.12);
 }

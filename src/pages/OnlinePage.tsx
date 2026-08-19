@@ -456,7 +456,7 @@ export function OnlinePage() {
     onWeaponChange: setWeapon,
     controls: settings.controls,
   });
-  useGameSounds(game);
+  useGameSounds(game, settings.soundEffects);
 
   function createRoom() {
     if (isGuestAccount && serverMap === 'custom') {

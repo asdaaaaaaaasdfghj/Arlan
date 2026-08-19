@@ -153,16 +153,25 @@
 @media (max-width: 720px) {
   .game-page {
     width: 100%;
-    padding: 7px 6px 12px;
+    min-height: 100svh;
+    padding: 7px max(6px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
     overflow-x: hidden;
   }
 
   .game-nav {
+    position: sticky;
+    top: 0;
+    z-index: 90;
     flex-wrap: wrap;
     justify-content: center;
     gap: 6px 10px;
+    margin: -7px -6px 6px;
+    border-bottom: 1px solid rgba(38, 50, 59, 0.12);
+    background: rgba(248, 246, 239, 0.94);
+    padding: 7px 6px;
     font-size: 13px;
     text-align: center;
+    backdrop-filter: blur(10px);
   }
 
   .game-hud {
@@ -196,6 +205,10 @@
     padding: 6px;
     font-size: 12px;
   }
+
+  .weapon-name {
+    font-size: 9px;
+  }
 }
 
 @media (max-width: 430px) {
@@ -210,4 +223,36 @@
   .score-row {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+@media (max-width: 720px) and (orientation: landscape) {
+  .game-page {
+    padding-top: 4px;
+  }
+
+  .game-nav {
+    position: static;
+    margin: 0 0 4px;
+    padding: 0;
+    border-bottom: 0;
+    background: transparent;
+  }
+
+  .game-hud {
+    grid-template-columns: minmax(145px, 0.7fr) auto minmax(240px, 1.4fr);
+    gap: 5px;
+  }
+
+  .game-hud h1 {
+    font-size: 18px;
+  }
+
+  .score-row {
+    grid-column: auto;
+  }
+}
+
+:root[data-theme='dark'] .game-nav {
+  background: rgba(11, 16, 20, 0.94);
+  border-bottom-color: rgba(216, 232, 244, 0.12);
 }

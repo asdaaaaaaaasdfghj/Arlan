@@ -56,7 +56,7 @@ export function GamePage() {
   }), [language, settings.botDifficulty, settings.redBot]);
   const achievementToast = useAchievementToasts(game, settings.achievementToasts, achievementContext);
   useGameMusic(musicOn);
-  useGameSounds(game);
+  useGameSounds(game, settings.soundEffects);
   useCheatCode(() => setWeapon('blue', 'termos'));
 
   useEffect(() => {

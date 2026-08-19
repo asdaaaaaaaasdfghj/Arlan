@@ -10,7 +10,7 @@ const swordSoundUrl = `${import.meta.env.BASE_URL}sounds/sword-blade.mp3`;
 const lavaSoundUrl = `${import.meta.env.BASE_URL}sounds/lava-crunchy-bang.mp3`;
 const teleportSoundUrl = `${import.meta.env.BASE_URL}sounds/teleport-opening-sound.mp3`;
 
-export function useGameSounds(game: GameState) {
+export function useGameSounds(game: GameState, enabled = true) {
   const previousShotsRef = useRef(getPlayerShots(game));
   const previousEffectsRef = useRef(getPlayerEffects(game));
   const audioPoolsRef = useRef<Record<GameSound, HTMLAudioElement[]>>({
@@ -25,6 +25,9 @@ export function useGameSounds(game: GameState) {
     const nextShots = getPlayerShots(game);
     const previousShots = previousShotsRef.current;
     previousShotsRef.current = nextShots;
+    if (!enabled) {
+      return;
+    }
 
     (['blue', 'red'] satisfies PlayerId[]).forEach((id) => {
       if (nextShots[id] <= previousShots[id]) {
@@ -33,12 +36,15 @@ export function useGameSounds(game: GameState) {
 
       playSound(getSoundForPlayer(game, id), audioPoolsRef);
     });
-  }, [game.players.blue.shotsFired, game.players.red.shotsFired]);
+  }, [enabled, game.players.blue.shotsFired, game.players.red.shotsFired]);
 
   useEffect(() => {
     const nextEffects = getPlayerEffects(game);
     const previousEffects = previousEffectsRef.current;
     previousEffectsRef.current = nextEffects;
+    if (!enabled) {
+      return;
+    }
 
     (['blue', 'red'] satisfies PlayerId[]).forEach((id) => {
       if (nextEffects[id].burnTimer > previousEffects[id].burnTimer + 0.2) {
@@ -50,6 +56,7 @@ export function useGameSounds(game: GameState) {
       }
     });
   }, [
+    enabled,
     game.players.blue.burnTimer,
     game.players.red.burnTimer,
     game.players.blue.portalCooldown,

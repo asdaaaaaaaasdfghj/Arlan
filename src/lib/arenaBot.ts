@@ -72,6 +72,10 @@ function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerIn
     return { ...emptyBotInput };
   }
 
+  if (red.weapon === 'termos') {
+    return createTermosBotInput(game, red, target, profile, difficulty);
+  }
+
   const breakable = findBreakableBetween(red, target, game);
   const actionTarget = breakable ?? predictTarget(target, profile.lead);
   const dx = actionTarget.x - red.x;
@@ -104,6 +108,45 @@ function createRedBotInput(game: GameState, difficulty: BotDifficulty): PlayerIn
     shoot: !lineBlocked && aimedAtTarget && distance < profile.shootRange,
     build: isZombieMode(game.mode) && nearestZombieDistance(red, game.zombies) < 18,
     grenade: !lineBlocked && aimedAtTarget && distance > profile.grenadeMin && distance < profile.grenadeMax && shouldThrowGrenade(game.elapsedTime, difficulty, red.x),
+    enterVehicle: false,
+  };
+}
+
+function createTermosBotInput(
+  game: GameState,
+  red: Player,
+  target: BotTarget,
+  profile: typeof botProfiles[BotDifficulty],
+  difficulty: BotDifficulty,
+): PlayerInput {
+  const breakable = findBreakableBetween(red, target, game);
+  const actionTarget = breakable ?? target;
+  const dx = actionTarget.x - red.x;
+  const dy = actionTarget.y - red.y;
+  const distance = Math.hypot(dx, dy);
+  const lineBlocked = breakable ? false : isLineBlocked(red, target, game);
+  const desiredDistance = isZombieMode(game.mode) ? 18 : difficulty === 'thermonuclear' ? 12 : 22;
+  const tooClose = distance < desiredDistance * 0.6;
+  const tooFar = distance > desiredDistance * 1.35 || lineBlocked || Boolean(breakable);
+  const orbitSeed = game.elapsedTime * 2.6 + red.score * 3.1 + target.x * 0.19;
+  const tacticalTarget = breakable
+    ? breakable
+    : tooClose
+      ? retreatFrom(red, target)
+      : addStrafeTarget(red, actionTarget, game, orbitSeed, profile.strafe + 10);
+  const moveTarget = findBotMoveTarget(game, red, tacticalTarget);
+  const moveDx = moveTarget.x - red.x;
+  const moveDy = moveTarget.y - red.y;
+  const canShoot = (distance < profile.shootRange || Boolean(breakable)) && !lineBlocked;
+
+  return {
+    up: (tooFar || tooClose || !lineBlocked) && moveDy < -1.2,
+    down: (tooFar || tooClose || !lineBlocked) && moveDy > 1.2,
+    left: (tooFar || tooClose || !lineBlocked) && moveDx < -1.2,
+    right: (tooFar || tooClose || !lineBlocked) && moveDx > 1.2,
+    shoot: canShoot,
+    build: isZombieMode(game.mode) && nearestZombieDistance(red, game.zombies) < 18,
+    grenade: false,
     enterVehicle: false,
   };
 }

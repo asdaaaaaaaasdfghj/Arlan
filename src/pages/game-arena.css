@@ -36,7 +36,7 @@
 @media (max-width: 720px) {
   .arena {
     width: 100%;
-    max-height: min(58vh, calc(100vh - 245px));
+    max-height: min(62svh, calc(100svh - 220px));
     border-width: 2px;
   }
 
@@ -56,7 +56,7 @@
 
 @media (max-width: 430px) {
   .arena {
-    max-height: 52vh;
+    max-height: 56svh;
     border-radius: 7px;
   }
 
@@ -69,6 +69,17 @@
     width: 28px;
     height: 28px;
     font-size: 18px;
+  }
+}
+
+@media (max-width: 720px) and (orientation: landscape) {
+  .arena {
+    width: min(100%, 88vw);
+    max-height: calc(100svh - 150px);
+  }
+
+  .arena-camera-split .arena {
+    max-height: calc(100svh - 170px);
   }
 }
 
@@ -176,6 +187,34 @@
     radial-gradient(circle at 22% 20%, rgba(255, 255, 255, 0.28), transparent 18%),
     repeating-linear-gradient(165deg, rgba(255, 255, 255, 0.16) 0 2px, transparent 2px 18px),
     linear-gradient(135deg, #66d9e8 0%, #228be6 54%, #1864ab 100%);
+}
+
+.arena-mode-seaBattle .arena-grid {
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+}
+
+.arena-mode-seaBattle::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 28%, rgba(255, 255, 255, 0.24), transparent 18%),
+    radial-gradient(ellipse at 76% 68%, rgba(255, 255, 255, 0.18), transparent 20%),
+    repeating-linear-gradient(172deg, rgba(255, 255, 255, 0.18) 0 3px, transparent 3px 28px);
+  opacity: 0.76;
+  animation: sea-water-drift 2.8s linear infinite;
+  content: '';
+}
+
+:root[data-theme='dark'] .arena-mode-seaBattle {
+  background:
+    radial-gradient(circle at 28% 24%, rgba(165, 216, 255, 0.22), transparent 20%),
+    repeating-linear-gradient(165deg, rgba(165, 216, 255, 0.13) 0 2px, transparent 2px 18px),
+    linear-gradient(135deg, #0b3d63 0%, #0c5a8a 52%, #082b49 100%);
 }
 
 .arena-mode-lavaSurvival {
@@ -1041,6 +1080,11 @@
 @keyframes lava-wave-boil {
   0% { background-position: 0 0, 0 0, 0 0, 0 0; }
   100% { background-position: 18px -24px, -16px 20px, 28px 0, 0 0; }
+}
+
+@keyframes sea-water-drift {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to { background-position: 18px -8px, -22px 12px, 44px 0; }
 }
 
 @keyframes far-arena-wobble {

@@ -20,6 +20,7 @@ export type GameSettings = {
   lowSpecMode: boolean;
   tankPlayers: boolean;
   music: boolean;
+  soundEffects: boolean;
   redBot: boolean;
   blueTeamBots: number;
   redTeamBots: number;
@@ -44,6 +45,7 @@ export const defaultSettings: GameSettings = {
   lowSpecMode: false,
   tankPlayers: false,
   music: false,
+  soundEffects: true,
   redBot: true,
   blueTeamBots: 0,
   redTeamBots: 0,

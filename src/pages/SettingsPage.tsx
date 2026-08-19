@@ -68,6 +68,7 @@ export function SettingsPage() {
         <Toggle label={t(language, 'lowSpecMode')} checked={settings.lowSpecMode} onChange={(checked) => updateSettings({ ...settings, lowSpecMode: checked, gameFps: checked ? 24 : settings.gameFps, animations: checked ? false : settings.animations })} />
         <Toggle label={t(language, 'tankPlayers')} checked={settings.tankPlayers} onChange={(checked) => updateSettings({ ...settings, tankPlayers: checked })} />
         <Toggle label={t(language, 'music')} checked={settings.music} onChange={(checked) => updateSettings({ ...settings, music: checked })} />
+        <Toggle label={t(language, 'soundEffects')} checked={settings.soundEffects} onChange={(checked) => updateSettings({ ...settings, soundEffects: checked })} />
         <Toggle label={t(language, 'redBot')} checked={settings.redBot} onChange={(checked) => updateSettings({ ...settings, redBot: checked })} />
         <NumberField label={t(language, 'blueTeamBots')} value={settings.blueTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, blueTeamBots: value })} />
         <NumberField label={t(language, 'redTeamBots')} value={settings.redTeamBots} min={0} max={12} onChange={(value) => updateSettings({ ...settings, redTeamBots: value })} />
