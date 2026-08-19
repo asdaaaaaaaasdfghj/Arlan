@@ -84,6 +84,7 @@ export function HomePage() {
       ['TMYV金钱有限公司', 'https://roblox.qq.com'],
       ['SIODUIFIHUERIGEILFHUILHUIFREI', 'https://tenor.com/ru/view/chicken-jockey-minecraft-steve-minecraft-movie-minecraft-memes-gif-9486159858232719999'],
       ['HIVERITI', 'https://www.youtube.com/watch?v=QKC8z3pWjgI&list=RDQKC8z3pWjgI&start_radio=1&pp=ygUM0LLQtdGA0LjRgtC4oAcB'],
+      ['FUFIL', 'https://www.youtube.com/@fufilhmerc'],
       ['NETBLYADDISCKORD', 'https://web.whatsapp.com'],
     ] as const;
     const linkCodeLength = Math.max(...secretLinks.map(([code]) => code.length));
@@ -308,6 +309,7 @@ const requiredMainMenuSecretCodes = [
   'TMYV',
   'SIODUIFIHUERIGEILFHUILHUIFREI',
   'HIVERITI',
+  'FUFIL',
   'NETBLYADDISCKORD',
   'OPENUP',
   'RAZVER',
