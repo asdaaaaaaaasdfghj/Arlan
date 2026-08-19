@@ -1,5 +1,5 @@
 export type AchievementId = 'firstScore' | 'duelWin' | 'survivor' | 'builder' | 'grenadier' | 'zombieHunter'
-  | 'silentSurvivor' | 'selfDestruct' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'kickedOnce' | 'signedOut' | 'outOfWaterSecret' | 'qSpam' | 'adminServer' | 'updateConfusion' | 'guestSkinCopy' | 'modeMaster' | 'mapTour' | 'languageTour' | 'collector';
+  | 'silentSurvivor' | 'selfDestruct' | 'tntChemistry' | 'easyBotOops' | 'painSpeedrun' | 'disappointment3' | 'kickedOnce' | 'signedOut' | 'outOfWaterSecret' | 'qSpam' | 'adminServer' | 'updateConfusion' | 'guestSkinCopy' | 'modeMaster' | 'mapTour' | 'languageTour' | 'collector';
 
 export type Achievement = {
   id: AchievementId;
@@ -83,6 +83,7 @@ export const achievements: Achievement[] = [
   { id: 'zombieHunter', title: 'Cleanup Crew', description: 'Defeat 10 zombies in one round.' },
   { id: 'silentSurvivor', title: 'Silent Legend', description: 'Survive a round without firing a shot.' },
   { id: 'selfDestruct', title: 'Self Destruct', description: 'Die from your own grenade.' },
+  { id: 'tntChemistry', title: 'C₇H₅N₃O₆', description: 'Detonate every TNT type.' },
   { id: 'easyBotOops', title: 'How Did This Happen?', description: 'Lose to the bot on Easy.' },
   { id: 'painSpeedrun', title: 'Pain Speedrun', description: 'Score against the bot on Thermonuclear.' },
   { id: 'disappointment3', title: 'Disappointment III', description: 'Try to join the official server as a guest.' },
@@ -108,6 +109,7 @@ export const achievementRu: Record<AchievementId, [string, string]> = {
   zombieHunter: ['Команда зачистки', 'Победи 10 зомби за раунд.'],
   silentSurvivor: ['Тихая легенда', 'Выживи раунд без единого выстрела.'],
   selfDestruct: ['Самоуничтожение', 'Умри от своей же гранаты.'],
+  tntChemistry: ['C₇H₅N₃O₆', 'Взорвать каждый вид TNT.'],
   easyBotOops: ['Как так вышло?', 'Проиграй боту на Easy.'],
   painSpeedrun: ['Спидран боли', 'Набери хотя бы 1 очко против термоядерного бота.'],
   disappointment3: ['Разочарование III', 'Попытайся зайти на официальный сервер за гостя.'],

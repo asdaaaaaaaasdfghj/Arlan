@@ -1,6 +1,6 @@
 import { mapOrder } from './arenaMap';
 import { isZombieMode, modeOrder } from './arenaModes';
-import type { GameMode, GameState, MapId } from './arenaTypes';
+import type { GameMode, GameState, MapId, TntBlock } from './arenaTypes';
 import { achievementRu, achievementTranslations, achievements, type Achievement, type AchievementId } from './achievementCatalog';
 import { languageOptions, type BotDifficulty, type Language } from './gameSettings';
 export { achievements, type Achievement, type AchievementId } from './achievementCatalog';
@@ -15,6 +15,7 @@ export type AchievementProgress = {
   wonModes: GameMode[];
   playedMaps: MapId[];
   playedLanguages: Language[];
+  explodedTnts: TntBlock['kind'][];
 };
 
 const storageKey = 'duel-arena-achievements';
@@ -106,6 +107,7 @@ function isUnlocked(
   if (id === 'zombieHunter') return isZombieMode(game.mode) && score >= 10;
   if (id === 'silentSurvivor') return didBlueSurviveSilently(game);
   if (id === 'selfDestruct') return game.players.blue.selfGrenadeDeaths > 0 || game.players.red.selfGrenadeDeaths > 0;
+  if (id === 'tntChemistry') return allTntKinds.every((kind) => progress.explodedTnts.includes(kind));
   if (id === 'easyBotOops') return context.redBot && context.botDifficulty === 'easy' && game.winner === 'red';
   if (id === 'painSpeedrun') return context.redBot && context.botDifficulty === 'thermonuclear' && game.players.blue.score >= 1;
   if (id === 'modeMaster') return modeOrder.every((mode) => progress.wonModes.includes(mode));
@@ -130,14 +132,19 @@ function didBlueSurviveSilently(game: GameState): boolean {
 }
 
 function updateProgress(game: GameState, progress: AchievementProgress, language: Language): AchievementProgress {
+  const explodedTnts = game.tnts.reduce<TntBlock['kind'][]>((items, tnt) => (
+    !tnt.active ? addUnique(items, tnt.kind) : items
+  ), progress.explodedTnts);
+
   if (game.status !== 'finished') {
-    return progress;
+    return { ...progress, explodedTnts };
   }
 
   return {
     wonModes: isBlueWin(game) ? addUnique(progress.wonModes, game.mode) : progress.wonModes,
     playedMaps: game.mapId === 'custom' ? progress.playedMaps : addUnique(progress.playedMaps, game.mapId),
     playedLanguages: addUnique(progress.playedLanguages, language),
+    explodedTnts,
   };
 }
 
@@ -157,6 +164,7 @@ export function loadAchievementProgress(): AchievementProgress {
       wonModes: parsed.wonModes ?? [],
       playedMaps: parsed.playedMaps ?? [],
       playedLanguages: parsed.playedLanguages ?? [],
+      explodedTnts: parsed.explodedTnts ?? [],
     };
   } catch {
     return emptyAchievementProgress();
@@ -172,5 +180,7 @@ function addUnique<T>(items: T[], item: T): T[] {
 }
 
 function emptyAchievementProgress(): AchievementProgress {
-  return { wonModes: [], playedMaps: [], playedLanguages: [] };
+  return { wonModes: [], playedMaps: [], playedLanguages: [], explodedTnts: [] };
 }
+
+const allTntKinds: TntBlock['kind'][] = ['blue', 'red', 'gray', 'brown', 'yellow'];
